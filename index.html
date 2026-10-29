@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <meta name="theme-color" content="#002C5F" />
-  <title>현장 안전지킴이 AI (2026.10.29 업데이트 · V1.4) | 현대제철 안전가이드 &amp; 4대 안전법령 기반 현장 사진 진단</title>
+  <title>현장 안전지킴이 AI (26.10.29 V1.04) | 현대제철 안전가이드 &amp; 4대 안전법령 기반 현장 사진 진단</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
@@ -176,6 +176,9 @@ body {
 }
 
 .brand-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 0.82rem;
   font-weight: 900;
   letter-spacing: -0.02em;
@@ -194,22 +197,18 @@ body {
 .header-update-badge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  margin-left: 6px;
-  padding: 1px 6px;
-  border-radius: 4px;
+  margin-left: 4px;
+  padding: 1px 5px;
+  border-radius: 3px;
   background: rgba(255, 255, 255, 0.14);
   border: 1px solid rgba(255, 186, 133, 0.45);
-  color: #F8FAFC;
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  vertical-align: middle;
-}
-
-.header-update-badge strong {
   color: #FDBA74;
-  font-weight: 900;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.1;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .footer-version-tag {
@@ -219,14 +218,9 @@ body {
   border-radius: 4px;
   background: rgba(255, 107, 0, 0.18);
   border: 1px solid rgba(255, 107, 0, 0.5);
-  color: #F8FAFC;
-  font-size: 0.76rem;
-  font-weight: 700;
-}
-
-.footer-version-tag strong {
   color: #FDBA74;
-  font-weight: 900;
+  font-size: 0.75rem;
+  font-weight: 800;
 }
 
 .brand-subtitle {
@@ -244,15 +238,15 @@ body {
 .btn-api-config {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   background: rgba(255, 255, 255, 0.12);
   color: #FFFFFF;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 2px 6px;
+  padding: 1px 5px;
   border-radius: 4px;
-  font-size: 0.68rem;
+  font-size: 0.58rem;
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.1;
   white-space: nowrap;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -3391,7 +3385,7 @@ body {
             <span class="hyundai-pill">HYUNDAI STEEL SAFETY</span>
             <span class="law-pill">4대 안전법령 · KOSHA 기준</span>
           </div>
-          <h1 class="brand-title">현장 안전지킴이 <span class="accent-orange">AI</span> <span class="header-update-badge">2026.10.29 업데이트 · <strong>V1.4</strong></span></h1>
+          <h1 class="brand-title">현장 안전지킴이 <span class="accent-orange">AI</span><span class="header-update-badge">26.10.29 V1.04</span></h1>
           <p class="brand-subtitle">현대제철 협력사 안전가이드북 &amp; 산안법·중처법·화관법·KOSHA 비전 진단 시스템</p>
         </div>
       </div>
@@ -3399,17 +3393,8 @@ body {
       <div class="header-actions">
         <button type="button" id="openApiModalBtn" class="btn-api-config" title="AI Vision API 키 및 모델 설정">
           <span class="api-status-dot" id="apiStatusDot"></span>
-          <span id="apiStatusText">⚙️ AI 설정</span>
+          <span id="apiStatusText">AI 설정</span>
         </button>
-        <a
-          href="https://safety.hyundai-steel.com/SafetyEbookPartner/index.html"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="btn-guidebook header-guidebook-btn"
-        >
-          <span>📖 <span class="gb-full-label">현대제철 협력사 </span>안전가이드북<span class="gb-full-label"> 원문 보기</span></span>
-          <span class="external-arrow" aria-hidden="true">↗</span>
-        </a>
       </div>
     </div>
   </header>
@@ -4340,7 +4325,7 @@ body {
   <footer class="app-footer">
     <div class="container footer-inner">
       <div class="footer-info">
-        <strong>현장 안전지킴이 AI</strong> · 현대제철 협력사 안전가이드북 &amp; 4대 안전법령(산안법·중처법·화관법·KOSHA) 기반 현장 사진 진단 웹앱 <span class="footer-version-tag">2026.10.29 업데이트 · <strong>V1.4</strong></span>
+        <strong>현장 안전지킴이 AI</strong> · 현대제철 협력사 안전가이드북 &amp; 4대 안전법령(산안법·중처법·화관법·KOSHA) 기반 현장 사진 진단 웹앱 <span class="footer-version-tag">26.10.29 V1.04</span>
       </div>
       <div class="footer-links">
         <a
@@ -4443,7 +4428,7 @@ body {
  * - 다중 사진 업로드 & 갤러리 전환
  * - 사진 터치/클릭 부위 지정 커스텀 핀(Pin) 시스템
  * - 사진 픽셀 시각 특성 분석 + 세부 작업사항 확인 체크박스 연동 맞춤형 동적 진단 엔진
- * - 최종 업데이트: 2026-10-29 | V1.4
+ * - 버전: 26.10.29 V1.04
  */
 
 // ============================================================================
@@ -8092,14 +8077,14 @@ function syncApiConfigUI() {
   if (provider === "smart_demo") {
     dom.apiKeyInputGroup.classList.add("hidden");
     dom.aiModelSelectGroup.classList.add("hidden");
-    dom.apiStatusText.textContent = "⚙️ AI 설정";
+    dom.apiStatusText.textContent = "AI 설정";
   } else {
     dom.apiKeyInputGroup.classList.remove("hidden");
     dom.aiModelSelectGroup.classList.remove("hidden");
     const label = provider === "gemini" ? "Gemini" : "OpenAI";
     dom.apiStatusText.textContent = apiKey
-      ? `⚙️ ${label}`
-      : `⚙️ ${label}(미입력)`;
+      ? `${label}`
+      : `${label}(키필요)`;
   }
 }
 
@@ -8187,7 +8172,7 @@ function escapeHtml(str) {
     .replace(/'/g, "&#039;");
 }
 
-// 최종 업데이트: 2026-10-29 | V1.4
+// 26.10.29 V1.04
   </script>
 </body>
 </html>
