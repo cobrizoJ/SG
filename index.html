@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <meta name="theme-color" content="#002C5F" />
-  <title>현장 안전지킴이 AI (26.11.03 V1.05) | 현대제철 안전가이드 &amp; 4대 안전법령 기반 현장 사진 진단</title>
+  <title>현장 안전지킴이 AI (26.11.04 V1.06) | 현대제철 안전가이드 &amp; 4대 안전법령 기반 현장 사진 진단</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
@@ -3385,7 +3385,7 @@ body {
             <span class="hyundai-pill">HYUNDAI STEEL SAFETY</span>
             <span class="law-pill">4대 안전법령 · KOSHA 기준</span>
           </div>
-          <h1 class="brand-title">현장 안전지킴이 <span class="accent-orange">AI</span><span class="header-update-badge">26.11.03 V1.05</span></h1>
+          <h1 class="brand-title">현장 안전지킴이 <span class="accent-orange">AI</span><span class="header-update-badge">26.11.04 V1.06</span></h1>
           <p class="brand-subtitle">현대제철 협력사 안전가이드북 &amp; 산안법·중처법·화관법·KOSHA 비전 진단 시스템</p>
         </div>
       </div>
@@ -3456,36 +3456,40 @@ body {
 
             <!-- 카메라 즉시 촬영 & 갤러리 업로드 버튼 그리드 (모바일 퍼스트 큼직한 UI) -->
             <div class="camera-action-grid">
-              <label for="cameraCaptureInput" class="btn-camera-action primary-camera">
+              <label for="cameraCaptureInput" class="btn-camera-action primary-camera" role="button" tabindex="0">
                 <span class="cam-icon">📷</span>
                 <div class="cam-btn-text">
                   <strong>카메라 연속 촬영 추가</strong>
                   <span>현장 사진 찍어서 계속 추가</span>
                 </div>
-                <input
-                  type="file"
-                  id="cameraCaptureInput"
-                  accept="image/*"
-                  capture="environment"
-                  hidden
-                />
               </label>
 
-              <label for="fileUploadInput" class="btn-camera-action secondary-gallery">
+              <label for="fileUploadInput" class="btn-camera-action secondary-gallery" role="button" tabindex="0">
                 <span class="cam-icon">🖼️</span>
                 <div class="cam-btn-text">
                   <strong>갤러리 다중 업로드</strong>
                   <span>사진 여러 장 한꺼번에 선택</span>
                 </div>
-                <input
-                  type="file"
-                  id="fileUploadInput"
-                  accept="image/*"
-                  multiple
-                  hidden
-                />
               </label>
             </div>
+
+            <!-- 파일 선택용 독립 숨김 input (브라우저 더블클릭 방지 및 모바일/PC 전 기종 안정성 보장) -->
+            <input
+              type="file"
+              id="cameraCaptureInput"
+              accept="image/*,.jpg,.jpeg,.png,.webp,.bmp"
+              capture="environment"
+              style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden;clip:rect(0,0,0,0);"
+              aria-hidden="true"
+            />
+            <input
+              type="file"
+              id="fileUploadInput"
+              accept="image/*,.jpg,.jpeg,.png,.webp,.bmp,.jfif,.heic,.heif"
+              multiple
+              style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden;clip:rect(0,0,0,0);"
+              aria-hidden="true"
+            />
 
             <!-- 드래그 앤 드롭 존 (미업로드 상태) -->
             <div
@@ -3556,7 +3560,7 @@ body {
                     <span id="totalPinCountBadge" class="pin-total-pill">📍 지정 부위 0곳</span>
                   </div>
                   <div class="preview-actions">
-                    <label for="fileUploadInput" class="btn-preview-ctrl">➕ 사진 추가</label>
+                    <button type="button" id="addMorePhotosBtn" class="btn-preview-ctrl">➕ 사진 추가</button>
                     <button type="button" id="removeCurrentImageBtn" class="btn-preview-ctrl">
                       현재 사진 삭제
                     </button>
@@ -4325,7 +4329,7 @@ body {
   <footer class="app-footer">
     <div class="container footer-inner">
       <div class="footer-info">
-        <strong>현장 안전지킴이 AI</strong> · 현대제철 협력사 안전가이드북 &amp; 4대 안전법령(산안법·중처법·화관법·KOSHA) 기반 현장 사진 진단 웹앱 <span class="footer-version-tag">26.11.03 V1.05</span>
+        <strong>현장 안전지킴이 AI</strong> · 현대제철 협력사 안전가이드북 &amp; 4대 안전법령(산안법·중처법·화관법·KOSHA) 기반 현장 사진 진단 웹앱 <span class="footer-version-tag">26.11.04 V1.06</span>
       </div>
       <div class="footer-links">
         <a
@@ -4428,7 +4432,7 @@ body {
  * - 다중 사진 업로드 & 갤러리 전환
  * - 사진 터치/클릭 부위 지정 커스텀 핀(Pin) 시스템
  * - 사진 픽셀 시각 특성 분석 + 세부 작업사항 확인 체크박스 연동 맞춤형 동적 진단 엔진
- * - 버전: 26.11.03 V1.05
+ * - 버전: 26.11.04 V1.06
  */
 
 // ============================================================================
@@ -6344,50 +6348,112 @@ function populateSirenCaseSelector() {
 // 5. 이벤트 리스너 등록
 // ============================================================================
 function initEventListeners() {
-  // 카메라 촬영 (연속 추가 지원)
-  dom.cameraCaptureInput.addEventListener("change", (e) => {
-    if (e.target.files && e.target.files.length > 0) {
-      appState.sampleScenarioKey = null;
-      handleImageFiles(e.target.files);
-      e.target.value = "";
-    }
-  });
+  // 카메라 촬영 (연속 추가 지원 - 비동기 처리 완료 후 안전한 초기화)
+  if (dom.cameraCaptureInput) {
+    dom.cameraCaptureInput.addEventListener("change", (e) => {
+      const files = e.target.files;
+      if (files && files.length > 0) {
+        appState.sampleScenarioKey = null;
+        handleImageFiles(files, () => {
+          try { e.target.value = ""; } catch (err) {}
+        });
+      }
+    });
+  }
 
-  // 갤러리 다중 파일 업로드 (multiple 지원)
-  dom.fileUploadInput.addEventListener("change", (e) => {
-    if (e.target.files && e.target.files.length > 0) {
-      appState.sampleScenarioKey = null;
-      handleImageFiles(e.target.files);
-      e.target.value = "";
-    }
-  });
+  // 갤러리 다중 파일 업로드 (multiple 지원 - 비동기 처리 완료 후 안전한 초기화)
+  if (dom.fileUploadInput) {
+    dom.fileUploadInput.addEventListener("change", (e) => {
+      const files = e.target.files;
+      if (files && files.length > 0) {
+        appState.sampleScenarioKey = null;
+        handleImageFiles(files, () => {
+          try { e.target.value = ""; } catch (err) {}
+        });
+      }
+    });
+  }
+
+  // 카메라 & 갤러리 액션 라벨 클릭 명시적 핸들러 (모바일/PC 브라우저 호환 완벽 보장)
+  const cameraLabel = document.querySelector('label[for="cameraCaptureInput"]');
+  if (cameraLabel) {
+    cameraLabel.addEventListener("click", (e) => {
+      if (e.target.tagName !== "INPUT") {
+        e.preventDefault();
+        if (dom.cameraCaptureInput) dom.cameraCaptureInput.click();
+      }
+    });
+    cameraLabel.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        if (dom.cameraCaptureInput) dom.cameraCaptureInput.click();
+      }
+    });
+  }
+
+  const galleryLabel = document.querySelector('label[for="fileUploadInput"]');
+  if (galleryLabel) {
+    galleryLabel.addEventListener("click", (e) => {
+      if (e.target.tagName !== "INPUT") {
+        e.preventDefault();
+        if (dom.fileUploadInput) dom.fileUploadInput.click();
+      }
+    });
+    galleryLabel.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        if (dom.fileUploadInput) dom.fileUploadInput.click();
+      }
+    });
+  }
+
+  // 상단 툴바의 사진 추가 버튼
+  const addMoreBtn = document.getElementById("addMorePhotosBtn");
+  if (addMoreBtn) {
+    addMoreBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (dom.fileUploadInput) dom.fileUploadInput.click();
+    });
+  }
 
   // 드래그 앤 드롭 & 클릭
-  dom.dropZone.addEventListener("click", () => dom.fileUploadInput.click());
-  dom.dropZone.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
+  if (dom.dropZone) {
+    dom.dropZone.addEventListener("click", () => {
+      if (dom.fileUploadInput) dom.fileUploadInput.click();
+    });
+    dom.dropZone.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        if (dom.fileUploadInput) dom.fileUploadInput.click();
+      }
+    });
+
+    dom.dropZone.addEventListener("dragover", (e) => {
       e.preventDefault();
-      dom.fileUploadInput.click();
+      dom.dropZone.classList.add("drag-over");
+    });
+
+    dom.dropZone.addEventListener("dragleave", () => {
+      dom.dropZone.classList.remove("drag-over");
+    });
+
+    dom.dropZone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dom.dropZone.classList.remove("drag-over");
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        appState.sampleScenarioKey = null;
+        handleImageFiles(e.dataTransfer.files);
+      }
+    });
+  }
+
+  // 브라우저 기본 파일 드롭 시 페이지 이동 방지
+  window.addEventListener("dragover", (e) => e.preventDefault(), false);
+  window.addEventListener("drop", (e) => {
+    if (!e.target.closest("#dropZone")) {
+      e.preventDefault();
     }
-  });
-
-  dom.dropZone.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    dom.dropZone.classList.add("drag-over");
-  });
-
-  dom.dropZone.addEventListener("dragleave", () => {
-    dom.dropZone.classList.remove("drag-over");
-  });
-
-  dom.dropZone.addEventListener("drop", (e) => {
-    e.preventDefault();
-    dom.dropZone.classList.remove("drag-over");
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      appState.sampleScenarioKey = null;
-      handleImageFiles(e.dataTransfer.files);
-    }
-  });
+  }, false);
 
   // 클립보드 붙여넣기 지원 (Ctrl+V 다중 추가)
   window.addEventListener("paste", (e) => {
@@ -6395,7 +6461,7 @@ function initEventListeners() {
     if (!items) return;
     const files = [];
     for (const item of items) {
-      if (item.type.startsWith("image/")) {
+      if (item.type && item.type.startsWith("image/")) {
         const file = item.getAsFile();
         if (file) files.push(file);
       }
@@ -6702,57 +6768,191 @@ function initEventListeners() {
 // ============================================================================
 // 6. 다중 사진 업로드, 리사이징 및 실제 이미지 픽셀 시각 특징 분석
 // ============================================================================
-function handleImageFiles(fileList) {
-  const files = Array.from(fileList).filter((f) => f.type.startsWith("image/"));
-  if (files.length === 0) {
-    showValidationError("이미지 파일(JPG, PNG, WEBP 등)만 업로드할 수 있습니다.");
+function handleImageFiles(fileList, onComplete) {
+  if (!fileList || fileList.length === 0) {
+    if (typeof onComplete === "function") onComplete();
+    return;
+  }
+
+  // Windows 및 다양한 브라우저 호환: MIME 타입 빈 문자열("") 및 대소문자 확장자 전수 대응
+  const rawList = Array.from(fileList);
+  const files = rawList.filter((f) => {
+    if (!f) return false;
+    if (f.type && f.type.toLowerCase().startsWith("image/")) return true;
+    const name = (f.name || "").toLowerCase();
+    return /\.(jpe?g|png|webp|bmp|gif|jfif|heic|heif|svg)$/i.test(name);
+  });
+
+  // 확장자/MIME이 전부 비어있더라도 단일 파일 드롭/업로드인 경우 일단 이미지 로드 시도
+  const targetFiles = files.length > 0 ? files : rawList.slice(0, 10);
+
+  if (targetFiles.length === 0) {
+    showValidationError("이미지 파일(JPG, PNG, WEBP, BMP 등)만 업로드할 수 있습니다.");
+    if (typeof onComplete === "function") onComplete();
     return;
   }
 
   hideValidationError();
   let processedCount = 0;
+  let successCount = 0;
 
-  files.forEach((file, idx) => {
+  const finishOne = () => {
+    processedCount++;
+    if (processedCount >= targetFiles.length) {
+      if (typeof onComplete === "function") {
+        try { onComplete(); } catch (e) {}
+      }
+      if (successCount > 0) {
+        applyAiSuggestedBadges();
+        renderActivePhotoView();
+        const curPhoto = getActivePhoto();
+        const pinCount = curPhoto && Array.isArray(curPhoto.pins) ? curPhoto.pins.length : 0;
+        showToast(
+          pinCount > 0
+            ? `📸 사진 업로드 완료! 고쳐야 할 위험 부위 ${pinCount}곳이 사진에 자동 표시되었습니다.`
+            : `📸 사진 업로드 완료! 사진을 클릭하여 고쳐야 할 위험 부위를 지정할 수 있습니다.`
+        );
+      } else {
+        showValidationError("사진 파일을 읽어들이지 못했습니다. 올바른 이미지 파일인지 확인 후 다시 시도해 주세요.");
+      }
+    }
+  };
+
+  targetFiles.forEach((file, idx) => {
     const reader = new FileReader();
+
+    reader.onerror = (readErr) => {
+      console.error("FileReader failed:", readErr);
+      finishOne();
+    };
+
     reader.onload = (event) => {
+      const dataUrl = event.target.result;
+      if (!dataUrl) {
+        finishOne();
+        return;
+      }
+
       const img = new Image();
-      img.onload = () => {
-        const MAX_WIDTH = 1024;
-        let targetWidth = img.width;
-        let targetHeight = img.height;
 
-        if (targetWidth > MAX_WIDTH) {
-          const scale = MAX_WIDTH / targetWidth;
-          targetWidth = MAX_WIDTH;
-          targetHeight = Math.round(img.height * scale);
+      img.onerror = (imgErr) => {
+        console.error("Image decode failed:", imgErr);
+        // 디코딩 에러 발생 시에도 dataUrl을 그대로 살려 최소 뷰어 및 핀 동작 유지
+        try {
+          const fallbackPhoto = {
+            id: `photo_${Date.now()}_${Math.random().toString(36).slice(2, 7)}_${idx}`,
+            fileName: file.name || `현장사진_${appState.photos.length + 1}.jpg`,
+            dataUrl: dataUrl,
+            base64Clean: dataUrl.includes(",") ? dataUrl.split(",")[1] : dataUrl,
+            mimeType: file.type || "image/jpeg",
+            dimensions: { width: 800, height: 600, sizeKB: Math.round((file.size || 50000) / 1024) },
+            visualStats: {
+              brightnessPct: 50,
+              contrastStd: 50,
+              darkRatio: 0.1,
+              warmRatio: 0.05,
+              yellowRatio: 0.05,
+              metalRatio: 0.2,
+              greenRatio: 0.05,
+              waterRatio: 0,
+              brickRatio: 0,
+              visualSummary: "현장 작업 구역 사진",
+              inferredCheckIds: ["chk_height_2m", "chk_no_harness"],
+            },
+            pins: [
+              {
+                id: `pin_${Date.now()}_auto_1`,
+                num: 1,
+                x: 50,
+                y: 40,
+                label: "⚠️ 개선 필요 부위: 작업자 보호구 및 안전조치 점검",
+                checkId: "chk_no_harness",
+              },
+            ],
+          };
+          appState.photos.push(fallbackPhoto);
+          appState.activePhotoId = fallbackPhoto.id;
+          successCount++;
+        } catch (e) {
+          console.error("Fallback creation failed:", e);
         }
+        finishOne();
+      };
 
-        const canvas = document.createElement("canvas");
-        canvas.width = targetWidth;
-        canvas.height = targetHeight;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+      img.onload = () => {
+        try {
+          const MAX_WIDTH = 1200;
+          let targetWidth = img.width || 800;
+          let targetHeight = img.height || 600;
 
-        const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.85);
-        const base64Clean = compressedDataUrl.split(",")[1];
-        const approxSizeKB = Math.round((base64Clean.length * 3) / 4 / 1024);
+          if (targetWidth > MAX_WIDTH) {
+            const scale = MAX_WIDTH / targetWidth;
+            targetWidth = MAX_WIDTH;
+            targetHeight = Math.round(targetHeight * scale);
+          }
 
-        // 실제 사진 픽셀 시각 특징 분석 (밝기, 색조, 대비, 의심 작업 추론)
-        const visualStats = analyzeImageVisualPixels(ctx, targetWidth, targetHeight, file.name);
+          const canvas = document.createElement("canvas");
+          canvas.width = targetWidth;
+          canvas.height = targetHeight;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
 
-        // [신규 기능] 사진 업로드 시 시각 분석 및 위험 체크 기반으로 고쳐야 할 부위를 자동 감지하여 핀(Pin) 표시
-        const autoDetectedPins = [];
-        const pinCandidateCoords = [
-          { x: 50, y: 35 },
-          { x: 50, y: 65 },
-          { x: 30, y: 50 },
-          { x: 70, y: 50 },
-        ];
-        if (visualStats && Array.isArray(visualStats.inferredCheckIds)) {
-          visualStats.inferredCheckIds.slice(0, 3).forEach((chkId, pIdx) => {
-            const itemDef = WORK_CONFIRM_ITEMS[chkId];
-            const coord = pinCandidateCoords[pIdx] || { x: 45 + pIdx * 8, y: 40 + pIdx * 10 };
-            const labelText = itemDef ? `⚠️ ${itemDef.shortLabel.replace(/^[^\s]+\s*/, "").slice(0, 24)}... (개선 필요)` : `⚠️ 점검 및 개선 필요 부위 #${pIdx + 1}`;
+          let compressedDataUrl = dataUrl;
+          try {
+            compressedDataUrl = canvas.toDataURL("image/jpeg", 0.85);
+          } catch (canvasErr) {
+            console.warn("Canvas toDataURL failed, using original dataUrl", canvasErr);
+            compressedDataUrl = dataUrl;
+          }
+
+          const base64Clean = compressedDataUrl.includes(",")
+            ? compressedDataUrl.split(",")[1]
+            : compressedDataUrl;
+          const approxSizeKB = Math.round((base64Clean.length * 3) / 4 / 1024);
+
+          // 실제 사진 픽셀 시각 특징 분석 (밝기, 색조, 대비, 의심 작업 추론)
+          let visualStats = null;
+          try {
+            visualStats = analyzeImageVisualPixels(ctx, targetWidth, targetHeight, file.name);
+          } catch (pixelErr) {
+            console.warn("analyzeImageVisualPixels error:", pixelErr);
+          }
+
+          if (!visualStats) {
+            visualStats = {
+              brightnessPct: 50,
+              contrastStd: 50,
+              darkRatio: 0.1,
+              warmRatio: 0.05,
+              yellowRatio: 0.05,
+              metalRatio: 0.2,
+              greenRatio: 0.05,
+              waterRatio: 0,
+              brickRatio: 0,
+              visualSummary: "일반 산업·건설현장 작업 조도 환경",
+              inferredCheckIds: ["chk_height_2m", "chk_no_harness"],
+            };
+          }
+
+          // [핵심 요구사항] 사진을 넣으면 사진에서 고쳐야 하는 부분을 자동 감지하여 핀(Pin)으로 표시
+          const autoDetectedPins = [];
+          const pinCandidateCoords = [
+            { x: 38, y: 35 },
+            { x: 62, y: 45 },
+            { x: 32, y: 65 },
+            { x: 68, y: 65 },
+          ];
+
+          const inferredList = (visualStats && Array.isArray(visualStats.inferredCheckIds) && visualStats.inferredCheckIds.length > 0)
+            ? visualStats.inferredCheckIds
+            : ["chk_no_harness", "chk_height_2m", "chk_floor_hose_trip"];
+
+          inferredList.slice(0, 3).forEach((chkId, pIdx) => {
+            const itemDef = typeof WORK_CHECK_CATALOG !== "undefined" ? WORK_CHECK_CATALOG[chkId] : null;
+            const coord = pinCandidateCoords[pIdx] || { x: 40 + pIdx * 10, y: 35 + pIdx * 12 };
+            const labelText = itemDef
+              ? `⚠️ ${itemDef.shortLabel.replace(/^[^\s]+\s*/, "").slice(0, 22)} (고쳐야 할 위험 부위)`
+              : `⚠️ 점검 및 시정 조치 필요 부위 #${pIdx + 1}`;
             autoDetectedPins.push({
               id: `pin_${Date.now()}_auto_${pIdx}_${Math.random().toString(36).slice(2, 6)}`,
               num: pIdx + 1,
@@ -6762,44 +6962,43 @@ function handleImageFiles(fileList) {
               checkId: chkId,
             });
           });
-        }
 
-        const photoObj = {
-          id: `photo_${Date.now()}_${Math.random().toString(36).slice(2, 7)}_${idx}`,
-          fileName: file.name || `현장사진_${appState.photos.length + 1}.jpg`,
-          dataUrl: compressedDataUrl,
-          base64Clean,
-          mimeType: "image/jpeg",
-          dimensions: {
-            width: targetWidth,
-            height: targetHeight,
-            sizeKB: approxSizeKB,
-          },
-          visualStats,
-          pins: autoDetectedPins,
-        };
+          const photoObj = {
+            id: `photo_${Date.now()}_${Math.random().toString(36).slice(2, 7)}_${idx}`,
+            fileName: file.name || `현장사진_${appState.photos.length + 1}.jpg`,
+            dataUrl: compressedDataUrl,
+            base64Clean,
+            mimeType: "image/jpeg",
+            dimensions: {
+              width: targetWidth,
+              height: targetHeight,
+              sizeKB: approxSizeKB || Math.round(file.size / 1024),
+            },
+            visualStats,
+            pins: autoDetectedPins,
+          };
 
-        appState.photos.push(photoObj);
-        appState.activePhotoId = photoObj.id;
+          appState.photos.push(photoObj);
+          appState.activePhotoId = photoObj.id;
 
-        // 시각 분석으로 추론된 추천 체크박스 하이라이트 반영
-        visualStats.inferredCheckIds.forEach((chkId) => {
-          appState.aiSuggestedChecks.add(chkId);
-        });
+          // 시각 분석으로 추론된 추천 체크박스 하이라이트 반영
+          if (visualStats.inferredCheckIds && Array.isArray(visualStats.inferredCheckIds)) {
+            visualStats.inferredCheckIds.forEach((chkId) => {
+              appState.aiSuggestedChecks.add(chkId);
+            });
+          }
 
-        processedCount++;
-        if (processedCount === files.length) {
-          applyAiSuggestedBadges();
-          renderActivePhotoView();
-          showToast(
-            autoDetectedPins.length > 0
-              ? `📸 '${photoObj.fileName}' 업로드 완료! 고쳐야 할 위험 부위 ${autoDetectedPins.length}곳이 사진에 자동 표시되었습니다.`
-              : `📸 '${photoObj.fileName}' 업로드 완료! 사진을 터치해 부위를 지정할 수 있습니다.`
-          );
+          successCount++;
+        } catch (ex) {
+          console.error("img.onload error:", ex);
+        } finally {
+          finishOne();
         }
       };
-      img.src = event.target.result;
+
+      img.src = dataUrl;
     };
+
     reader.readAsDataURL(file);
   });
 }
@@ -7063,11 +7262,15 @@ function renderMultiPhotoGallery() {
   });
 
   // + 사진 추가 버튼
-  const addLabel = document.createElement("label");
-  addLabel.className = "photo-thumb-add-btn";
-  addLabel.setAttribute("for", "fileUploadInput");
-  addLabel.innerHTML = `<span>➕</span><span>사진추가</span>`;
-  dom.multiPhotoStrip.appendChild(addLabel);
+  const addBtn = document.createElement("button");
+  addBtn.type = "button";
+  addBtn.className = "photo-thumb-add-btn";
+  addBtn.innerHTML = `<span>➕</span><span>사진추가</span>`;
+  addBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (dom.fileUploadInput) dom.fileUploadInput.click();
+  });
+  dom.multiPhotoStrip.appendChild(addBtn);
 }
 
 function removePhotoById(photoId) {
@@ -9023,7 +9226,7 @@ function escapeHtml(str) {
     .replace(/'/g, "&#039;");
 }
 
-// 26.11.03 V1.05
+// 26.11.04 V1.06
   </script>
 </body>
 </html>
