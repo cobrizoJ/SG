@@ -3474,24 +3474,97 @@ body {
   margin-right: 4px;
 }
 
-/* 프리뷰 핀과 결과 이미지 핀의 원 중심을 (x%, y%)에 100% 일치 */
+/* 프리뷰 핀과 결과 이미지 핀: 위험부위를 가리지 않는 투명 사각 범위 박스(x%, y%, w%, h%) 100% 일치 */
+.preview-image-stage {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: crosshair;
+}
+
+.preview-image-stage img {
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
 .photo-pin-marker {
-  width: 26px;
-  height: 26px;
+  position: absolute;
+  width: 14%;
+  height: 14%;
+  min-width: 24px;
+  min-height: 24px;
   display: block;
+  border: 2px solid #EF4444;
+  background: rgba(239, 68, 68, 0.06);
+  border-radius: 5px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.65), inset 0 0 0 1px rgba(239, 68, 68, 0.25);
+  transform: translate(-50%, -50%);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.photo-pin-marker:active {
+  cursor: grabbing;
+}
+
+.photo-pin-marker.active {
+  border: 2px dashed #FDE047;
+  background: rgba(255, 107, 0, 0.08);
+  box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.45);
+  z-index: 28;
 }
 
 .photo-pin-marker .pin-marker-circle {
-  width: 26px;
-  height: 26px;
+  position: absolute;
+  top: -10px;
+  left: -2px;
+  width: 18px;
+  height: 18px;
+  font-size: 0.64rem;
+  border-width: 1.5px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.65);
+  transform: none !important;
+  z-index: 2;
 }
 
 .photo-pin-marker .pin-marker-tag {
   position: absolute;
-  top: calc(100% + 3px);
-  left: 50%;
-  transform: translateX(-50%);
+  top: -10px;
+  left: 18px;
+  transform: none;
   margin-top: 0;
+  font-size: 0.6rem;
+  padding: 1px 5px;
+  max-width: 130px;
+  line-height: 1.25;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.pin-resize-handle {
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
+  width: 13px;
+  height: 13px;
+  background: #FDE047;
+  border: 2px solid #0F172A;
+  border-radius: 3px;
+  cursor: nwse-resize;
+  z-index: 30;
+  touch-action: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.pin-drag-selection-box {
+  position: absolute;
+  border: 2px dashed #38BDF8;
+  background: rgba(56, 189, 248, 0.16);
+  border-radius: 5px;
+  pointer-events: none;
+  z-index: 35;
 }
 
 .analyzed-annotated-list {
@@ -3545,61 +3618,77 @@ body {
 
 .report-img-marker {
   position: absolute;
-  width: 28px;
-  height: 28px;
+  width: 14%;
+  height: 14%;
+  min-width: 24px;
+  min-height: 24px;
+  border: 2px solid #DC2626;
+  background: rgba(220, 38, 38, 0.06);
+  border-radius: 5px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.65), inset 0 0 0 1px rgba(220, 38, 38, 0.25);
   transform: translate(-50%, -50%);
   pointer-events: auto;
   cursor: pointer;
   z-index: 6;
-  transition: transform 0.2s ease, filter 0.2s ease;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
 
 .report-img-marker:hover {
-  transform: translate(-50%, -50%) scale(1.1);
+  transform: translate(-50%, -50%) scale(1.03);
   z-index: 10;
 }
 
 .report-marker-dot {
-  width: 28px;
-  height: 28px;
+  position: absolute;
+  top: -10px;
+  left: -2px;
+  width: 18px;
+  height: 18px;
   border-radius: 999px;
   background: #DC2626;
   color: #FFFFFF;
-  font-size: 0.78rem;
+  font-size: 0.64rem;
   font-weight: 900;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2.5px solid #FFFFFF;
-  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.38), 0 4px 10px rgba(0, 0, 0, 0.45);
+  border: 1.5px solid #FFFFFF;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.65);
   transition: all 0.22s ease;
   line-height: 1;
 }
 
 .report-marker-caption {
   position: absolute;
-  top: calc(100% + 3px);
-  left: 50%;
-  transform: translateX(-50%);
+  top: -10px;
+  left: 18px;
+  transform: none;
   background: rgba(220, 38, 38, 0.94);
   color: #FFFFFF;
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   font-weight: 800;
-  padding: 2px 7px;
-  border-radius: 5px;
+  padding: 1px 5px;
+  border-radius: 4px;
   border: 1px solid rgba(255, 255, 255, 0.75);
-  max-width: 170px;
+  max-width: 135px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
   transition: all 0.22s ease;
-  line-height: 1.3;
+  line-height: 1.25;
+  pointer-events: none;
+}
+
+.report-img-marker.is-green {
+  border-color: #16A34A;
+  background: rgba(22, 163, 74, 0.08);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.65), inset 0 0 0 1px rgba(22, 163, 74, 0.25);
 }
 
 .report-img-marker.is-green .report-marker-dot {
   background: #16A34A;
-  box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.38), 0 4px 10px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
 }
 
 .report-img-marker.is-green .report-marker-caption {
@@ -3641,9 +3730,14 @@ body {
 }
 
 /* 미리보기 이미지 핀도 조치 완료 시 초록색 전환 */
+.photo-pin-marker.resolved {
+  border-color: #16A34A !important;
+  background: rgba(22, 163, 74, 0.08) !important;
+}
+
 .photo-pin-marker.resolved .pin-marker-circle {
   background: #16A34A !important;
-  box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.38), 0 3px 8px rgba(0, 0, 0, 0.4) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) !important;
 }
 
 .photo-pin-marker.resolved .pin-marker-tag {
@@ -3735,6 +3829,314 @@ body {
   background: #F1F5F9;
 }
 
+/* =========================================================
+   V1.09: 모바일 빈공간 대폭 축소 · 압축형 UI · 태그 하단 인라인 세부작업사항
+   ========================================================= */
+.main-container {
+  padding-top: 6px;
+  padding-bottom: 16px;
+}
+
+.workspace-grid {
+  gap: 10px;
+}
+
+.panel-header {
+  padding: 8px 12px;
+}
+
+.panel-title {
+  font-size: 0.96rem;
+}
+
+.section-step-badge {
+  font-size: 0.68rem;
+  padding: 2px 7px;
+}
+
+.btn-text-reset {
+  padding: 4px 8px;
+  font-size: 0.74rem;
+}
+
+.panel-body {
+  padding: 10px 12px;
+}
+
+.form-group {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+}
+
+.form-group:last-of-type {
+  margin-bottom: 8px;
+  padding-bottom: 2px;
+}
+
+.label-row {
+  margin-bottom: 5px;
+  gap: 4px;
+}
+
+.form-label {
+  font-size: 0.9rem;
+  gap: 6px;
+}
+
+.num-circle {
+  width: 20px;
+  height: 20px;
+  font-size: 0.74rem;
+}
+
+/* 1. 현장 사진 업로드: 카메라 & 이미지만 강조 + 갤러리 드롭 통합 */
+.camera-action-grid {
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 0;
+}
+
+.btn-camera-action {
+  min-height: 40px;
+  padding: 7px 10px;
+  gap: 7px;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+.btn-camera-action.drag-over {
+  border-color: var(--safety-orange);
+  background: #FFEDD5;
+  box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.25);
+}
+
+.cam-icon {
+  font-size: 1.25rem;
+}
+
+.cam-btn-text strong {
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.image-preview-container {
+  margin-top: 8px;
+}
+
+.multi-photo-toolbar {
+  padding: 6px 10px;
+}
+
+.multi-photo-header {
+  margin-bottom: 5px;
+}
+
+.preview-header-bar {
+  padding: 6px 10px;
+}
+
+.pin-instruction-bar {
+  padding: 4px 10px;
+  font-size: 0.72rem;
+}
+
+.visual-detect-bar {
+  padding: 4px 10px;
+  font-size: 0.7rem;
+}
+
+/* 핀 편집기: 예시 칩 제거 후 텍스트 입력만 한 줄 압축 */
+.pin-editor-panel {
+  padding: 7px 10px;
+}
+
+.pin-custom-input-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: nowrap;
+}
+
+.pin-custom-input {
+  min-width: 0;
+  flex: 1;
+  padding: 5px 8px;
+  font-size: 0.78rem;
+}
+
+.btn-pin-save,
+.btn-pin-delete {
+  padding: 5px 8px;
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.btn-pin-size {
+  padding: 5px 6px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #E2E8F0;
+  background: #334155;
+  border: 1px solid #64748B;
+  border-radius: 5px;
+  cursor: pointer;
+  white-space: nowrap;
+  line-height: 1.1;
+}
+
+.btn-pin-size:hover {
+  background: #475569;
+  border-color: #94A3B8;
+}
+
+.pins-summary-container {
+  padding: 6px 10px;
+}
+
+.pins-summary-header {
+  font-size: 0.7rem;
+  margin-bottom: 4px;
+}
+
+/* 2. 작업 유형 빠른 선택 태그: 높이 절반 축소 + 각 항목 바로 아래 인라인 세부 작업사항 표시 */
+.work-tags-grid {
+  display: flex !important;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.work-tag-accordion-item {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.work-tag-chip {
+  min-height: 26px;
+  padding: 4px 9px;
+  gap: 6px;
+  font-size: 0.81rem;
+  border-width: 1.5px;
+  border-radius: 6px;
+}
+
+.work-tag-chip.active {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.tag-emoji {
+  font-size: 0.92rem;
+}
+
+.tag-label {
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tag-check {
+  width: 15px;
+  height: 15px;
+  font-size: 0.62rem;
+  border-width: 1.5px;
+}
+
+.tag-inline-subchecks {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 3px 5px 4px 12px;
+  background: #F8FAFC;
+  border: 1.5px solid var(--safety-orange);
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+}
+
+.tag-inline-subchecks .confirm-check-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  padding: 2px 6px;
+  min-height: 21px;
+  border-radius: 4px;
+  border: 1px solid #E2E8F0;
+  background: #FFFFFF;
+  font-size: 0.74rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tag-inline-subchecks .confirm-check-label.checked {
+  background: #FFF3EB;
+  border-color: var(--safety-orange);
+  color: #7C2D12;
+  font-weight: 800;
+}
+
+.tag-inline-subchecks .confirm-check-input {
+  width: 13px;
+  height: 13px;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.tag-inline-subchecks .confirm-check-label > span {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 3. 작업 상황 설명 입력 & 진단 시작 버튼 여백 축소 */
+.situation-textarea {
+  min-height: 46px;
+  padding: 6px 9px;
+  font-size: 0.84rem;
+  line-height: 1.35;
+}
+
+.btn-voice-input {
+  padding: 3px 8px;
+  font-size: 0.74rem;
+}
+
+.submit-action-wrap {
+  margin-top: 2px;
+}
+
+.btn-start-diagnosis {
+  min-height: 44px;
+  font-size: 0.98rem;
+  border-radius: 8px;
+}
+
+.empty-report-state {
+  padding: 14px 12px;
+}
+
+.empty-icon-circle {
+  width: 44px;
+  height: 44px;
+  font-size: 1.3rem;
+  margin-bottom: 6px;
+}
+
+.empty-report-state h3 {
+  font-size: 0.92rem;
+  margin-bottom: 4px;
+}
+
+.empty-report-state p,
+.empty-check-pillars {
+  display: none;
+}
+
   </style>
 </head>
 <body>
@@ -3754,7 +4156,7 @@ body {
             <span class="hyundai-pill">HYUNDAI STEEL SAFETY</span>
             <span class="law-pill">4대 안전법령 · KOSHA 기준</span>
           </div>
-          <h1 class="brand-title">현장 안전지킴이 <span class="accent-orange">AI</span><span class="header-update-badge">26.11.09 V1.08</span></h1>
+          <h1 class="brand-title">현장 안전지킴이 <span class="accent-orange">AI</span><span class="header-update-badge">26.11.09 V1.09</span></h1>
           <p class="brand-subtitle">현대제철 협력사 안전가이드북 &amp; 산안법·중처법·화관법·KOSHA 비전 진단 시스템</p>
         </div>
       </div>
@@ -3805,11 +4207,11 @@ body {
         <div class="panel-header">
           <div class="panel-title-wrap">
             <span class="section-step-badge">STEP 1</span>
-            <h2 id="inputPanelTitle" class="panel-title">현장 안전 진단 정보 입력</h2>
+            <h2 id="inputPanelTitle" class="panel-title">현장 안전 진단 입력</h2>
           </div>
           <div style="display:flex;align-items:center;gap:6px;">
             <button type="button" id="toggleInputPanelBtn" class="btn-toggle-input-panel hidden" title="입력한 사진 및 작업조건 펼쳐보기/접기">
-              📂 사진·입력내용 펼쳐보기 ▼
+              📂 펼쳐보기 ▼
             </button>
             <button type="button" id="resetFormBtn" class="btn-text-reset" title="입력 초기화">
               🔄 초기화
@@ -3821,41 +4223,45 @@ body {
         <div id="collapsedInputSummaryBar" class="collapsed-input-summary-bar hidden">
           <span id="collapsedInputSummaryText">📸 업로드된 현장 사진 및 작업조건이 접혀 있습니다.</span>
           <button type="button" id="expandInputPanelBtn" class="btn-expand-input-bar">
-            📂 입력한 사진 · 핀 · 작업조건 다시 보고 수정하기 ▼
+            📂 펼쳐보기 및 수정 ▼
           </button>
         </div>
 
         <div class="panel-body" id="inputPanelBody">
-          <!-- 1. 현장 사진 업로드 (필수 · 다중 사진 & 부위 핀 지정 지원) -->
+          <!-- 1. 현장 사진 업로드 (카메라 & 갤러리/끌어놓기 압축형) -->
           <div class="form-group" id="photoUploadSection">
             <div class="label-row">
               <label class="form-label">
                 <span class="num-circle">1</span>
-                현장 사진 업로드 (여러 장 가능) <span class="required-badge">필수</span>
+                현장 사진 업로드 <span class="required-badge">필수</span>
               </label>
-              <span class="compression-hint">다중 사진 · 터치 부위 지정 지원</span>
             </div>
 
-            <!-- 카메라 즉시 촬영 & 갤러리 업로드 버튼 그리드 (모바일 퍼스트 큼직한 UI) -->
+            <!-- 카메라 & 이미지(갤러리·끌어놓기 통합) 압축 버튼 그리드 -->
             <div class="camera-action-grid">
               <label for="cameraCaptureInput" class="btn-camera-action primary-camera" role="button" tabindex="0">
                 <span class="cam-icon">📷</span>
                 <div class="cam-btn-text">
-                  <strong>카메라 연속 촬영 추가</strong>
-                  <span>현장 사진 찍어서 계속 추가</span>
+                  <strong>카메라</strong>
                 </div>
               </label>
 
-              <label for="fileUploadInput" class="btn-camera-action secondary-gallery" role="button" tabindex="0">
+              <label
+                for="fileUploadInput"
+                id="dropZone"
+                class="btn-camera-action secondary-gallery"
+                role="button"
+                tabindex="0"
+                title="클릭하여 이미지 선택 또는 파일을 이곳에 끌어놓기"
+              >
                 <span class="cam-icon">🖼️</span>
                 <div class="cam-btn-text">
-                  <strong>갤러리 다중 업로드</strong>
-                  <span>사진 여러 장 한꺼번에 선택</span>
+                  <strong>이미지 (갤러리·끌어놓기)</strong>
                 </div>
               </label>
             </div>
 
-            <!-- 파일 선택용 독립 숨김 input (브라우저 더블클릭 방지 및 모바일/PC 전 기종 안정성 보장) -->
+            <!-- 파일 선택용 독립 숨김 input -->
             <input
               type="file"
               id="cameraCaptureInput"
@@ -3873,62 +4279,14 @@ body {
               aria-hidden="true"
             />
 
-            <!-- 드래그 앤 드롭 존 (미업로드 상태) -->
-            <div
-              id="dropZone"
-              class="upload-dropzone"
-              tabindex="0"
-              role="button"
-              aria-label="현장 사진을 이곳에 끌어다 놓거나 클릭하여 여러 장 업로드하세요"
-            >
-              <div class="dropzone-content">
-                <div class="dropzone-illust" aria-hidden="true">🏗️📸</div>
-                <p class="dropzone-main-text">
-                  사진 파일(여러 장 가능)을 이곳에 <strong>끌어다 놓거나(Drag &amp; Drop)</strong> 클릭하세요
-                </p>
-                <p class="dropzone-sub-text">
-                  JPG, PNG, WEBP 다중 선택 지원 · 업로드 후 사진을 눌러 위험 부위를 직접 지정할 수 있습니다
-                </p>
-              </div>
-            </div>
-
-            <!-- 빠른 테스트용 현장 샘플 시나리오 제공 -->
-            <div class="sample-scenarios-bar">
-              <span class="sample-bar-label">🧪 현장 샘플 사진 추가 (여러 개 눌러 다중 사진·핀 테스트 가능):</span>
-              <div class="sample-btn-list">
-                <button type="button" class="btn-sample" data-sample="welding_height">
-                  🔥 배관 용접·고소작업
-                </button>
-                <button type="button" class="btn-sample" data-sample="ils_machinery">
-                  🔒 설비보수(ILS/LOTO)
-                </button>
-                <button type="button" class="btn-sample" data-sample="confined_chemical">
-                  🕳️ 밀폐공간·화학물질
-                </button>
-                <button type="button" class="btn-sample" data-sample="crane_safe">
-                  🚜 크레인 인양(양호 예시)
-                </button>
-              </div>
-            </div>
-
             <!-- 중대재해 사이렌 바 (화면 구성에서 숨김 처리) -->
             <div class="siren-learning-bar hidden" id="sirenLearningBar" style="display: none;">
               <div class="siren-bar-header">
-                <div class="siren-bar-title">
-                  <span>🚨 26년 9월 중대재해 사이렌(제조·기타·건설 20건) 4단계 비교·학습 진단</span>
-                  <span class="siren-bar-badge">고용노동부 공개자료 20건 학습완료</span>
-                </div>
-                <button type="button" id="openSirenModalBtn" class="btn-siren-modal-open">
-                  📚 20건 전수 비교·보완 내역 보기
-                </button>
+                <button type="button" id="openSirenModalBtn" class="btn-siren-modal-open">📚 학습 내역</button>
               </div>
               <div class="siren-select-row">
-                <select id="sirenCaseSelect" class="siren-case-select" aria-label="26년 9월 중대재해 사이렌 학습 사례 선택">
-                  <option value="">-- 26년 9월 중대재해 사이렌 사례 선택 (제조 3건 / 기타 4건 / 건설 13건) --</option>
-                </select>
-                <button type="button" id="loadSirenCaseBtn" class="btn-siren-load">
-                  🔬 선택 사례 로드 &amp; 4단계 비교진단
-                </button>
+                <select id="sirenCaseSelect" class="siren-case-select"></select>
+                <button type="button" id="loadSirenCaseBtn" class="btn-siren-load">로드</button>
               </div>
             </div>
 
@@ -3938,22 +4296,16 @@ body {
               <div class="multi-photo-toolbar">
                 <div class="multi-photo-header">
                   <div class="multi-photo-count">
-                    <span id="multiPhotoCountText">📸 총 1장 업로드됨</span>
-                    <span id="totalPinCountBadge" class="pin-total-pill">📍 지정 부위 0곳</span>
+                    <span id="multiPhotoCountText">📸 1장</span>
+                    <span id="totalPinCountBadge" class="pin-total-pill">📍 핀 0곳</span>
                   </div>
                   <div class="preview-actions">
-                    <button type="button" id="addMorePhotosBtn" class="btn-preview-ctrl">➕ 사진 추가</button>
-                    <button type="button" id="removeCurrentImageBtn" class="btn-preview-ctrl">
-                      현재 사진 삭제
-                    </button>
-                    <button type="button" id="removeImageBtn" class="btn-preview-ctrl danger">
-                      🗑️ 전체 삭제
-                    </button>
+                    <button type="button" id="addMorePhotosBtn" class="btn-preview-ctrl">➕ 추가</button>
+                    <button type="button" id="removeCurrentImageBtn" class="btn-preview-ctrl">삭제</button>
+                    <button type="button" id="removeImageBtn" class="btn-preview-ctrl danger">🗑️ 전체삭제</button>
                   </div>
                 </div>
-                <div id="multiPhotoStrip" class="multi-photo-strip">
-                  <!-- 동적 썸네일 카드 리스트 렌더링 -->
-                </div>
+                <div id="multiPhotoStrip" class="multi-photo-strip"></div>
               </div>
 
               <!-- 현재 선택된 사진 메타 정보 바 -->
@@ -3961,24 +4313,22 @@ body {
                 <div class="preview-meta">
                   <span class="preview-status-dot"></span>
                   <span id="previewFileName" class="preview-filename">현장사진.jpg</span>
-                  <span id="previewResolutionBadge" class="preview-res-badge">1024px 최적화 완료</span>
+                  <span id="previewResolutionBadge" class="preview-res-badge">최적화됨</span>
                 </div>
                 <button type="button" id="clearCurrentPinsBtn" class="btn-clear-pins">
-                  📍 이 사진 핀 초기화
+                  📍 핀 초기화
                 </button>
               </div>
 
-              <!-- 사진 터치 부위 지정 안내 배너 -->
+              <!-- 사진 드래그 사각 범위 지정 안내 배너 -->
               <div class="pin-instruction-bar">
-                <span>👆 <strong>사진 위 원하는 곳을 터치(클릭)</strong>하여 해당 부분이 무엇인지 직접 지정하세요!</span>
+                <span>👆 위험부위를 드래그하여 사각 범위 지정 (핀 드래그 이동 · 크기 조절 가능)</span>
               </div>
 
               <div class="preview-image-frame">
                 <div class="preview-image-stage" id="previewImageStage">
-                  <img id="imagePreviewEl" src="" alt="업로드된 현장 사진 미리보기 (클릭하여 부위 지정)" />
-                  <!-- 사진 위 핀 마커 오버레이 -->
+                  <img id="imagePreviewEl" src="" draggable="false" alt="업로드된 현장 사진 미리보기 (클릭/드래그하여 부위 지정)" />
                   <div id="photoPinOverlay" class="photo-pin-overlay"></div>
-                  <!-- 분석 중 스캐너 오버레이 -->
                   <div id="scannerOverlay" class="scanner-overlay hidden" aria-hidden="true">
                     <div class="scanner-line"></div>
                     <div class="scanner-grid-effect"></div>
@@ -3989,330 +4339,219 @@ body {
 
               <!-- 사진 시각 특성 자동 감지 바 -->
               <div id="visualDetectBar" class="visual-detect-bar">
-                <span>🔍 <strong>사진 시각 분석:</strong> <span id="visualDetectText">사진 밝기·색조·구조물 특성을 분석 중입니다...</span></span>
+                <span>🔍 <span id="visualDetectText">사진 분석 완료</span></span>
               </div>
 
-              <!-- 핀 커스텀 지정 편집 패널 (핀 클릭 또는 사진 터치 시 활성화) -->
+              <!-- 핀 직접 텍스트 입력 및 크기 조절 패널 -->
               <div id="pinEditorPanel" class="pin-editor-panel hidden">
-                <div class="pin-editor-top">
-                  <div class="pin-editor-title">
-                    <span id="pinEditorNumBadge" class="pin-editor-num-badge">📍 핀 #1</span>
-                    <span>방금 누른 사진 부위가 무엇인지 선택하거나 직접 입력하세요:</span>
-                  </div>
-                  <button type="button" id="closePinEditorBtn" class="btn-clear-confirm-checks">닫기 ✕</button>
-                </div>
-
-                <!-- 빠른 부위/위험 카테고리 선택 칩 (16종: 중대재해 사이렌 20건 학습 반영) -->
-                <div class="pin-preset-chips" id="pinPresetChips">
-                  <button type="button" class="btn-pin-preset" data-preset="👷 작업자 보호구(안전모 턱끈·안전대) 미비" data-check="chk_no_harness">
-                    👷 작업자/보호구 미비
-                  </button>
-                  <button type="button" class="btn-pin-preset" data-preset="🔥 용접·화기·산소절단 불티 및 유증기 폭발 위험 부위" data-check="chk_hotwork_spark">
-                    🔥 용접/산소절단/불티 부위
-                  </button>
-                  <button type="button" class="btn-pin-preset" data-preset="🧱 보온재·단열재·유증기·기름 등 인화성/가연성 물질 노출" data-check="chk_flammable_insulation">
-                    🧱 보온재/유증기/가연물
-                  </button>
-                  <button type="button" class="btn-pin-preset" data-preset="🪜 비계·사다리·안전난간(난간 밖 상체 내밀기)·천장 개구부 위험" data-check="chk_no_guardrail">
-                    🪜 비계/난간/천장개구부
-                  </button>
-                  <button type="button" class="btn-pin-preset" data-preset="🏠 지붕·채광창(썬라이트) 견고한 덮개·발판·추락방호망 미비" data-check="chk_roof_skylight">
-                    🏠 지붕/채광창(썬라이트)
-                  </button>
-                  <button type="button" class="btn-pin-preset" data-preset="🚡 고소작업대(난간 밖 내밀기·과상승) 및 달비계(독립 구명줄·로프 마모)" data-check="chk_aerial_rope">
-                    🚡 고소작업대/달비계 로프
-                  </button>
-                  <button type="button" class="btn-pin-preset" data-preset="⚙️ 컨베이어·롤러·구동부 회전체 방호덮개 개방" data-check="chk_open_cover">
-                    ⚙️ 회전체/구동부 개방
-                  </button>
-                  <button type="button" class="btn-pin-preset" data-preset="🔒 전원 차단기·밸브 ILS(LOTO) 잠금 미체결" data-check="chk_no_ils_loto">
-                    🔒 전원/밸브 ILS 미체결
-                  </button>
-                  <button type="button" class="btn-pin-preset" data-preset="🔧 유압·자중 하강 설비(실린더·덤프적재함·성형기) 안전블록/지지대 미설치" data-check="chk_hydraulic_support">
-                    🔧 유압설비 안전블록 미비
-                  </button>
-                  <button type="button" class="btn-pin-preset" data-preset="🧪 유해화학물질 배관·플랜지·가스용기" data-check="chk_chemical_pipe">
-                    🧪 화학배관/플랜지/가스용기
-                  </button>
-                  <button type="button" class="btn-pin-preset" data-preset="🕳️ 피트(Pit)·맨홀 밀폐공간 출입구 (환기/가스측정 필요)" data-check="chk_confined_entry">
-                    🕳️ 밀폐공간(피트/맨홀)
-                  </button>
-                  <button type="button" class="btn-pin-preset" data-preset="🚜 크레인 인양물·줄걸이·하부 출입통제 구역" data-check="chk_crane_lifting">
-                    🚜 크레인/인양물/줄걸이
-                  </button>
-                  <button type="button" class="btn-pin-preset" data-preset="🚜 지게차(좌석안전띠·고소작업대 지지금지)·사내 교차로·롤러기·경사로 고임목" data-check="chk_vehicle_forklift">
-                    🚜 지게차/교차로/경사로차량
-                  </button>
-                  <button type="button" class="btn-pin-preset" data-preset="🧱 노후 벽체·구조물 해체/철거 무너짐 위험 (전도방지 지지대 미비)" data-check="chk_wall_demolition">
-                    🧱 벽체 해체/붕괴 위험
-                  </button>
-                  <button type="button" class="btn-pin-preset" data-preset="🤿 수중·잠수작업 (감시인·비상기체통·신호밧줄·수중시계/압력계)" data-check="chk_diving_water">
-                    🤿 해상/수중 잠수작업
-                  </button>
-                  <button type="button" class="btn-pin-preset" data-preset="📦 바닥 호스·전선·자재 방치 (걸림/전도 위험)" data-check="chk_floor_hose_trip">
-                    📦 바닥 호스/전선/장애물
-                  </button>
-                </div>
-
-                <!-- 커스텀 직접 입력 -->
                 <div class="pin-custom-input-row">
+                  <span id="pinEditorNumBadge" class="pin-editor-num-badge">📍 핀 #1</span>
                   <input
                     type="text"
                     id="pinCustomInput"
                     class="pin-custom-input"
-                    placeholder="지적 부위 내용을 직접 입력하세요"
+                    placeholder="핀 지적 내용을 직접 입력하세요"
                   />
-                  <button type="button" id="savePinBtn" class="btn-pin-save">
-                    ✅ 부위 지정 저장
-                  </button>
-                  <button type="button" id="deleteActivePinBtn" class="btn-pin-delete">
-                    🗑️ 핀 삭제
-                  </button>
+                  <button type="button" id="pinSizeSmallerBtn" class="btn-pin-size" title="핀 범위 작게 줄이기">작게-</button>
+                  <button type="button" id="pinSizeLargerBtn" class="btn-pin-size" title="핀 범위 크게 늘리기">크게+</button>
+                  <button type="button" id="savePinBtn" class="btn-pin-save">저장</button>
+                  <button type="button" id="deleteActivePinBtn" class="btn-pin-delete">삭제</button>
+                  <button type="button" id="closePinEditorBtn" class="btn-clear-confirm-checks">닫기</button>
                 </div>
               </div>
 
               <!-- 전체 사진에 지정된 핀 요약 목록 -->
               <div id="pinsSummaryContainer" class="pins-summary-container hidden">
-                <div class="pins-summary-header">
-                  <span>📍 지정된 중점 진단 부위 목록 (클릭 시 수정 · 진단 리포트에 100% 반영)</span>
-                </div>
                 <div id="pinsChipList" class="pins-chip-list"></div>
               </div>
             </div>
           </div>
 
-          <!-- 2. 작업 유형 빠른 선택 태그 (다중 선택 가능한 칩/버튼 UI - 8종) -->
+          <!-- 2. 작업 유형 빠른 선택 태그 (체크 시 각 항목 바로 아래에 한 줄 세부 작업사항 표시) -->
           <div class="form-group">
             <div class="label-row">
               <label class="form-label">
                 <span class="num-circle">2</span>
-                작업 유형 빠른 선택 태그 <span class="optional-badge">다중 선택 가능</span>
+                작업 유형 빠른 선택 태그
               </label>
-              <span id="selectedTagCount" class="tag-count-badge">0개 선택됨</span>
+              <div style="display:flex;align-items:center;gap:4px;">
+                <span id="selectedTagCount" class="tag-count-badge">0개 선택</span>
+                <button type="button" id="clearConfirmChecksBtn" class="btn-clear-confirm-checks" title="세부 체크 해제">체크해제</button>
+              </div>
             </div>
-            <p class="field-helper-text">
-              현장에 해당하는 작업 유형을 모두 선택하면 안전법령 및 현대제철 가이드북 판별 정확도가 높아집니다.
-            </p>
 
             <div class="work-tags-grid" id="workTagsContainer" role="group" aria-label="작업 유형 태그 선택">
-              <button
-                type="button"
-                class="work-tag-chip"
-                data-tag="🏗️ 고소작업(비계/사다리/고소차)"
-                aria-pressed="false"
-              >
-                <span class="tag-emoji">🏗️</span>
-                <span class="tag-label">고소작업(비계/사다리/고소차)</span>
-                <span class="tag-check" aria-hidden="true">✓</span>
-              </button>
-
-              <button
-                type="button"
-                class="work-tag-chip"
-                data-tag="🔥 화기/용접/절단작업"
-                aria-pressed="false"
-              >
-                <span class="tag-emoji">🔥</span>
-                <span class="tag-label">화기/용접/절단작업</span>
-                <span class="tag-check" aria-hidden="true">✓</span>
-              </button>
-
-              <button
-                type="button"
-                class="work-tag-chip"
-                data-tag="🕳️ 밀폐공간 출입작업"
-                aria-pressed="false"
-              >
-                <span class="tag-emoji">🕳️</span>
-                <span class="tag-label">밀폐공간 출입작업</span>
-                <span class="tag-check" aria-hidden="true">✓</span>
-              </button>
-
-              <button
-                type="button"
-                class="work-tag-chip"
-                data-tag="🚜 중장비/크레인/하역작업"
-                aria-pressed="false"
-              >
-                <span class="tag-emoji">🚜</span>
-                <span class="tag-label">중장비/크레인/하역작업</span>
-                <span class="tag-check" aria-hidden="true">✓</span>
-              </button>
-
-              <button
-                type="button"
-                class="work-tag-chip"
-                data-tag="🔒 설비보수/점검(ILS/LOTO)"
-                aria-pressed="false"
-              >
-                <span class="tag-emoji">🔒</span>
-                <span class="tag-label">설비보수/점검(ILS/LOTO)</span>
-                <span class="tag-check" aria-hidden="true">✓</span>
-              </button>
-
-              <button
-                type="button"
-                class="work-tag-chip"
-                data-tag="🧪 유해화학물질/가스 취급"
-                aria-pressed="false"
-              >
-                <span class="tag-emoji">🧪</span>
-                <span class="tag-label">유해화학물질/가스 취급</span>
-                <span class="tag-check" aria-hidden="true">✓</span>
-              </button>
-
-              <button
-                type="button"
-                class="work-tag-chip"
-                data-tag="⚡ 전기작업/활선근접"
-                aria-pressed="false"
-              >
-                <span class="tag-emoji">⚡</span>
-                <span class="tag-label">전기작업/활선근접</span>
-                <span class="tag-check" aria-hidden="true">✓</span>
-              </button>
-
-              <button
-                type="button"
-                class="work-tag-chip"
-                data-tag="📦 일반정리정돈/통로안전"
-                aria-pressed="false"
-              >
-                <span class="tag-emoji">📦</span>
-                <span class="tag-label">일반정리정돈/통로안전</span>
-                <span class="tag-check" aria-hidden="true">✓</span>
-              </button>
-            </div>
-
-            <!-- 2-2. 정확한 작업사항 파악을 위한 세부 확인 체크박스 -->
-            <div class="work-confirm-box" id="workConfirmBox">
-              <div class="work-confirm-top-notice">
-                <p id="workConfirmNoticeText">
-                  ☑️ <strong>진단하고자 하는 세부 작업사항 확인 (작업 유형 선택 항목 기준 표시):</strong><br />
-                  위 <strong>[2. 작업 유형 빠른 선택 태그]</strong>에서 체크한 작업 유형에 해당하는 세부 작업사항만 아래에 표시됩니다.
-                </p>
-                <button type="button" id="clearConfirmChecksBtn" class="btn-clear-confirm-checks">
-                  체크 해제
+              <!-- 태그 1: 고소작업 -->
+              <div class="work-tag-accordion-item">
+                <button type="button" class="work-tag-chip" data-tag="🏗️ 고소작업(비계/사다리/고소차)" aria-pressed="false">
+                  <span class="tag-emoji">🏗️</span>
+                  <span class="tag-label">고소작업(비계/사다리/고소차)</span>
+                  <span class="tag-check" aria-hidden="true">✓</span>
                 </button>
+                <div class="tag-inline-subchecks hidden" data-subchecks-for="🏗️ 고소작업(비계/사다리/고소차)">
+                  <label class="confirm-check-label" data-check-id="chk_height_2m">
+                    <input type="checkbox" class="confirm-check-input" value="chk_height_2m" />
+                    <span>2m 이상 고소·이동식비계·사다리·천장 상부 작업</span>
+                  </label>
+                  <label class="confirm-check-label" data-check-id="chk_no_guardrail">
+                    <input type="checkbox" class="confirm-check-input" value="chk_no_guardrail" />
+                    <span>안전난간 미비·개구부·갱폼 해체·승강기 노출</span>
+                  </label>
+                  <label class="confirm-check-label" data-check-id="chk_roof_skylight">
+                    <input type="checkbox" class="confirm-check-input" value="chk_roof_skylight" />
+                    <span>지붕·채광창·노후 슬레이트·천막 지붕 작업</span>
+                  </label>
+                  <label class="confirm-check-label" data-check-id="chk_aerial_rope">
+                    <input type="checkbox" class="confirm-check-input" value="chk_aerial_rope" />
+                    <span>고소작업대·달비계·곤돌라 작업</span>
+                  </label>
+                  <label class="confirm-check-label" data-check-id="chk_no_harness">
+                    <input type="checkbox" class="confirm-check-input" value="chk_no_harness" />
+                    <span>안전모·안전대 미착용 및 체결 불량</span>
+                  </label>
+                </div>
               </div>
 
-              <div id="workConfirmEmptyHint" class="work-confirm-empty-hint">
-                👆 위 <strong>[2. 작업 유형 빠른 선택 태그]</strong>에서 해당 작업 유형을 먼저 체크하면 관련 세부 작업사항 항목이 이곳에 표시됩니다.
+              <!-- 태그 2: 화기/용접/절단작업 -->
+              <div class="work-tag-accordion-item">
+                <button type="button" class="work-tag-chip" data-tag="🔥 화기/용접/절단작업" aria-pressed="false">
+                  <span class="tag-emoji">🔥</span>
+                  <span class="tag-label">화기/용접/절단작업</span>
+                  <span class="tag-check" aria-hidden="true">✓</span>
+                </button>
+                <div class="tag-inline-subchecks hidden" data-subchecks-for="🔥 화기/용접/절단작업">
+                  <label class="confirm-check-label" data-check-id="chk_hotwork_spark">
+                    <input type="checkbox" class="confirm-check-input" value="chk_hotwork_spark" />
+                    <span>배관·설비·드럼통 용접·산소절단·화기작업</span>
+                  </label>
+                  <label class="confirm-check-label" data-check-id="chk_flammable_insulation">
+                    <input type="checkbox" class="confirm-check-input" value="chk_flammable_insulation" />
+                    <span>보온재·단열재·유기용제 노출 및 방화포·소화기 미비</span>
+                  </label>
+                </div>
               </div>
 
-              <div class="work-confirm-categories" id="workConfirmCategories">
-                <!-- 그룹 1: 고소 / 추락 / 작업발판 / 지붕채광창 / 고소작업대·달비계 -->
-                <div class="confirm-cat-group">
-                  <div class="confirm-cat-title">🏗️ 고소 · 비계/사다리 · 지붕/채광창 · 고소작업대/달비계 확인</div>
-                  <div class="confirm-check-grid">
-                    <label class="confirm-check-label" data-check-id="chk_height_2m">
-                      <input type="checkbox" class="confirm-check-input" value="chk_height_2m" />
-                      <span>2m 이상 고소·이동식비계·사다리·천장/크레인 상부 작업</span>
-                    </label>
-                    <label class="confirm-check-label" data-check-id="chk_no_guardrail">
-                      <input type="checkbox" class="confirm-check-input" value="chk_no_guardrail" />
-                      <span>안전난간 미비·개구부·갱폼 해체·화물승강기 노출</span>
-                    </label>
-                    <label class="confirm-check-label" data-check-id="chk_roof_skylight">
-                      <input type="checkbox" class="confirm-check-input" value="chk_roof_skylight" />
-                      <span>지붕·채광창·노후 슬레이트·천막 지붕 작업</span>
-                    </label>
-                    <label class="confirm-check-label" data-check-id="chk_aerial_rope">
-                      <input type="checkbox" class="confirm-check-input" value="chk_aerial_rope" />
-                      <span>고소작업대·달비계·곤돌라 작업</span>
-                    </label>
-                    <label class="confirm-check-label" data-check-id="chk_no_harness">
-                      <input type="checkbox" class="confirm-check-input" value="chk_no_harness" />
-                      <span>안전모·안전대 미착용 및 체결 불량</span>
-                    </label>
-                  </div>
+              <!-- 태그 3: 밀폐공간 출입작업 -->
+              <div class="work-tag-accordion-item">
+                <button type="button" class="work-tag-chip" data-tag="🕳️ 밀폐공간 출입작업" aria-pressed="false">
+                  <span class="tag-emoji">🕳️</span>
+                  <span class="tag-label">밀폐공간 출입작업</span>
+                  <span class="tag-check" aria-hidden="true">✓</span>
+                </button>
+                <div class="tag-inline-subchecks hidden" data-subchecks-for="🕳️ 밀폐공간 출입작업">
+                  <label class="confirm-check-label" data-check-id="chk_confined_entry">
+                    <input type="checkbox" class="confirm-check-input" value="chk_confined_entry" />
+                    <span>밀폐공간 출입 및 산소·유해가스 측정·환기 미비</span>
+                  </label>
+                  <label class="confirm-check-label" data-check-id="chk_diving_water">
+                    <input type="checkbox" class="confirm-check-input" value="chk_diving_water" />
+                    <span>해상·수중 잠수작업 및 수상 작업</span>
+                  </label>
+                  <label class="confirm-check-label" data-check-id="chk_alone_nowatcher">
+                    <input type="checkbox" class="confirm-check-input" value="chk_alone_nowatcher" />
+                    <span>단독 작업 또는 작업지휘자·유도자·감시인 미배치</span>
+                  </label>
                 </div>
+              </div>
 
-                <!-- 그룹 2: 화기 / 용접 / 가연물 / 유증기 -->
-                <div class="confirm-cat-group">
-                  <div class="confirm-cat-title">🔥 화기 · 용접/절단 · 단열재/유증기 · 가스분기관/기밀시험 확인</div>
-                  <div class="confirm-check-grid">
-                    <label class="confirm-check-label" data-check-id="chk_hotwork_spark">
-                      <input type="checkbox" class="confirm-check-input" value="chk_hotwork_spark" />
-                      <span>배관/설비/드럼통·탱크 용접·산소절단·그라인딩 화기작업</span>
-                    </label>
-                    <label class="confirm-check-label" data-check-id="chk_flammable_insulation">
-                      <input type="checkbox" class="confirm-check-input" value="chk_flammable_insulation" />
-                      <span>보온재·단열재·유기용제 유증기 노출 및 방화포·소화기 미비</span>
-                    </label>
-                    <label class="confirm-check-label" data-check-id="chk_gas_cylinder">
-                      <input type="checkbox" class="confirm-check-input" value="chk_gas_cylinder" />
-                      <span>가스용기·가스분기관 접속 및 용기 기밀·내압시험</span>
-                    </label>
-                  </div>
+              <!-- 태그 4: 중장비/크레인/하역작업 -->
+              <div class="work-tag-accordion-item">
+                <button type="button" class="work-tag-chip" data-tag="🚜 중장비/크레인/하역작업" aria-pressed="false">
+                  <span class="tag-emoji">🚜</span>
+                  <span class="tag-label">중장비/크레인/하역작업</span>
+                  <span class="tag-check" aria-hidden="true">✓</span>
+                </button>
+                <div class="tag-inline-subchecks hidden" data-subchecks-for="🚜 중장비/크레인/하역작업">
+                  <label class="confirm-check-label" data-check-id="chk_crane_lifting">
+                    <input type="checkbox" class="confirm-check-input" value="chk_crane_lifting" />
+                    <span>크레인·호이스트 인양 및 중량물 전도·구름 방지 미비</span>
+                  </label>
+                  <label class="confirm-check-label" data-check-id="chk_vehicle_forklift">
+                    <input type="checkbox" class="confirm-check-input" value="chk_vehicle_forklift" />
+                    <span>지게차·굴착기·화물차 이탈 제동 미비 및 사각지대 작업</span>
+                  </label>
+                  <label class="confirm-check-label" data-check-id="chk_wall_demolition">
+                    <input type="checkbox" class="confirm-check-input" value="chk_wall_demolition" />
+                    <span>벽체·옹벽 해체 및 굴착사면 흙막이 미비</span>
+                  </label>
                 </div>
+              </div>
 
-                <!-- 그룹 3: 설비보수 / 유압·자중하강 안전블록 / ILS(LOTO) / 전기 -->
-                <div class="confirm-cat-group">
-                  <div class="confirm-cat-title">🔒 회전체/로봇/수공구 · 유압/자중 안전블록 · ILS(LOTO) · 전기 확인</div>
-                  <div class="confirm-check-grid">
-                    <label class="confirm-check-label" data-check-id="chk_open_cover">
-                      <input type="checkbox" class="confirm-check-input" value="chk_open_cover" />
-                      <span>회전체·로봇/자동설비·연삭기·둥근톱·권상기 방호 미비</span>
-                    </label>
-                    <label class="confirm-check-label" data-check-id="chk_no_ils_loto">
-                      <input type="checkbox" class="confirm-check-input" value="chk_no_ils_loto" />
-                      <span>전원/밸브 차단 후 개인별 ILS(LOTO) 잠금 미체결·인터록 해제</span>
-                    </label>
-                    <label class="confirm-check-label" data-check-id="chk_hydraulic_support">
-                      <input type="checkbox" class="confirm-check-input" value="chk_hydraulic_support" />
-                      <span>유압·자중 하강 설비 안전블록·지지대 미설치 및 잔류유압 미제거</span>
-                    </label>
-                    <label class="confirm-check-label" data-check-id="chk_electric_live">
-                      <input type="checkbox" class="confirm-check-input" value="chk_electric_live" />
-                      <span>분전반·제어반·충전부 노출 전기/활선 근접 작업</span>
-                    </label>
-                  </div>
+              <!-- 태그 5: 설비보수/점검(ILS/LOTO) -->
+              <div class="work-tag-accordion-item">
+                <button type="button" class="work-tag-chip" data-tag="🔒 설비보수/점검(ILS/LOTO)" aria-pressed="false">
+                  <span class="tag-emoji">🔒</span>
+                  <span class="tag-label">설비보수/점검(ILS/LOTO)</span>
+                  <span class="tag-check" aria-hidden="true">✓</span>
+                </button>
+                <div class="tag-inline-subchecks hidden" data-subchecks-for="🔒 설비보수/점검(ILS/LOTO)">
+                  <label class="confirm-check-label" data-check-id="chk_open_cover">
+                    <input type="checkbox" class="confirm-check-input" value="chk_open_cover" />
+                    <span>회전체·로봇/자동설비·연삭기·둥근톱·권상기 방호 미비</span>
+                  </label>
+                  <label class="confirm-check-label" data-check-id="chk_no_ils_loto">
+                    <input type="checkbox" class="confirm-check-input" value="chk_no_ils_loto" />
+                    <span>전원·밸브 개인별 ILS(LOTO) 잠금 미체결 / 인터록 해제</span>
+                  </label>
+                  <label class="confirm-check-label" data-check-id="chk_hydraulic_support">
+                    <input type="checkbox" class="confirm-check-input" value="chk_hydraulic_support" />
+                    <span>유압·자중 하강 설비 안전블록·지지대 미비</span>
+                  </label>
                 </div>
+              </div>
 
-                <!-- 그룹 4: 밀폐공간 / 화학물질 / 중장비·지게차·차량 / 벽체해체 / 잠수 / 통로안전 -->
-                <div class="confirm-cat-group">
-                  <div class="confirm-cat-title">🕳️ 밀폐공간 · 화학배관 · 중량물 인양 · 차량/건설기계 · 해체/굴착 확인</div>
-                  <div class="confirm-check-grid">
-                    <label class="confirm-check-label" data-check-id="chk_confined_entry">
-                      <input type="checkbox" class="confirm-check-input" value="chk_confined_entry" />
-                      <span>밀폐공간 출입 및 산소·유해가스 측정·환기 미비</span>
-                    </label>
-                    <label class="confirm-check-label" data-check-id="chk_chemical_pipe">
-                      <input type="checkbox" class="confirm-check-input" value="chk_chemical_pipe" />
-                      <span>정제설비·화학배관 플랜지 해체 및 잔류물질 배출 미비</span>
-                    </label>
-                    <label class="confirm-check-label" data-check-id="chk_crane_lifting">
-                      <input type="checkbox" class="confirm-check-input" value="chk_crane_lifting" />
-                      <span>크레인·호이스트 인양 및 중량물 전도·구름 방지 미비</span>
-                    </label>
-                    <label class="confirm-check-label" data-check-id="chk_vehicle_forklift">
-                      <input type="checkbox" class="confirm-check-input" value="chk_vehicle_forklift" />
-                      <span>지게차·굴착기·화물차 운전석 이탈 제동 미비 및 사각지대 작업</span>
-                    </label>
-                    <label class="confirm-check-label" data-check-id="chk_wall_demolition">
-                      <input type="checkbox" class="confirm-check-input" value="chk_wall_demolition" />
-                      <span>벽체·옹벽 해체 및 굴착사면 흙막이 미비</span>
-                    </label>
-                    <label class="confirm-check-label" data-check-id="chk_diving_water">
-                      <input type="checkbox" class="confirm-check-input" value="chk_diving_water" />
-                      <span>해상·수중 잠수작업 및 수상 작업</span>
-                    </label>
-                    <label class="confirm-check-label" data-check-id="chk_floor_hose_trip">
-                      <input type="checkbox" class="confirm-check-input" value="chk_floor_hose_trip" />
-                      <span>바닥 호스·케이블·단차 방치 및 가동 설비 위 이동 위험</span>
-                    </label>
-                    <label class="confirm-check-label" data-check-id="chk_alone_nowatcher">
-                      <input type="checkbox" class="confirm-check-input" value="chk_alone_nowatcher" />
-                      <span>단독 작업 또는 작업지휘자·유도자·감시인 미배치</span>
-                    </label>
-                  </div>
+              <!-- 태그 6: 유해화학물질/가스 취급 -->
+              <div class="work-tag-accordion-item">
+                <button type="button" class="work-tag-chip" data-tag="🧪 유해화학물질/가스 취급" aria-pressed="false">
+                  <span class="tag-emoji">🧪</span>
+                  <span class="tag-label">유해화학물질/가스 취급</span>
+                  <span class="tag-check" aria-hidden="true">✓</span>
+                </button>
+                <div class="tag-inline-subchecks hidden" data-subchecks-for="🧪 유해화학물질/가스 취급">
+                  <label class="confirm-check-label" data-check-id="chk_chemical_pipe">
+                    <input type="checkbox" class="confirm-check-input" value="chk_chemical_pipe" />
+                    <span>정제설비·화학배관 플랜지 해체 및 잔류물질 배출 미비</span>
+                  </label>
+                  <label class="confirm-check-label" data-check-id="chk_gas_cylinder">
+                    <input type="checkbox" class="confirm-check-input" value="chk_gas_cylinder" />
+                    <span>가스용기·가스분기관 접속 및 용기 기밀·내압시험</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- 태그 7: 전기작업/활선근접 -->
+              <div class="work-tag-accordion-item">
+                <button type="button" class="work-tag-chip" data-tag="⚡ 전기작업/활선근접" aria-pressed="false">
+                  <span class="tag-emoji">⚡</span>
+                  <span class="tag-label">전기작업/활선근접</span>
+                  <span class="tag-check" aria-hidden="true">✓</span>
+                </button>
+                <div class="tag-inline-subchecks hidden" data-subchecks-for="⚡ 전기작업/활선근접">
+                  <label class="confirm-check-label" data-check-id="chk_electric_live">
+                    <input type="checkbox" class="confirm-check-input" value="chk_electric_live" />
+                    <span>분전반·제어반·충전부 전기/활선 근접 작업</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- 태그 8: 일반정리정돈/통로안전 -->
+              <div class="work-tag-accordion-item">
+                <button type="button" class="work-tag-chip" data-tag="📦 일반정리정돈/통로안전" aria-pressed="false">
+                  <span class="tag-emoji">📦</span>
+                  <span class="tag-label">일반정리정돈/통로안전</span>
+                  <span class="tag-check" aria-hidden="true">✓</span>
+                </button>
+                <div class="tag-inline-subchecks hidden" data-subchecks-for="📦 일반정리정돈/통로안전">
+                  <label class="confirm-check-label" data-check-id="chk_floor_hose_trip">
+                    <input type="checkbox" class="confirm-check-input" value="chk_floor_hose_trip" />
+                    <span>바닥 호스·케이블·단차 방치 및 가동 설비 위 이동 위험</span>
+                  </label>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- 3. 작업 상황 설명 입력 (Textarea) -->
+          <!-- 3. 작업 상황 설명 입력 (빠른 문구 제거 및 높이 압축) -->
           <div class="form-group">
             <div class="label-row">
               <label for="situationTextarea" class="form-label">
@@ -4327,25 +4566,9 @@ body {
             <textarea
               id="situationTextarea"
               class="situation-textarea"
-              rows="4"
-              placeholder="현장 작업 상황이나 문제가 되는 위험 요인을 입력하세요."
+              rows="2"
+              placeholder="현장 작업 상황이나 위험 요인을 입력하세요."
             ></textarea>
-
-            <div class="quick-phrases">
-              <span class="quick-phrase-title">빠른 문구 추가:</span>
-              <button type="button" class="btn-phrase" data-phrase="배관 용접 보수 작업 전입니다. 바닥에 호스가 깔려있고 주변에 보온재가 있습니다.">
-                + 배관 용접/보온재 주변
-              </button>
-              <button type="button" class="btn-phrase" data-phrase="컨베이어 구동부 점검 작업 중이며 전원 차단 및 ILS 잠금 여부를 확인하고 싶습니다.">
-                + 설비 구동부/ILS 점검
-              </button>
-              <button type="button" class="btn-phrase" data-phrase="이동식 사다리를 사용하여 3.5m 높이 배관 밸브를 점검하려고 합니다.">
-                + 이동식 사다리 3.5m 작업
-              </button>
-              <button type="button" class="btn-phrase" data-phrase="피트(Pit) 내부 슬러지 청소 및 배관 밸브 교체 전 산소/유해가스 측정 전입니다.">
-                + 피트 밀폐공간 출입 전
-              </button>
-            </div>
           </div>
 
           <!-- 미업로드 등 경고 알림 배너 -->
@@ -5108,7 +5331,7 @@ const WORK_CHECK_CATALOG = {
   },
 };
 
-// 8종 작업 유형 빠른 선택 태그별 표시할 세부 작업사항 확인 체크박스 매핑
+// 8종 작업 유형 빠른 선택 태그별 바로 아래 인라인 표시할 세부 작업사항 확인 체크박스 매핑
 const WORK_TAG_TO_CHECKS_MAP = {
   "🏗️ 고소작업(비계/사다리/고소차)": [
     "chk_height_2m",
@@ -5120,7 +5343,6 @@ const WORK_TAG_TO_CHECKS_MAP = {
   "🔥 화기/용접/절단작업": [
     "chk_hotwork_spark",
     "chk_flammable_insulation",
-    "chk_gas_cylinder",
   ],
   "🕳️ 밀폐공간 출입작업": [
     "chk_confined_entry",
@@ -5131,27 +5353,21 @@ const WORK_TAG_TO_CHECKS_MAP = {
     "chk_crane_lifting",
     "chk_vehicle_forklift",
     "chk_wall_demolition",
-    "chk_alone_nowatcher",
   ],
   "🔒 설비보수/점검(ILS/LOTO)": [
     "chk_open_cover",
     "chk_no_ils_loto",
     "chk_hydraulic_support",
-    "chk_alone_nowatcher",
   ],
   "🧪 유해화학물질/가스 취급": [
     "chk_chemical_pipe",
     "chk_gas_cylinder",
-    "chk_flammable_insulation",
   ],
   "⚡ 전기작업/활선근접": [
     "chk_electric_live",
-    "chk_no_ils_loto",
   ],
   "📦 일반정리정돈/통로안전": [
     "chk_floor_hose_trip",
-    "chk_no_harness",
-    "chk_wall_demolition",
   ],
 };
 
@@ -7162,18 +7378,8 @@ function initEventListeners() {
     });
   }
 
-  // 드래그 앤 드롭 & 클릭
+  // 갤러리/이미지 버튼에 통합된 드래그 앤 드롭 지원 (galleryLabel에서 click/keydown은 이미 처리됨)
   if (dom.dropZone) {
-    dom.dropZone.addEventListener("click", () => {
-      if (dom.fileUploadInput) dom.fileUploadInput.click();
-    });
-    dom.dropZone.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        if (dom.fileUploadInput) dom.fileUploadInput.click();
-      }
-    });
-
     dom.dropZone.addEventListener("dragover", (e) => {
       e.preventDefault();
       dom.dropZone.classList.add("drag-over");
@@ -7254,22 +7460,113 @@ function initEventListeners() {
     });
   }
 
-  // 사진 클릭/터치 -> 해당 부위에 커스텀 핀(Pin) 생성!
+  // 사진 클릭/드래그 -> 사각 범위 박스(Pin) 생성! (클릭-드래그-릴리즈 범위 지정 & 단일 클릭 지원)
   if (dom.previewImageStage) {
-    dom.previewImageStage.addEventListener("click", (e) => {
-      // 이미 있는 핀 마커를 클릭한 경우는 핀 마커 자체 이벤트에서 처리
+    let stageDragState = null;
+
+    const getStagePctCoords = (clientX, clientY) => {
+      const rect = dom.imagePreviewEl.getBoundingClientRect();
+      if (!rect.width || !rect.height) return null;
+      const x = Math.max(1, Math.min(99, ((clientX - rect.left) / rect.width) * 100));
+      const y = Math.max(1, Math.min(99, ((clientY - rect.top) / rect.height) * 100));
+      return { x, y };
+    };
+
+    dom.previewImageStage.addEventListener("pointerdown", (e) => {
+      // 이미 있는 핀 마커(이동/리사이즈)를 누른 경우는 핀 마커 자체 이벤트에서 처리
       if (e.target.closest(".photo-pin-marker")) return;
+      if (e.button !== undefined && e.button !== 0) return;
       const photo = getActivePhoto();
       if (!photo) return;
 
-      const rect = dom.imagePreviewEl.getBoundingClientRect();
-      if (!rect.width || !rect.height) return;
+      const pt = getStagePctCoords(e.clientX, e.clientY);
+      if (!pt) return;
 
-      const xPct = Math.max(3, Math.min(97, Math.round(((e.clientX - rect.left) / rect.width) * 1000) / 10));
-      const yPct = Math.max(3, Math.min(97, Math.round(((e.clientY - rect.top) / rect.height) * 1000) / 10));
+      e.preventDefault();
+      try {
+        dom.previewImageStage.setPointerCapture(e.pointerId);
+      } catch (err) {}
 
-      addPinToActivePhoto(xPct, yPct);
+      const selBox = document.createElement("div");
+      selBox.className = "pin-drag-selection-box";
+      selBox.style.left = `${pt.x}%`;
+      selBox.style.top = `${pt.y}%`;
+      selBox.style.width = "0%";
+      selBox.style.height = "0%";
+      dom.photoPinOverlay.appendChild(selBox);
+
+      stageDragState = {
+        pointerId: e.pointerId,
+        startX: pt.x,
+        startY: pt.y,
+        curX: pt.x,
+        curY: pt.y,
+        selBox,
+      };
     });
+
+    dom.previewImageStage.addEventListener("pointermove", (e) => {
+      if (!stageDragState || e.pointerId !== stageDragState.pointerId) return;
+      const pt = getStagePctCoords(e.clientX, e.clientY);
+      if (!pt) return;
+
+      stageDragState.curX = pt.x;
+      stageDragState.curY = pt.y;
+
+      const left = Math.min(stageDragState.startX, pt.x);
+      const top = Math.min(stageDragState.startY, pt.y);
+      const width = Math.abs(pt.x - stageDragState.startX);
+      const height = Math.abs(pt.y - stageDragState.startY);
+
+      stageDragState.selBox.style.left = `${left}%`;
+      stageDragState.selBox.style.top = `${top}%`;
+      stageDragState.selBox.style.width = `${width}%`;
+      stageDragState.selBox.style.height = `${height}%`;
+    });
+
+    const finishStageDrag = (e, cancelled = false) => {
+      if (!stageDragState || e.pointerId !== stageDragState.pointerId) return;
+      const st = stageDragState;
+      stageDragState = null;
+
+      try {
+        dom.previewImageStage.releasePointerCapture(e.pointerId);
+      } catch (err) {}
+
+      if (st.selBox && st.selBox.parentNode) {
+        st.selBox.parentNode.removeChild(st.selBox);
+      }
+      if (cancelled) return;
+
+      const rawW = Math.abs(st.curX - st.startX);
+      const rawH = Math.abs(st.curY - st.startY);
+
+      // 드래그한 범위가 있으면 해당 사각박스 범위(중심 cx, cy, 폭 w, 높이 h)로 핀 생성, 단순 클릭이면 기본 사각 범위(12%x12%) 생성
+      if (rawW >= 2.5 || rawH >= 2.5) {
+        const cx = Math.max(3, Math.min(97, Math.round(((st.startX + st.curX) / 2) * 10) / 10));
+        const cy = Math.max(3, Math.min(97, Math.round(((st.startY + st.curY) / 2) * 10) / 10));
+        const wPct = Math.max(5, Math.min(92, Math.round(rawW * 10) / 10));
+        const hPct = Math.max(5, Math.min(92, Math.round(rawH * 10) / 10));
+        addPinToActivePhoto(cx, cy, "", "", wPct, hPct);
+      } else {
+        const cx = Math.max(3, Math.min(97, Math.round(st.startX * 10) / 10));
+        const cy = Math.max(3, Math.min(97, Math.round(st.startY * 10) / 10));
+        addPinToActivePhoto(cx, cy, "", "", 12, 12);
+      }
+    };
+
+    dom.previewImageStage.addEventListener("pointerup", (e) => finishStageDrag(e, false));
+    dom.previewImageStage.addEventListener("pointercancel", (e) => finishStageDrag(e, true));
+  }
+
+  // 핀 크기 작게 / 크게 조절 버튼
+  const pinSmallerBtn = document.getElementById("pinSizeSmallerBtn");
+  if (pinSmallerBtn) {
+    pinSmallerBtn.addEventListener("click", () => adjustActivePinSize(-3));
+  }
+  const pinLargerBtn = document.getElementById("pinSizeLargerBtn");
+  if (pinLargerBtn) {
+    pinLargerBtn.addEventListener("click", () => adjustActivePinSize(3));
   }
 
   // 핀 프리셋 칩 클릭 시 입력창에 반영 & 현재 편집 중인 핀에 checkId 연결 (핀 삭제/초기화 시 다시 생기지 않도록 체크박스 강제 고정 제외)
@@ -8104,11 +8401,9 @@ function getActivePhoto() {
 function renderActivePhotoView() {
   if (appState.photos.length === 0) {
     dom.imagePreviewContainer.classList.add("hidden");
-    dom.dropZone.classList.remove("hidden");
     return;
   }
 
-  dom.dropZone.classList.add("hidden");
   dom.imagePreviewContainer.classList.remove("hidden");
 
   const activePhoto = getActivePhoto();
@@ -8120,7 +8415,7 @@ function renderActivePhotoView() {
   dom.previewResolutionBadge.textContent = `${activePhoto.dimensions.width}×${activePhoto.dimensions.height}px · ${activePhoto.dimensions.sizeKB}KB`;
 
   if (dom.visualDetectText && activePhoto.visualStats) {
-    dom.visualDetectText.textContent = `${activePhoto.visualStats.visualSummary} (아래 체크박스에서 실제 작업사항이 맞는지 확인해 주세요)`;
+    dom.visualDetectText.textContent = activePhoto.visualStats.visualSummary;
   }
 
   renderMultiPhotoGallery();
@@ -8228,13 +8523,12 @@ function clearUploadedImage() {
   if (dom.pinEditorPanel) dom.pinEditorPanel.classList.add("hidden");
   if (dom.pinsSummaryContainer) dom.pinsSummaryContainer.classList.add("hidden");
   dom.imagePreviewContainer.classList.add("hidden");
-  dom.dropZone.classList.remove("hidden");
 }
 
 // ============================================================================
-// 7. 사진 터치/클릭 부위 지정 커스텀 핀(Pin) 관리 시스템
+// 7. 사진 터치/드래그 사각 범위 지정 커스텀 핀(Pin) 관리 시스템
 // ============================================================================
-function addPinToActivePhoto(xPct, yPct, initialLabel = "", linkedCheckId = "") {
+function addPinToActivePhoto(xPct, yPct, initialLabel = "", linkedCheckId = "", wPct = 12, hPct = 12) {
   const photo = getActivePhoto();
   if (!photo) return;
 
@@ -8244,6 +8538,8 @@ function addPinToActivePhoto(xPct, yPct, initialLabel = "", linkedCheckId = "") 
     num: pinNum,
     x: xPct,
     y: yPct,
+    w: wPct || 12,
+    h: hPct || 12,
     label: initialLabel || `지정 위험부위 #${pinNum}`,
     checkId: linkedCheckId || "",
   };
@@ -8251,11 +8547,14 @@ function addPinToActivePhoto(xPct, yPct, initialLabel = "", linkedCheckId = "") 
   photo.pins.push(newPin);
   appState.editingPinId = newPin.id;
 
-  openPinEditorFor(newPin);
+  openPinEditorFor(newPin, true);
   renderActivePhotoView();
+  if (!dom.reportResultContainer.classList.contains("hidden")) {
+    refreshDiagnosisReportLive("신규 핀 범위 추가 반영");
+  }
 }
 
-function openPinEditorFor(pin) {
+function openPinEditorFor(pin, autoFocus = true) {
   if (!dom.pinEditorPanel) return;
   appState.editingPinId = pin.id;
   dom.pinEditorPanel.classList.remove("hidden");
@@ -8271,7 +8570,24 @@ function openPinEditorFor(pin) {
     }
   });
 
-  dom.pinCustomInput.focus();
+  if (autoFocus) {
+    dom.pinCustomInput.focus();
+  }
+}
+
+function adjustActivePinSize(deltaPct) {
+  const photo = getActivePhoto();
+  if (!photo || !appState.editingPinId) return;
+  const pin = photo.pins.find((p) => p.id === appState.editingPinId);
+  if (!pin) return;
+
+  pin.w = Math.max(4, Math.min(92, Math.round(((pin.w || 14) + deltaPct) * 10) / 10));
+  pin.h = Math.max(4, Math.min(92, Math.round(((pin.h || 14) + deltaPct) * 10) / 10));
+
+  renderPhotoPinsOverlay();
+  if (!dom.reportResultContainer.classList.contains("hidden")) {
+    refreshDiagnosisReportLive("핀 크기 조절 반영");
+  }
 }
 
 function saveCurrentEditingPin(closePanel = true) {
@@ -8331,12 +8647,17 @@ function renderPhotoPinsOverlay() {
   if (!photo || !photo.pins) return;
 
   photo.pins.forEach((pin) => {
+    if (!pin.w) pin.w = 14;
+    if (!pin.h) pin.h = 14;
+
     const marker = document.createElement("div");
     marker.className = `photo-pin-marker ${pin.id === appState.editingPinId ? "active" : ""} ${pin.resolved ? "resolved" : ""}`;
     marker.setAttribute("data-pin-id", pin.id);
     marker.style.left = `${pin.x}%`;
     marker.style.top = `${pin.y}%`;
-    marker.title = `핀 #${pin.num}: ${pin.label} (${pin.resolved ? "조치 완료" : "조치 전"} · 클릭하여 수정/삭제)`;
+    marker.style.width = `${pin.w}%`;
+    marker.style.height = `${pin.h}%`;
+    marker.title = `핀 #${pin.num}: ${pin.label} (드래그하여 위치 이동 · 우하단 모서리 드래그로 크기 조절)`;
 
     const circle = document.createElement("div");
     circle.className = "pin-marker-circle";
@@ -8346,14 +8667,123 @@ function renderPhotoPinsOverlay() {
     tag.className = "pin-marker-tag";
     tag.textContent = pin.resolved ? `[조치완료] ${pin.label}` : pin.label;
 
+    const resizeHandle = document.createElement("div");
+    resizeHandle.className = "pin-resize-handle";
+    resizeHandle.title = "드래그하여 핀 사각 범위 크기 조절";
+
     marker.appendChild(circle);
     marker.appendChild(tag);
+    marker.appendChild(resizeHandle);
 
-    marker.addEventListener("click", (e) => {
+    // 1) 우하단 리사이즈 핸들 드래그 -> 사각 박스 크기(w%, h%) 실시간 조절
+    let resizeState = null;
+    resizeHandle.addEventListener("pointerdown", (e) => {
       e.stopPropagation();
-      openPinEditorFor(pin);
-      renderPhotoPinsOverlay();
+      e.preventDefault();
+      const rect = dom.imagePreviewEl.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+
+      try {
+        resizeHandle.setPointerCapture(e.pointerId);
+      } catch (err) {}
+
+      resizeState = {
+        pointerId: e.pointerId,
+        startClientX: e.clientX,
+        startClientY: e.clientY,
+        startW: pin.w || 14,
+        startH: pin.h || 14,
+        imgW: rect.width,
+        imgH: rect.height,
+      };
     });
+
+    resizeHandle.addEventListener("pointermove", (e) => {
+      if (!resizeState || e.pointerId !== resizeState.pointerId) return;
+      e.stopPropagation();
+      const dxPct = ((e.clientX - resizeState.startClientX) / resizeState.imgW) * 100 * 2;
+      const dyPct = ((e.clientY - resizeState.startClientY) / resizeState.imgH) * 100 * 2;
+
+      pin.w = Math.max(4, Math.min(92, Math.round((resizeState.startW + dxPct) * 10) / 10));
+      pin.h = Math.max(4, Math.min(92, Math.round((resizeState.startH + dyPct) * 10) / 10));
+      marker.style.width = `${pin.w}%`;
+      marker.style.height = `${pin.h}%`;
+    });
+
+    const finishResize = (e) => {
+      if (!resizeState || e.pointerId !== resizeState.pointerId) return;
+      e.stopPropagation();
+      resizeState = null;
+      try {
+        resizeHandle.releasePointerCapture(e.pointerId);
+      } catch (err) {}
+      openPinEditorFor(pin, false);
+      renderPhotoPinsOverlay();
+      if (!dom.reportResultContainer.classList.contains("hidden")) {
+        refreshDiagnosisReportLive("핀 범위 크기 조절 반영");
+      }
+    };
+    resizeHandle.addEventListener("pointerup", finishResize);
+    resizeHandle.addEventListener("pointercancel", finishResize);
+
+    // 2) 핀 사각 박스 자체 드래그 -> 위치(x%, y%) 이동 & 클릭 시 편집창 열기
+    let moveState = null;
+    marker.addEventListener("pointerdown", (e) => {
+      if (e.target === resizeHandle || e.target.closest(".pin-resize-handle")) return;
+      e.stopPropagation();
+      e.preventDefault();
+      const rect = dom.imagePreviewEl.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+
+      try {
+        marker.setPointerCapture(e.pointerId);
+      } catch (err) {}
+
+      moveState = {
+        pointerId: e.pointerId,
+        startClientX: e.clientX,
+        startClientY: e.clientY,
+        startX: pin.x,
+        startY: pin.y,
+        imgW: rect.width,
+        imgH: rect.height,
+        moved: false,
+      };
+    });
+
+    marker.addEventListener("pointermove", (e) => {
+      if (!moveState || e.pointerId !== moveState.pointerId) return;
+      e.stopPropagation();
+      const dist = Math.hypot(e.clientX - moveState.startClientX, e.clientY - moveState.startClientY);
+      if (dist >= 3) {
+        moveState.moved = true;
+      }
+      const dxPct = ((e.clientX - moveState.startClientX) / moveState.imgW) * 100;
+      const dyPct = ((e.clientY - moveState.startClientY) / moveState.imgH) * 100;
+
+      pin.x = Math.max(3, Math.min(97, Math.round((moveState.startX + dxPct) * 10) / 10));
+      pin.y = Math.max(3, Math.min(97, Math.round((moveState.startY + dyPct) * 10) / 10));
+      marker.style.left = `${pin.x}%`;
+      marker.style.top = `${pin.y}%`;
+    });
+
+    const finishMove = (e) => {
+      if (!moveState || e.pointerId !== moveState.pointerId) return;
+      e.stopPropagation();
+      const wasMoved = moveState.moved;
+      moveState = null;
+      try {
+        marker.releasePointerCapture(e.pointerId);
+      } catch (err) {}
+
+      openPinEditorFor(pin, !wasMoved);
+      renderPhotoPinsOverlay();
+      if (wasMoved && !dom.reportResultContainer.classList.contains("hidden")) {
+        refreshDiagnosisReportLive("핀 위치 이동 반영");
+      }
+    };
+    marker.addEventListener("pointerup", finishMove);
+    marker.addEventListener("pointercancel", finishMove);
 
     dom.photoPinOverlay.appendChild(marker);
   });
@@ -8504,22 +8934,10 @@ function ensureWorkTagForCheck(checkId) {
 }
 
 function filterWorkConfirmBySelectedTags() {
-  const allowed = getAllowedCheckIdsFromSelectedTags();
-  const hasSelectedTags = appState.selectedTags.size > 0;
-
-  if (dom.workConfirmEmptyHint) {
-    dom.workConfirmEmptyHint.classList.toggle("hidden", hasSelectedTags);
-  }
-
-  document.querySelectorAll(".confirm-cat-group").forEach((groupEl) => {
-    let visibleCount = 0;
-    groupEl.querySelectorAll(".confirm-check-label").forEach((labelEl) => {
-      const checkId = labelEl.getAttribute("data-check-id");
-      const isVisible = hasSelectedTags && allowed.has(checkId);
-      labelEl.classList.toggle("hidden-by-tag", !isVisible);
-      if (isVisible) visibleCount++;
-    });
-    groupEl.classList.toggle("hidden-by-tag", visibleCount === 0);
+  document.querySelectorAll(".tag-inline-subchecks").forEach((subBox) => {
+    const tag = subBox.getAttribute("data-subchecks-for");
+    const isTagSelected = Boolean(tag && appState.selectedTags.has(tag));
+    subBox.classList.toggle("hidden", !isTagSelected);
   });
 }
 
@@ -9552,6 +9970,8 @@ function generateSmartVisionDiagnosis(tags, situation) {
         checkId: pin.checkId || "",
         x: pin.x,
         y: pin.y,
+        w: pin.w || 14,
+        h: pin.h || 14,
         label: cleanLabel,
         issueText: `[사진 #${pIdx + 1} 지적 #${mNum}] ${cleanLabel}`,
         actionText: `[지적 #${mNum} 조치] ${actionStr}`,
@@ -9887,6 +10307,8 @@ function renderDiagnosisReport(report, selectedTags, modeLabel, autoScroll = tru
         markerEl.setAttribute("data-marker-num", String(m.num));
         markerEl.style.left = `${m.x}%`;
         markerEl.style.top = `${m.y}%`;
+        markerEl.style.width = `${m.w || 14}%`;
+        markerEl.style.height = `${m.h || 14}%`;
         markerEl.title = `지적 #${m.num}: ${m.label} (클릭 시 조치 체크 토글)`;
 
         markerEl.innerHTML = `
@@ -10387,7 +10809,7 @@ function escapeHtml(str) {
     .replace(/'/g, "&#039;");
 }
 
-// 26.11.09 V1.08
+// 26.11.09 V1.09
   </script>
 </body>
 </html>
