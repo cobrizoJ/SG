@@ -5044,60 +5044,27 @@ body {
  * - 다중 사진 업로드 & 갤러리 전환
  * - 사진 터치/클릭 부위 지정 커스텀 핀(Pin) 시스템
  * - 사진 픽셀 시각 특성 분석 + 세부 작업사항 확인 체크박스 연동 맞춤형 동적 진단 엔진
- * - 버전: 26.11.11 V1.10
+ * - 버전: 26.11.18 V1.12
  */
 
 // ============================================================================
-// 1. PRD Section 4: AI 비전(Vision) '12단계 분할 추론(12-Stage Visual CoT)' 시스템 프롬프트
+// 1. PRD Section 4: AI 비전(Vision) 핵심 현장 안전 진단 시스템 프롬프트 (토큰 최적화)
 // ============================================================================
-const SYSTEM_INSTRUCTION = `당신은 현대제철 협력사 안전가이드북(Safety E-book Partner)과 대한민국 4대 안전법령(산업안전보건법, 중대재해처벌법, 화학물질관리법, KOSHA Guide)을 완벽히 체화한 'Vision AI 현장 안전 12단계 분할 추론(12-Stage Visual CoT) 엔진'입니다.
+const SYSTEM_INSTRUCTION = `당신은 현대제철 협력사 안전가이드북과 4대 안전법령(산안법, 중대처벌법, 화관법, KOSHA Guide) 기반 현장 안전 진단 AI입니다.
+과거 사고 날짜·지역·고정 카탈로그 문구 나열 및 사용자 입력 앵무새 반복을 금지하고, 오직 사진 속 시각적 사실만 판독해 간결한 JSON으로 즉시 응답하십시오.
 
-과거 사고 사례의 날짜·지역명·문서번호·통계 수치를 암기해서 단순 나열하거나 하드코딩된 카탈로그 고정 문구(예: "안전모·안전대 체결 불량 - 추락·낙하", "작업발판 위험 - 해체 중 추락")를 무작위로 섞어 출력하는 방식을 절대 금지합니다.
-이미지가 입력되면 최종 진단을 내리기 전에 반드시 아래 **[12단계 시각적 분할 추론(twelveStageReasoning)]**을 Stage 1부터 Stage 12까지 순서대로 먼저 수행하여 JSON의 \`twelveStageReasoning\` 객체에 기록한 뒤, **오직 그 추론 결과를 바탕으로만** 위험 부위 핀 좌표(\`detectedPins\`), 핵심 불안전 요소(\`detectedIssues\`), 즉시 조치 대책(\`actionChecklist\`)을 도출하십시오.
+[핵심 판독 규칙]
+1. 노이즈 분리: 배너·로고·텍스트·화살표를 제외한 실제 작업 구역, 작업자, 설비·기인물, 에너지원만 분석하십시오.
+2. 보호구 5대 실측 판독: ①머리(안전모·턱끈) ②손(장갑 vs 맨손) ③허리(안전대·고리 체결) ④발(안전화·정규 발판 vs 철근/단부 딛기) ⑤안면·호흡기(보안경·마스크). 착용 중인 보호구를 미착용으로 허위 지적하지 마십시오.
+3. 결함 확정: 작업자-설비 위험 접촉면과 누락된 물리·관리적 방호장치(작업발판, 안전난간, 개구부 덮개, 고임목, LOTO, 방화포, 환기, 신호수/감시인 등)만 결함으로 도출하십시오.
+4. 사용자 지정 핀(\`x%, y%, w%, h%\`)이 전달되면 해당 박스 내부의 실제 결함을 구체화해 \`detectedPins\`와 \`detectedIssues\`에 반영하십시오.
+5. \`detectedPins\`의 각 좌표는 실제 결함 부위의 \`box_2d: [ymin, xmin, ymax, xmax]\` (0~1000 정수)와 퍼센트(\`x=Math.round((xmin+xmax)/20)\`, \`y=Math.round((ymin+ymax)/20)\`, \`w=Math.max(8,Math.round((xmax-xmin)/10))\`, \`h=Math.max(8,Math.round((ymax-ymin)/10))\`)로 정확히 계산하십시오.
 
-[필수 선행 수행: 12단계 시각적 분할 추론 (12-Stage Visual CoT)]
-- **Stage 1 (배경 및 노이즈 분리):** 이미지 내 상단 텍스트 배너, 표지 로고, 테두리, 화살표 그래픽과 '실제 현장/작업 구역'을 분리하고 실제 작업 공간의 영역만 특정한다.
-- **Stage 2 (작업 공간 및 환경 파악):** 실내/실외 여부, 바닥 상태(요철, 단차, 물기, 경사로, 개구부), 조도, 밀폐 여부 등 환경적 맥락을 서술한다.
-- **Stage 3 (설비·장비·기인물 식별):** 사진에 보이는 모든 기계, 중장비(지게차, 크레인, 굴착기, 트럭), 가설구조물(비계, 사다리, 고소작업대), 철근/배관, 화기, 공구를 빠짐없이 나열한다.
-- **Stage 4 (잠재 에너지원 분석):** 식별된 기인물이 가진 위험 에너지(중력/추락, 유압/자중 하강, 회전력/말림, 운동에너지/후진·충돌, 전기에너지, 화염/폭발성 잔류가스, 산소결핍, 날카로운 철근·자재 베임/찔림)를 특정한다.
-- **Stage 5 (작업자 위치 및 자세 추적):** 사진 속 모든 작업자의 위치, 시선 방향, 손과 발이 실제로 닿아 있는 곳, 이동 동선을 정밀 묘사한다.
-- **Stage 6 (신체 부위별 개인보호구(PPE) 5대 분리 정밀 판독 - 핵심):** "안전보호구"를 뭉뚱그려 판단하지 말고 반드시 사진에서 아래 5가지를 각각 눈으로 확인해 구분 판독한다:
-  ① 머리: 안전모 착용 여부 및 턱끈 체결 상태 (착용 중이면 절대 미착용이라 하지 말 것)
-  ② 손: 작업용 안전장갑(절단방지/절연/용접장갑 등) 착용 여부 vs 맨손 노출 여부
-  ③ 몸통/허리: 안전대(그네식/벨트식) 착용 여부 및 안전고리(켁/생명줄) 실제 체결 여부
-  ④ 발: 안전화 착용 여부 및 딛고 있는 곳(정규 발판 vs 철근/파이프/단부 임의 딛기)
-  ⑤ 얼굴/호흡기: 보안경, 용접면, 방독/송기마스크 착용 여부
-- **Stage 7 (인간-설비 위험 접촉면 교차 분석):** Stage 4의 에너지원 반경과 Stage 5의 작업자 신체 위치가 겹치는 '치명적 위험 교차점(Line of Fire)'(예: 정규 작업발판 없이 수평 철근을 밟고 서 있음, 맨손으로 철근 파지, 들린 프레임 아래 신체 진입, 개구부 단부 인접 이동)을 찾아낸다.
-- **Stage 8 (물리적·공학적 방호장치 결함 탐지 - 핵심):** 해당 위험 교차점에 마땅히 설치되어 있어야 할 물리적 방호장치(정규 작업발판, 안전블록/지지대, 안전난간/개구부 고정덮개, 바퀴 고임목/스토퍼, 아웃트리거, 방호울/인터록, 방화포, 환기팬) 중 사진에서 **눈에 보이지 않는(누락된) 결함**을 확정한다.
-- **Stage 9 (관리적 통제 및 에너지 차단 결함 탐지):** LOTO(ILS) 자물쇠·조작금지 표지판 부착 여부, 전담 신호수/유도자/화기감시인/밀폐감시인 배치 여부, 2인 1조 준수 여부를 판별한다.
-- **Stage 10 (사고 메커니즘 인과 사슬 확정):** \`[시각적 단서(Stage 3+5+6)] + [빠진 방호장치(Stage 8+9)] ➔ [발생할 재해 형태 및 치명도]\`의 인과 사슬을 완성한다.
-- **Stage 11 (위험 부위 정밀 좌표 매핑):** Stage 7~9에서 확정된 실제 결함 지점의 이미지 내 위치를 Gemini 2D Bounding Box 규격인 \`box_2d: [ymin, xmin, ymax, xmax]\` (0~1000 스케일 정수)로 정밀 계산한다 (절대 텍스트 배너나 허공에 찍지 말 것).
-- **Stage 12 (현대제철 안전가이드 & 4대 법령 대책 매칭):** 도출된 결함을 즉시 제거하기 위한 현장 조치사항, 법령 기준(산안법 안전보건규칙 조문, 현대제철 ILS/작업허가 기준), 1분 TBM 핵심 멘트를 최종 생성한다 (과거 사고 날짜·지역명 나열 절대 금지).
-
-[사용자 지정 핀(User Pin) 정밀 판독 및 출력 절대 규칙]
-1. 사용자가 사진 위에 먼저 찍어둔 핀(좌표 \`x%\`, \`y%\`, \`w%\`, \`h%\`)이 전달된 경우, **사용자가 지정한 각 핀 박스 내부에 실제로 무엇이 보이는지 정밀 판독해서**, 그 핀의 \`label\`을 추상적 문구('작업발판 위험', '안전보호구 미착용')가 아닌 **실제 관찰된 구체적 결함(예: '왼손 작업용 보호장갑 미착용 상태로 철근 파지', '정규 작업발판 없이 수평 철근을 밟고 서 있음', '안전모는 착용했으나 추락방지 안전대 고리 미체결')**으로 구체화하여 \`detectedPins\`와 \`detectedIssues\`에 반영하십시오.
-2. 각 \`detectedPins\` 항목에는 \`box_2d: [ymin, xmin, ymax, xmax]\` (0~1000 스케일 정수)와 함께 중심점·크기 퍼센트 좌표(\`x = Math.round((xmin + xmax) / 20)\`, \`y = Math.round((ymin + ymax) / 20)\`, \`w = Math.max(8, Math.round((xmax - xmin) / 10))\`, \`h = Math.max(8, Math.round((ymax - ymin) / 10))\`)를 정확히 계산해 넣으십시오.
-3. 사진 속 작업자가 안전모를 착용하고 있는데도 "안전모 미착용/불량"이라고 허위 진단하는 행위를 엄격히 금지합니다. 실제 눈에 보이는 결함만 정확히 기술하십시오.
-
-반드시 아래 지정된 JSON 포맷으로만 응답하십시오:
+반드시 아래 순수 JSON 형식으로만 간결하게 응답하십시오:
 {
-  "twelveStageReasoning": {
-    "stage01_noiseSeparation": "실제 작업 영역과 그래픽/배너 분리 결과",
-    "stage02_environment": "작업 공간 및 바닥/개구부/조도 환경",
-    "stage03_equipmentOriginators": "식별된 설비·장비·기인물 목록",
-    "stage04_energySources": "작용 중인 위험 에너지원",
-    "stage05_workerPosture": "작업자 신체 위치·자세·시선·동선",
-    "stage06_ppeStatus": "①머리(안전모/턱끈) ②손(안전장갑 vs 맨손) ③몸통/허리(안전대/고리 체결) ④발(안전화/딛고 있는 발판 상태) ⑤얼굴/호흡기 분리 판독 결과",
-    "stage07_hazardIntersection": "작업자 신체와 에너지원이 겹치는 위험 지점",
-    "stage08_missingPhysicalBarriers": "사진에서 누락된 물리적 방호장치(핵심 결함)",
-    "stage09_missingAdminControls": "누락된 LOTO·유도자·감시인·작업계획 통제",
-    "stage10_accidentCausalChain": "시각 단서 + 방호 결함 ➔ 예상 재해 인과관계",
-    "stage11_spatialPinTargeting": "위험 부위 0~1000 스케일 좌표 산출 근거",
-    "stage12_standardMapping": "적용할 현대제철 기준 및 안전보건규칙 조항"
-  },
   "riskLevel": "HIGH" | "MEDIUM" | "LOW",
   "riskLabel": "매우 위험 (작업중지 및 즉시 보완)" | "주의 (보완 후 작업)" | "양호 (안전수칙 유지)",
-  "summary": "Stage 10 기반 핵심 진단 요약 (한 줄)",
+  "summary": "핵심 위험 원인 한 줄 요약",
   "hazardTypes": ["추락(떨어짐)", "끼임(협착)"],
   "detectedPins": [
     {
@@ -5106,19 +5073,19 @@ const SYSTEM_INSTRUCTION = `당신은 현대제철 협력사 안전가이드북(
       "y": 61,
       "w": 20,
       "h": 18,
-      "label": "Stage 6·7·8·9에서 포착된 구체적 위험 부위와 실제 관찰된 결함",
-      "action": "해당 부위 즉시 조치 대책"
+      "label": "관찰된 구체적 위험·결함",
+      "action": "즉시 조치 대책"
     }
   ],
-  "detectedIssues": ["Stage 6·7·8·9·10 기반 핵심 불안전 요소 원문 (최대 4개)"],
+  "detectedIssues": ["핵심 불안전 요소 (최대 4개)"],
   "standards": {
-    "hyundaiSteelGuide": ["현대제철 안전가이드북 기준 필수 조치 (최대 3개)"],
-    "oshaAndSapa": ["산업안전보건법 안전보건규칙 조문 및 의무사항 (최대 3개)"],
-    "chemicalAndKosha": ["화관법 및 KOSHA Guide 기술지침 (최대 3개)"]
+    "hyundaiSteelGuide": ["현대제철 안전가이드북 기준 (최대 3개)"],
+    "oshaAndSapa": ["산안법 안전보건규칙 조문 (최대 3개)"],
+    "chemicalAndKosha": ["화관법·KOSHA Guide 지침 (최대 3개)"]
   },
-  "actionChecklist": ["현장 즉시 조치 액션 체크리스트 (최대 5개)"],
-  "tbmChecklist": ["1분 TBM 전파 핵심 수칙 (최대 4개)"],
-  "tbmScript": "작업반장 낭독용 1분 TBM 당부 멘트"
+  "actionChecklist": ["현장 즉시 조치 체크리스트 (최대 5개)"],
+  "tbmChecklist": ["1분 TBM 핵심 수칙 (최대 4개)"],
+  "tbmScript": "작업반장 낭독용 1분 TBM 핵심 멘트 (2~3문장)"
 }`;
 
 // ============================================================================
@@ -11319,16 +11286,13 @@ function safeSetStorage(key, value) {
   }
 }
 
-// Gemini 기본 모델 및 지원 종료(신규 사용자 차단) 모델 판별
+// Gemini 기본 모델 및 폴백 탐색용 구버전 판별 패턴
 const DEFAULT_GEMINI_MODEL = "gemini-2.5-flash";
 const RETIRED_GEMINI_MODEL_PATTERN = /^(models\/)?gemini-(1\.0|1\.5|2\.0|3\.8)(-|$)/i;
 
 function sanitizeGeminiModelName(name) {
   const cleaned = String(name || "").trim().replace(/^models\//i, "");
-  if (!cleaned || RETIRED_GEMINI_MODEL_PATTERN.test(cleaned) || /gpt/i.test(cleaned)) {
-    return DEFAULT_GEMINI_MODEL;
-  }
-  return cleaned;
+  return cleaned || DEFAULT_GEMINI_MODEL;
 }
 
 const appState = {
@@ -11373,11 +11337,11 @@ function bootApplication() {
   if (dom.systemPromptPreview) {
     dom.systemPromptPreview.textContent = SYSTEM_INSTRUCTION;
   }
-  document.title = "현장 안전지킴이 AI | 현대제철 안전가이드 & 4대 법령 스마트 진단 (26.11.16 V1.11)";
+  document.title = "현장 안전지킴이 AI | 현대제철 안전가이드 & 4대 법령 스마트 진단 (26.11.18 V1.12)";
   const headerBadgeEl = document.querySelector(".header-update-badge");
-  if (headerBadgeEl) headerBadgeEl.textContent = "26.11.16 V1.11";
+  if (headerBadgeEl) headerBadgeEl.textContent = "26.11.18 V1.12";
   const footerVerEl = document.querySelector(".footer-version-tag");
-  if (footerVerEl) footerVerEl.textContent = "버전: 26.11.16 V1.11";
+  if (footerVerEl) footerVerEl.textContent = "버전: 26.11.18 V1.12";
 }
 
 if (document.readyState === "loading") {
@@ -11446,6 +11410,8 @@ function initDomRefs() {
   dom.loadingSubStep = document.getElementById("loadingSubStep");
   dom.loadingProgressBar = document.getElementById("loadingProgressBar");
   dom.resetFormBtn = document.getElementById("resetFormBtn");
+  ensureValidationAlertBelowStartBox();
+  ensureStopDiagnosisButton();
 
   // Output Panel
   dom.emptyReportState = document.getElementById("emptyReportState");
@@ -11505,9 +11471,8 @@ function initDomRefs() {
   dom.apiKeyInput = document.getElementById("apiKeyInput");
   dom.aiModelSelectGroup = document.getElementById("aiModelSelectGroup");
   dom.aiModelInput = document.getElementById("aiModelInput");
-  if (dom.aiModelInput) {
-    dom.aiModelInput.value = sanitizeGeminiModelName(appState.aiConfig.model);
-  }
+  ensureModelSelectDropdown();
+  setSelectedModelValue(sanitizeGeminiModelName(appState.aiConfig.model));
   dom.saveApiConfigBtn = document.getElementById("saveApiConfigBtn");
   dom.apiStatusText = document.getElementById("apiStatusText");
   dom.systemPromptPreview = document.getElementById("systemPromptPreview");
@@ -12117,6 +12082,9 @@ function initEventListeners() {
   dom.openApiModalBtn.addEventListener("click", () => {
     syncApiConfigUI();
     dom.apiConfigModal.classList.remove("hidden");
+    if (resolveGeminiApiKey()) {
+      fetchAndPopulateRealGeminiModels(false);
+    }
   });
   dom.closeApiModalBtn.addEventListener("click", () => {
     ensureActiveApiConfigSynced();
@@ -12133,6 +12101,7 @@ function initEventListeners() {
     dom.aiModelInput.addEventListener("input", () => {
       const val = dom.aiModelInput.value.trim().replace(/^models\//i, "");
       if (val) {
+        setSelectedModelValue(val);
         appState.aiConfig.model = val;
         safeSetStorage("hssg_ai_model", val);
       }
@@ -12147,6 +12116,11 @@ function initEventListeners() {
         safeSetStorage("hssg_ai_key", val);
       }
     });
+    dom.apiKeyInput.addEventListener("change", () => {
+      if (dom.apiKeyInput.value.trim()) {
+        fetchAndPopulateRealGeminiModels(false);
+      }
+    });
   }
 
   dom.aiProviderSelect.addEventListener("change", () => {
@@ -12154,15 +12128,20 @@ function initEventListeners() {
     dom.aiProviderSelect.value = provider;
     dom.apiKeyInputGroup.classList.remove("hidden");
     dom.aiModelSelectGroup.classList.remove("hidden");
-    dom.aiModelInput.value =
+    setSelectedModelValue(
       provider === "gemini"
         ? sanitizeGeminiModelName(appState.aiConfig.model)
-        : "gpt-4o-mini";
+        : "gpt-4o-mini"
+    );
   });
 
   dom.saveApiConfigBtn.addEventListener("click", () => {
     const selectedProvider = dom.aiProviderSelect.value === "openai" ? "openai" : "gemini";
-    const cleanedModel = sanitizeGeminiModelName(dom.aiModelInput.value);
+    const selectedVal =
+      (dom.aiModelSelect && dom.aiModelSelect.value) ||
+      (dom.aiModelInput && dom.aiModelInput.value) ||
+      DEFAULT_GEMINI_MODEL;
+    const cleanedModel = sanitizeGeminiModelName(selectedVal);
     appState.aiConfig.provider = selectedProvider;
     appState.aiConfig.apiKey = dom.apiKeyInput.value.trim();
     appState.aiConfig.model = cleanedModel;
@@ -12286,34 +12265,48 @@ function handleImageFiles(fileList, onComplete) {
 
       img.onload = () => {
         try {
-          const MAX_WIDTH = 1200;
-          let targetWidth = img.width || 800;
+          const MAX_DIMENSION = 800;
+          const MAX_TARGET_KB = 200;
+          let targetWidth = img.width || MAX_DIMENSION;
           let targetHeight = img.height || 600;
 
-          if (targetWidth > MAX_WIDTH) {
-            const scale = MAX_WIDTH / targetWidth;
-            targetWidth = MAX_WIDTH;
-            targetHeight = Math.round(targetHeight * scale);
+          if (targetWidth > MAX_DIMENSION || targetHeight > MAX_DIMENSION) {
+            const scale = Math.min(MAX_DIMENSION / targetWidth, MAX_DIMENSION / targetHeight);
+            targetWidth = Math.max(1, Math.round(targetWidth * scale));
+            targetHeight = Math.max(1, Math.round(targetHeight * scale));
           }
 
           const canvas = document.createElement("canvas");
           canvas.width = targetWidth;
           canvas.height = targetHeight;
           const ctx = canvas.getContext("2d");
+          ctx.fillStyle = "#FFFFFF";
+          ctx.fillRect(0, 0, targetWidth, targetHeight);
           ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
 
+          const extractBase64 = (url) => (url.includes(",") ? url.split(",")[1] : url);
+          const estimateKB = (b64) => Math.round((b64.length * 3) / 4 / 1024);
+
           let compressedDataUrl = dataUrl;
+          let base64Clean = extractBase64(dataUrl);
+          let approxSizeKB = estimateKB(base64Clean);
+
           try {
-            compressedDataUrl = canvas.toDataURL("image/jpeg", 0.85);
+            for (const quality of [0.8, 0.7, 0.6, 0.5]) {
+              const candidateUrl = canvas.toDataURL("image/jpeg", quality);
+              const candidateB64 = extractBase64(candidateUrl);
+              const candidateKB = estimateKB(candidateB64);
+              compressedDataUrl = candidateUrl;
+              base64Clean = candidateB64;
+              approxSizeKB = candidateKB;
+              if (candidateKB <= MAX_TARGET_KB) break;
+            }
           } catch (canvasErr) {
             console.warn("Canvas toDataURL failed, using original dataUrl", canvasErr);
             compressedDataUrl = dataUrl;
+            base64Clean = extractBase64(dataUrl);
+            approxSizeKB = estimateKB(base64Clean);
           }
-
-          const base64Clean = compressedDataUrl.includes(",")
-            ? compressedDataUrl.split(",")[1]
-            : compressedDataUrl;
-          const approxSizeKB = Math.round((base64Clean.length * 3) / 4 / 1024);
 
           // 실제 사진 픽셀 시각 특징 분석 (밝기, 색조, 대비, 의심 작업 추론)
           let visualStats = null;
@@ -14405,21 +14398,230 @@ function resolveGeminiApiKey() {
   return finalKey;
 }
 
+const FALLBACK_GEMINI_MODEL_OPTIONS = [
+  { id: "gemini-2.5-flash", label: "gemini-2.5-flash (기본 권장)" },
+  { id: "gemini-2.5-pro", label: "gemini-2.5-pro (고정밀 추론)" },
+  { id: "gemini-2.5-flash-lite", label: "gemini-2.5-flash-lite (경량 고속)" },
+];
+
 /**
- * 사용자가 설정 모달에서 입력한 모델명(dom.aiModelInput), appState.aiConfig.model,
- * 또는 localStorage에 저장된 모델명을 가져오며, 없거나 지원 종료된 모델일 경우 기본값 DEFAULT_GEMINI_MODEL("gemini-2.5-flash")를 반환합니다.
+ * 모델 드롭다운(#aiModelSelect)과 숨겨진 입력(#aiModelInput) 값을 동기화합니다.
+ */
+function setSelectedModelValue(modelName) {
+  const clean = sanitizeGeminiModelName(modelName);
+  if (dom.aiModelInput && dom.aiModelInput.value.trim() !== clean) {
+    dom.aiModelInput.value = clean;
+  }
+  if (dom.aiModelSelect) {
+    const hasOption = Array.from(dom.aiModelSelect.options).some((opt) => opt.value === clean);
+    if (!hasOption) {
+      const opt = document.createElement("option");
+      opt.value = clean;
+      opt.textContent = clean;
+      dom.aiModelSelect.appendChild(opt);
+    }
+    dom.aiModelSelect.value = clean;
+  }
+  return clean;
+}
+
+/**
+ * 설정 모달 내 모델 입력창 대신 실제 모델 선택 드롭다운과 조회 버튼을 동적으로 구성합니다.
+ */
+function ensureModelSelectDropdown() {
+  if (!dom.aiModelSelectGroup || !dom.aiModelInput) return;
+
+  if (!dom.aiModelSelect) {
+    const labelEl = dom.aiModelSelectGroup.querySelector('label[for="aiModelInput"]');
+    if (labelEl) {
+      labelEl.setAttribute("for", "aiModelSelect");
+    }
+
+    dom.aiModelInput.style.display = "none";
+
+    const selectEl = document.createElement("select");
+    selectEl.id = "aiModelSelect";
+    selectEl.className = "modal-select";
+
+    FALLBACK_GEMINI_MODEL_OPTIONS.forEach((m) => {
+      const opt = document.createElement("option");
+      opt.value = m.id;
+      opt.textContent = m.label;
+      selectEl.appendChild(opt);
+    });
+
+    selectEl.addEventListener("change", () => {
+      const val = sanitizeGeminiModelName(selectEl.value);
+      if (dom.aiModelInput) dom.aiModelInput.value = val;
+      appState.aiConfig.model = val;
+      safeSetStorage("hssg_ai_model", val);
+    });
+
+    const controlsRow = document.createElement("div");
+    controlsRow.style.display = "flex";
+    controlsRow.style.alignItems = "center";
+    controlsRow.style.justifyContent = "space-between";
+    controlsRow.style.gap = "8px";
+    controlsRow.style.marginTop = "8px";
+    controlsRow.style.flexWrap = "wrap";
+
+    const refreshBtn = document.createElement("button");
+    refreshBtn.type = "button";
+    refreshBtn.id = "refreshModelsBtn";
+    refreshBtn.textContent = "🔄 내 API Key로 실제 사용 가능 모델 불러오기";
+    refreshBtn.style.padding = "6px 11px";
+    refreshBtn.style.borderRadius = "6px";
+    refreshBtn.style.border = "1px solid #CBD5E1";
+    refreshBtn.style.background = "#F8FAFC";
+    refreshBtn.style.color = "#0F172A";
+    refreshBtn.style.fontSize = "0.78rem";
+    refreshBtn.style.fontWeight = "700";
+    refreshBtn.style.fontFamily = "inherit";
+    refreshBtn.style.cursor = "pointer";
+    refreshBtn.addEventListener("click", () => fetchAndPopulateRealGeminiModels(true));
+
+    const statusSpan = document.createElement("span");
+    statusSpan.id = "modelFetchStatusText";
+    statusSpan.className = "modal-hint";
+    statusSpan.style.marginTop = "0";
+    statusSpan.textContent = "API Key 입력 후 버튼을 누르면 실제 사용 가능한 모델 목록을 불러옵니다.";
+
+    controlsRow.appendChild(refreshBtn);
+    controlsRow.appendChild(statusSpan);
+
+    dom.aiModelInput.insertAdjacentElement("afterend", selectEl);
+    selectEl.insertAdjacentElement("afterend", controlsRow);
+
+    dom.aiModelSelect = selectEl;
+    dom.refreshModelsBtn = refreshBtn;
+    dom.modelFetchStatusText = statusSpan;
+  }
+}
+
+/**
+ * ListModels API로 현재 API Key에서 실제로 generateContent를 지원하는 모델 목록을 조회하여 드롭다운에 채웁니다.
+ */
+async function fetchAndPopulateRealGeminiModels(showFeedback = true) {
+  ensureModelSelectDropdown();
+  const apiKey = resolveGeminiApiKey();
+  const statusEl = dom.modelFetchStatusText;
+  const btnEl = dom.refreshModelsBtn;
+
+  if (!apiKey) {
+    if (statusEl) {
+      statusEl.textContent = "⚠️ 먼저 위에 Gemini API Key를 입력해 주세요.";
+    }
+    if (showFeedback) {
+      showToast("⚠️ 먼저 Gemini API Key를 입력한 뒤 모델 목록을 불러와 주세요.");
+    }
+    return [];
+  }
+
+  if (btnEl) btnEl.disabled = true;
+  if (statusEl) statusEl.textContent = "⏳ Google API에서 실제 사용 가능 모델 조회 중...";
+
+  try {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key=${encodeURIComponent(apiKey)}`
+    );
+    const rawText = await res.text();
+    let data = null;
+    try {
+      data = JSON.parse(rawText);
+    } catch {}
+
+    if (!res.ok) {
+      const msg = data?.error?.message || rawText || `HTTP ${res.status}`;
+      throw new Error(msg);
+    }
+
+    const realModels = (data?.models || [])
+      .filter((m) => (m.supportedGenerationMethods || []).includes("generateContent"))
+      .map((m) => ({
+        id: String(m.name || "").replace(/^models\//i, ""),
+        displayName: String(m.displayName || "").trim(),
+      }))
+      .filter(
+        (m) =>
+          /^gemini-/i.test(m.id) &&
+          !/(embedding|tts|audio|live|aqa|robotics|computer-use)/i.test(m.id)
+      );
+
+    if (realModels.length === 0) {
+      throw new Error("사용 가능한 Gemini generateContent 모델이 반환되지 않았습니다.");
+    }
+
+    const versionOf = (name) => {
+      const v = name.match(/gemini-(\d+(?:\.\d+)?)/i);
+      return v ? parseFloat(v[1]) : 0;
+    };
+    const score = (m) =>
+      versionOf(m.id) * 100 +
+      (/flash/i.test(m.id) ? 20 : 0) +
+      (/lite/i.test(m.id) ? -5 : 0) +
+      (/(preview|exp)/i.test(m.id) ? -10 : 0) +
+      (/-\d{3}$/.test(m.id) ? -1 : 0);
+
+    realModels.sort((a, b) => score(b) - score(a));
+
+    const prevModel =
+      (dom.aiModelSelect && dom.aiModelSelect.value) ||
+      appState.aiConfig.model ||
+      DEFAULT_GEMINI_MODEL;
+
+    dom.aiModelSelect.innerHTML = "";
+    realModels.forEach((m) => {
+      const opt = document.createElement("option");
+      opt.value = m.id;
+      opt.textContent =
+        m.displayName && m.displayName.toLowerCase() !== m.id.toLowerCase()
+          ? `${m.id} (${m.displayName})`
+          : m.id;
+      dom.aiModelSelect.appendChild(opt);
+    });
+
+    const chosen = realModels.some((m) => m.id === prevModel)
+      ? prevModel
+      : realModels[0].id;
+    setSelectedModelValue(chosen);
+    appState.aiConfig.model = chosen;
+    safeSetStorage("hssg_ai_model", chosen);
+
+    if (statusEl) {
+      statusEl.textContent = `✅ 실제 사용 가능한 모델 ${realModels.length}개 로드 완료`;
+    }
+    if (showFeedback) {
+      showToast(`✅ 실제 사용 가능한 Gemini 모델 ${realModels.length}개를 불러왔습니다.`);
+    }
+    return realModels;
+  } catch (e) {
+    const errMsg = e?.message || String(e);
+    if (statusEl) {
+      statusEl.textContent = `⚠️ 모델 목록 조회 실패: ${errMsg}`;
+    }
+    if (showFeedback) {
+      showToast(`⚠️ 모델 목록 조회 실패: ${errMsg}`);
+    }
+    return [];
+  } finally {
+    if (btnEl) btnEl.disabled = false;
+  }
+}
+
+/**
+ * 사용자가 설정 모달에서 선택한 모델명(dom.aiModelSelect / dom.aiModelInput), appState.aiConfig.model,
+ * 또는 localStorage에 저장된 모델명을 그대로 반환하며, 비어 있을 때만 기본값 DEFAULT_GEMINI_MODEL을 반환합니다.
  */
 function resolveGeminiModel() {
+  const selectModel = dom.aiModelSelect ? dom.aiModelSelect.value.trim() : "";
   const modalModel = dom.aiModelInput ? dom.aiModelInput.value.trim() : "";
   const stateModel = appState.aiConfig?.model ? String(appState.aiConfig.model).trim() : "";
   const storedModel = safeGetStorage("hssg_ai_model", "").trim();
 
-  const finalModel = sanitizeGeminiModelName(modalModel || stateModel || storedModel);
+  const finalModel = sanitizeGeminiModelName(selectModel || modalModel || stateModel || storedModel);
   appState.aiConfig.model = finalModel;
   safeSetStorage("hssg_ai_model", finalModel);
-  if (dom.aiModelInput && dom.aiModelInput.value.trim() !== finalModel) {
-    dom.aiModelInput.value = finalModel;
-  }
+  setSelectedModelValue(finalModel);
   return finalModel;
 }
 
@@ -14452,10 +14654,12 @@ function extractSuggestedGeminiModel(errMessage, currentModel) {
 /**
  * ListModels API로 현재 API Key에서 generateContent를 지원하는 최신 flash 모델을 자동 탐색합니다.
  */
-async function discoverAvailableGeminiModel(apiKey, excludeModels = []) {
+async function discoverAvailableGeminiModel(apiKey, excludeModels = [], signal = null) {
+  if (signal?.aborted) return "";
   try {
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key=${encodeURIComponent(apiKey)}`
+      `https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key=${encodeURIComponent(apiKey)}`,
+      signal ? { signal } : undefined
     );
     if (!res.ok) return "";
     const data = await res.json();
@@ -14566,15 +14770,79 @@ function applyAiDetectedPinsToActivePhoto(detectedPins) {
   renderActivePhotoView();
 }
 
+let activeDiagnosisAbortController = null;
+let activeDiagnosisRunId = 0;
+
+/**
+ * 로딩 박스(#loadingStatusBox) 내부에 사용자가 진단을 즉시 중단할 수 있는 멈춤 버튼을 동적으로 추가합니다.
+ */
+function ensureStopDiagnosisButton() {
+  if (!dom.loadingStatusBox) return null;
+  let btn = document.getElementById("stopDiagnosisBtn");
+  if (!btn) {
+    const row = dom.loadingStatusBox.querySelector(".loading-spinner-row") || dom.loadingStatusBox;
+    row.style.flexWrap = "wrap";
+    btn = document.createElement("button");
+    btn.type = "button";
+    btn.id = "stopDiagnosisBtn";
+    btn.textContent = "⏹️ 진단 멈춤";
+    btn.title = "진행 중인 AI 안전 진단을 즉시 중지합니다";
+    btn.style.marginLeft = "auto";
+    btn.style.flexShrink = "0";
+    btn.style.padding = "8px 14px";
+    btn.style.borderRadius = "8px";
+    btn.style.border = "1.5px solid #FCA5A5";
+    btn.style.background = "#DC2626";
+    btn.style.color = "#FFFFFF";
+    btn.style.fontSize = "0.84rem";
+    btn.style.fontWeight = "800";
+    btn.style.fontFamily = "inherit";
+    btn.style.cursor = "pointer";
+    btn.style.boxShadow = "0 2px 8px rgba(220, 38, 38, 0.35)";
+    btn.addEventListener("click", stopSafetyDiagnosis);
+    row.appendChild(btn);
+  }
+  dom.stopDiagnosisBtn = btn;
+  return btn;
+}
+
+/**
+ * 진행 중인 AI 안전 진단 네트워크 요청을 즉시 중단하고 로딩 상태를 해제합니다.
+ */
+function stopSafetyDiagnosis() {
+  activeDiagnosisRunId++;
+  if (activeDiagnosisAbortController) {
+    try {
+      activeDiagnosisAbortController.abort();
+    } catch (e) {}
+    activeDiagnosisAbortController = null;
+  }
+  setLoadingState(false);
+  setInputPanelCollapsed(false);
+  if (dom.toastNotification) {
+    dom.toastNotification.classList.add("hidden");
+  }
+  showValidationError("사용자에 의해 안전 진단이 중지되었습니다.");
+}
+
 async function startSafetyDiagnosis(skipSuspectPrompt = false) {
   if (appState.photos.length === 0) {
     showValidationError("현장 사진이 업로드되지 않았습니다! 카메라 촬영, 갤러리 다중 업로드 또는 샘플 사진을 선택해 주세요.");
     dom.dropZone.focus();
-    showToast("⚠️ 현장 사진을 먼저 1장 이상 업로드해 주세요!");
     return;
   }
 
   hideValidationError();
+
+  if (activeDiagnosisAbortController) {
+    try {
+      activeDiagnosisAbortController.abort();
+    } catch (e) {}
+  }
+
+  const runId = ++activeDiagnosisRunId;
+  const controller = new AbortController();
+  activeDiagnosisAbortController = controller;
 
   const selectedTagsArray = Array.from(appState.selectedTags);
   const situationText = dom.situationTextarea.value.trim();
@@ -14583,20 +14851,32 @@ async function startSafetyDiagnosis(skipSuspectPrompt = false) {
   setLoadingState(true);
 
   try {
-    const reportData = await callGeminiVisionAPI(selectedTagsArray, situationText);
+    const reportData = await callGeminiVisionAPI(selectedTagsArray, situationText, controller.signal);
+    if (controller.signal.aborted || runId !== activeDiagnosisRunId) return;
+
     const usedModel = reportData?.__usedModel || appState.aiConfig.model || DEFAULT_GEMINI_MODEL;
     const modeUsed = `Gemini Vision API (${usedModel})`;
 
+    hideValidationError();
     setInputPanelCollapsed(true);
     appState.currentReport = normalizeReportData(reportData);
     renderDiagnosisReport(appState.currentReport, selectedTagsArray, modeUsed);
     showToast("✅ Gemini Vision AI 현장 안전 진단이 완료되었습니다.");
   } catch (err) {
+    if (err?.name === "AbortError" || controller.signal.aborted || runId !== activeDiagnosisRunId) {
+      return;
+    }
     console.error("Gemini Vision API 통신 오류:", err);
     setInputPanelCollapsed(false);
-    showToast("⚠️ Gemini API 통신 오류: " + (err?.message || String(err)));
+    if (dom.toastNotification) {
+      dom.toastNotification.classList.add("hidden");
+    }
+    showValidationError("진단 결과를 생성하지 못했습니다: " + (err?.message || String(err)));
   } finally {
-    setLoadingState(false);
+    if (runId === activeDiagnosisRunId) {
+      activeDiagnosisAbortController = null;
+      setLoadingState(false);
+    }
   }
 }
 
@@ -14644,6 +14924,8 @@ function refreshDiagnosisReportLive(reasonLabel = "실시간 반영") {
 function setLoadingState(isLoading) {
   dom.startDiagnosisBtn.disabled = isLoading;
   if (isLoading) {
+    ensureStopDiagnosisButton();
+    if (dom.stopDiagnosisBtn) dom.stopDiagnosisBtn.disabled = false;
     dom.startDiagnosisBtnText.textContent = "Google Gemini Vision API로 사진 및 위험 부위(box_2d) 정밀 분석 중...";
     dom.loadingStatusBox.classList.remove("hidden");
     dom.scannerOverlay.classList.remove("hidden");
@@ -14661,12 +14943,10 @@ function setLoadingState(isLoading) {
 // ============================================================================
 function buildDetailedUserPrompt(tags, situation) {
   const pinDescriptions = [];
-  let hasUserPins = false;
 
   appState.photos.forEach((p, idx) => {
     const userPins = (p.pins || []).filter((pin) => Boolean(pin.isUserManual) && !pin.fromLocalAuto && !pin.fromAiVision);
     if (userPins.length > 0) {
-      hasUserPins = true;
       const pinStrs = userPins
         .map((pin, pIdx) => {
           const cx = Number.isFinite(Number(pin.x)) ? Math.round(Number(pin.x) * 10) / 10 : 50;
@@ -14677,14 +14957,12 @@ function buildDetailedUserPrompt(tags, situation) {
           const xmin = Math.max(0, Math.min(1000, Math.round((cx - cw / 2) * 10)));
           const ymax = Math.max(0, Math.min(1000, Math.round((cy + ch / 2) * 10)));
           const xmax = Math.max(0, Math.min(1000, Math.round((cx + cw / 2) * 10)));
-          return `핀#${pIdx + 1}(중심 x:${cx}%, y:${cy}%, 너비 w:${cw}%, 높이 h:${ch}%, box_2d:[${ymin},${xmin},${ymax},${xmax}], 사용자 참고 메모:"${pin.label || ""}")`;
+          return `핀#${pIdx + 1}(box_2d:[${ymin},${xmin},${ymax},${xmax}], x:${cx}%, y:${cy}%, w:${cw}%, h:${ch}%, 메모:"${pin.label || ""}")`;
         })
-        .join("\n  ");
-      pinDescriptions.push(`- 사진 #${idx + 1}에 사용자가 지정한 관심 영역(${userPins.length}개):\n  ${pinStrs}`);
+        .join(", ");
+      pinDescriptions.push(`사진#${idx + 1} 사용자핀(${userPins.length}개): ${pinStrs}`);
     } else {
-      pinDescriptions.push(
-        `- 사진 #${idx + 1}: AI가 사진 속 실제 위험·결함 지점을 직접 탐지하여 box_2d: [ymin, xmin, ymax, xmax] (0~1000 스케일 정수)를 detectedPins에 반환할 것`
-      );
+      pinDescriptions.push(`사진#${idx + 1}: 위험 부위 직접 탐지 후 box_2d 반환`);
     }
   });
 
@@ -14695,28 +14973,18 @@ function buildDetailedUserPrompt(tags, situation) {
     if (spanText) checkedSubLabels.push(spanText);
   });
 
-  const userPinSpecialInstruction = hasUserPins
-    ? `
-[사용자 지정 핀(User Pin) 정밀 판독 지시사항]
-- 사용자가 사진 위에 표시한 관심 영역 내부에 실제로 무엇이 보이는지 정밀 판독하여, 실제 관찰된 구체적 위험·결함과 정확한 box_2d: [ymin, xmin, ymax, xmax] (0~1000 스케일) 좌표를 detectedPins에 기록하십시오.
-- 사용자가 입력한 짧은 메모를 앵무새처럼 그대로 반복하지 말고, 사진에서 실제로 관찰된 구체적 불안전 상태와 원인을 분석하여 작성하십시오.`
-    : "";
-
-  return `[현장 안전 진단 입력 컨텍스트]
-1. 업로드된 사진 정보 (${appState.photos.length}장):
-${pinDescriptions.join("\n")}
-2. 사용자 선택 작업 유형 태그: ${tags.length > 0 ? tags.join(", ") : "미선택 (이미지 시각 단서로 직접 판독)"}
-3. 사용자 선택 세부 작업 조건: ${checkedSubLabels.length > 0 ? checkedSubLabels.join(" / ") : "별도 체크 없음"}
-4. 사용자 입력 작업 상황 설명: ${String(situation || "").trim() || "별도 설명 없음 (오직 사진의 시각적 단서를 기반으로 정밀 분석할 것)"}
-${userPinSpecialInstruction}
-
-[필수 출력 지시사항]
-- 사용자가 입력한 상황 설명 텍스트를 그대로 복사·반복(앵무새 출력)하지 말고, 첨부된 현장 사진을 정밀 시각 분석하여 구체적인 불안전 요소와 법령·가이드북 기반 예방 대책을 도출하십시오.
-- "detectedPins"의 각 항목에는 반드시 실제 사진 속 위험 부위의 2D Bounding Box 좌표인 "box_2d": [ymin, xmin, ymax, xmax] (0~1000 스케일 정수)와 구체적인 위험 설명("label") 및 조치 대책("action")을 포함하십시오.
-- 반드시 순수 JSON 객체만 반환하십시오.`;
+  return `[진단 요청(${appState.photos.length}장)]
+- 사진/핀: ${pinDescriptions.join(" | ")}
+- 태그: ${tags.length > 0 ? tags.join(", ") : "없음"}
+- 세부조건: ${checkedSubLabels.length > 0 ? checkedSubLabels.join(", ") : "없음"}
+- 상황설명: ${String(situation || "").trim() || "없음"}
+사진 시각 단서(사용자 핀 포함)를 우선 판독해 순수 JSON만 간결히 출력하십시오.`;
 }
 
-async function callGeminiVisionAPI(tags, situation) {
+async function callGeminiVisionAPI(tags, situation, signal = null) {
+  if (signal?.aborted) {
+    throw new DOMException("Aborted", "AbortError");
+  }
   const apiKey = resolveGeminiApiKey();
   if (!apiKey) {
     throw new Error("API Key가 설정되지 않았습니다. 우측 상단 [AI 설정]에서 Gemini API Key를 입력해 주세요.");
@@ -14727,10 +14995,11 @@ async function callGeminiVisionAPI(tags, situation) {
     throw new Error("진단할 현장 사진이 없습니다.");
   }
 
-  appState.aiConfig.model = resolveGeminiModel() || DEFAULT_GEMINI_MODEL;
+  const activeModel = resolveGeminiModel() || DEFAULT_GEMINI_MODEL;
+  appState.aiConfig.model = activeModel;
 
   dom.loadingProgressBar.style.width = "65%";
-  dom.loadingSubStep.textContent = `Google Gemini Vision API (${appState.aiConfig.model})로 현장 사진 및 프롬프트 전송 중...`;
+  dom.loadingSubStep.textContent = `Google Gemini Vision API (${activeModel})로 현장 사진 및 프롬프트 전송 중...`;
 
   const userPrompt = buildDetailedUserPrompt(tags, situation);
   const parts = [{ text: userPrompt }];
@@ -14775,77 +15044,42 @@ async function callGeminiVisionAPI(tags, situation) {
     },
   });
 
-  const sendRequest = async () => {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${appState.aiConfig.model}:generateContent?key=${encodeURIComponent(apiKey)}`;
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-goog-api-key": apiKey,
-      },
-      body: requestBody,
-    });
-    let errDetail = "";
-    if (!res.ok) {
-      errDetail = `HTTP ${res.status}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${activeModel}:generateContent?key=${encodeURIComponent(apiKey)}`;
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-goog-api-key": apiKey,
+    },
+    body: requestBody,
+    signal,
+  });
+
+  if (signal?.aborted) {
+    throw new DOMException("Aborted", "AbortError");
+  }
+
+  if (!response.ok) {
+    const errText = await response.text().catch(() => "");
+    let errDetail = `HTTP ${response.status} 오류`;
+    if (errText) {
       try {
-        const errJson = await res.json();
-        errDetail = errJson?.error?.message || JSON.stringify(errJson);
+        const errJson = JSON.parse(errText);
+        errDetail = errJson?.error?.message || errJson?.error?.status || errText;
       } catch {
-        try {
-          errDetail = await res.text();
-        } catch {}
+        errDetail = errText;
       }
     }
-    return { res, errDetail };
-  };
-
-  // 모델 지원 종료/미존재 시: ① 에러 메시지의 권장 모델 → ② gemini-2.5-flash → ③ ListModels 자동 탐색 모델 순으로 자동 재시도
-  const triedModels = [];
-  let response = null;
-  let lastErr = "";
-
-  for (let attempt = 0; attempt < 4; attempt++) {
-    triedModels.push(appState.aiConfig.model);
-    const { res, errDetail } = await sendRequest();
-    if (res.ok) {
-      response = res;
-      break;
-    }
-    lastErr = errDetail || `HTTP ${res.status} 오류`;
-
-    if (!isGeminiModelUnavailableError(res.status, lastErr)) break;
-
-    let nextModel = extractSuggestedGeminiModel(lastErr, appState.aiConfig.model);
-    if (!nextModel || triedModels.includes(nextModel)) {
-      if (!triedModels.includes(DEFAULT_GEMINI_MODEL)) {
-        nextModel = DEFAULT_GEMINI_MODEL;
-      } else {
-        dom.loadingSubStep.textContent = "현재 API Key에서 사용 가능한 최신 Gemini 모델을 자동 탐색 중...";
-        nextModel = await discoverAvailableGeminiModel(apiKey, triedModels);
-      }
-    }
-    if (!nextModel || triedModels.includes(nextModel)) break;
-
-    console.warn(`Gemini 모델 '${appState.aiConfig.model}' 사용 불가 → '${nextModel}'(으)로 자동 전환`);
-    appState.aiConfig.model = nextModel;
-    dom.loadingSubStep.textContent = `Gemini 모델을 ${nextModel}(으)로 자동 전환하여 재시도 중...`;
-  }
-
-  if (!response) {
-    throw new Error(lastErr || "Gemini API 호출 실패");
-  }
-
-  // 실제로 호출에 성공한 모델명을 설정에 저장하여 다음 호출부터 바로 사용
-  persistWorkingGeminiModel(appState.aiConfig.model);
-  if (triedModels.length > 1) {
-    showToast(`ℹ️ Gemini 모델이 ${appState.aiConfig.model}(으)로 자동 전환되었습니다.`);
+    throw new Error(`[${activeModel}] ${errDetail}`);
   }
 
   dom.loadingProgressBar.style.width = "92%";
   dom.loadingSubStep.textContent = "Gemini Vision API 응답 JSON 파싱 및 위험 부위 마커 렌더링 중...";
 
   const result = await response.json();
+  if (signal?.aborted) {
+    throw new DOMException("Aborted", "AbortError");
+  }
   const candidate = result?.candidates?.[0];
   const contentParts = candidate?.content?.parts || [];
 
@@ -14864,7 +15098,7 @@ async function callGeminiVisionAPI(tags, situation) {
   }
 
   const parsed = parseAndValidateTwelveStageResponse(rawText);
-  parsed.__usedModel = appState.aiConfig.model;
+  parsed.__usedModel = activeModel;
   return parsed;
 }
 
@@ -15618,6 +15852,7 @@ function handleVoiceDictation() {
 }
 
 function syncApiConfigUI() {
+  ensureModelSelectDropdown();
   const apiKey = resolveGeminiApiKey();
   const provider = appState.aiConfig.provider === "openai" ? "openai" : "gemini";
   const model = resolveGeminiModel() || DEFAULT_GEMINI_MODEL;
@@ -15626,7 +15861,7 @@ function syncApiConfigUI() {
   appState.aiConfig.model = model;
   dom.aiProviderSelect.value = provider;
   dom.apiKeyInput.value = apiKey;
-  dom.aiModelInput.value = model;
+  setSelectedModelValue(model);
 
   dom.apiKeyInputGroup.classList.remove("hidden");
   dom.aiModelSelectGroup.classList.remove("hidden");
@@ -15692,7 +15927,25 @@ function resetAllState() {
   dom.stepIndicator3.classList.remove("active");
 }
 
+/**
+ * 진단 실패·미입력 알림 박스(#validationAlert)를 진단 시작 버튼 박스 바로 아래에 배치합니다.
+ */
+function ensureValidationAlertBelowStartBox() {
+  if (!dom.validationAlert) return;
+  const submitWrap =
+    dom.startDiagnosisBtn?.closest(".submit-action-wrap") || dom.startDiagnosisBtn;
+  if (submitWrap && dom.validationAlert.previousElementSibling !== submitWrap) {
+    submitWrap.insertAdjacentElement("afterend", dom.validationAlert);
+  }
+  dom.validationAlert.style.marginTop = "12px";
+  dom.validationAlert.style.marginBottom = "0";
+  dom.validationAlert.style.wordBreak = "break-word";
+  dom.validationAlert.style.lineHeight = "1.5";
+}
+
 function showValidationError(msg) {
+  if (!dom.validationAlert || !dom.validationAlertText) return;
+  ensureValidationAlertBelowStartBox();
   dom.validationAlertText.textContent = msg;
   dom.validationAlert.classList.remove("hidden");
 }
@@ -15720,7 +15973,7 @@ function escapeHtml(str) {
     .replace(/'/g, "&#039;");
 }
 
-// 26.11.11 V1.10
+// 26.11.18 V1.12
   </script>
 </body>
 </html>
