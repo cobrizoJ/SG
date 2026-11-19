@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <meta name="theme-color" content="#002C5F" />
-  <title>현장 안전지킴이 AI (26.11.16 V1.11) | 현대제철 안전가이드 &amp; 4대 안전법령 기반 현장 사진 진단</title>
+  <title>현장 안전지킴이 AI (26.11.19 V1.14) | 현대제철 안전가이드 &amp; 4대 안전법령 기반 현장 사진 진단</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
@@ -4137,6 +4137,267 @@ body {
   display: none;
 }
 
+/* =========================================================
+   V1.13: 업로드/진단중 잠금, 컴팩트 로딩바, 리포트 1줄 압축, TBM 자연음성·공간 최적화
+   ========================================================= */
+.panel-header {
+  flex-wrap: nowrap;
+  gap: 8px;
+}
+
+.panel-title-wrap {
+  min-width: 0;
+  flex-wrap: nowrap;
+  gap: 7px;
+}
+
+.section-step-badge,
+.step-2-badge {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.panel-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.report-header-tools {
+  flex-shrink: 0;
+}
+
+.btn-report-tool {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* 핀 우측 상단 X 즉시 삭제 버튼 */
+.pin-marker-delete-btn {
+  position: absolute;
+  top: -9px;
+  right: -9px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #DC2626;
+  color: #FFFFFF;
+  border: 1.5px solid #FFFFFF;
+  font-size: 0.62rem;
+  font-weight: 900;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 32;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+  padding: 0;
+  pointer-events: auto;
+  touch-action: manipulation;
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+
+.pin-marker-delete-btn:hover {
+  background: #991B1B;
+  transform: scale(1.12);
+}
+
+/* 핀 안내 바 내 핀 초기화 버튼 우측 정렬 */
+.pin-instruction-bar > span {
+  flex: 1;
+  min-width: 0;
+}
+
+.btn-clear-pins {
+  flex-shrink: 0;
+}
+
+/* 진단 중 사진 핀 조작 및 입력 요소 오조작 차단 */
+#inputPanel.is-diagnosing #previewImageStage,
+#inputPanel.is-diagnosing #photoPinOverlay,
+#inputPanel.is-diagnosing .photo-pin-marker,
+#inputPanel.is-diagnosing .pin-marker-delete-btn,
+#inputPanel.is-diagnosing .pin-resize-handle {
+  pointer-events: none !important;
+  cursor: wait !important;
+}
+
+#inputPanel.is-diagnosing .pin-marker-delete-btn,
+#inputPanel.is-diagnosing .pin-resize-handle {
+  opacity: 0.45;
+}
+
+#inputPanel.is-diagnosing #clearCurrentPinsBtn,
+#inputPanel.is-diagnosing #addMorePhotosBtn,
+#inputPanel.is-diagnosing #removeCurrentImageBtn,
+#inputPanel.is-diagnosing #removeImageBtn,
+#inputPanel.is-diagnosing .thumb-remove-btn,
+#inputPanel.is-diagnosing .photo-thumb-add-btn,
+#inputPanel.is-diagnosing .photo-thumb-card,
+#inputPanel.is-diagnosing .camera-action-grid,
+#inputPanel.is-diagnosing #pinsSummaryContainer,
+#inputPanel.is-diagnosing #resetFormBtn {
+  pointer-events: none !important;
+  opacity: 0.5;
+}
+
+/* 컴팩트 로딩 상태 박스 & 스피너 옆 진단 멈춤 버튼 */
+.loading-status-box {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+}
+
+.loading-spinner-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 10px;
+  margin-bottom: 7px;
+}
+
+.industrial-spinner {
+  width: 28px;
+  height: 28px;
+  border-width: 3px;
+  flex-shrink: 0;
+}
+
+.loading-text-group {
+  flex: 1;
+  min-width: 0;
+  gap: 2px;
+}
+
+.loading-main-msg {
+  font-size: 0.84rem;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.loading-sub-msg {
+  font-size: 0.74rem;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn-stop-diagnosis {
+  flex-shrink: 0;
+  margin-left: auto;
+  padding: 6px 11px;
+  border-radius: 7px;
+  border: 1.5px solid #FCA5A5;
+  background: #DC2626;
+  color: #FFFFFF;
+  font-size: 0.78rem;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  line-height: 1.2;
+  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.35);
+}
+
+.btn-stop-diagnosis:hover {
+  background: #B91C1C;
+}
+
+.loading-progress-track {
+  height: 6px;
+}
+
+/* 진단 리포트: 매우 위험 1줄 표시 & 시각적 불안전 요소 1줄 압축 */
+.report-card {
+  padding: 14px;
+}
+
+.integrated-risk-left {
+  width: 100%;
+  min-width: 0;
+}
+
+.risk-beacon-wrap {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 6px;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.beacon-light {
+  font-size: 1.15rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.risk-level-badge {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  font-size: 0.76rem;
+  padding: 3px 9px;
+  line-height: 1.25;
+}
+
+#riskSummaryText {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.detected-issue-item {
+  align-items: center;
+  padding: 8px 11px;
+  gap: 8px;
+  font-size: 0.88rem;
+}
+
+.detected-issue-item > span:last-child {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 1분 TBM 체크 항목: 가로 공간 최대 활용 및 2줄 이내 표시 */
+.tbm-quote-box {
+  padding: 14px 14px;
+}
+
+.tbm-script-text {
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.tbm-check-item {
+  padding: 9px 12px;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.tbm-check-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.42;
+  color: #F8FAFC;
+  word-break: keep-all;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
   </style>
 </head>
 <body>
@@ -4156,7 +4417,7 @@ body {
             <span class="hyundai-pill">HYUNDAI STEEL SAFETY</span>
             <span class="law-pill">4대 안전법령 · KOSHA 기준</span>
           </div>
-          <h1 class="brand-title">현장 안전지킴이 <span class="accent-orange">AI</span><span class="header-update-badge">26.11.16 V1.11</span></h1>
+          <h1 class="brand-title">현장 안전지킴이 <span class="accent-orange">AI</span><span class="header-update-badge">26.11.19 V1.14</span></h1>
           <p class="brand-subtitle">현대제철 협력사 안전가이드북 &amp; 산안법·중처법·화관법·KOSHA 비전 진단 시스템</p>
         </div>
       </div>
@@ -4308,21 +4569,12 @@ body {
                 <div id="multiPhotoStrip" class="multi-photo-strip"></div>
               </div>
 
-              <!-- 현재 선택된 사진 메타 정보 바 -->
-              <div class="preview-header-bar">
-                <div class="preview-meta">
-                  <span class="preview-status-dot"></span>
-                  <span id="previewFileName" class="preview-filename">현장사진.jpg</span>
-                  <span id="previewResolutionBadge" class="preview-res-badge">최적화됨</span>
-                </div>
-                <button type="button" id="clearCurrentPinsBtn" class="btn-clear-pins">
-                  📍 핀 초기화
-                </button>
-              </div>
-
               <!-- 사진 드래그 사각 범위 지정 안내 배너 -->
               <div class="pin-instruction-bar">
                 <span>👆 위험부위를 드래그하여 사각 범위 지정 (핀 드래그 이동 · 크기 조절 가능)</span>
+                <button type="button" id="clearCurrentPinsBtn" class="btn-clear-pins">
+                  📍 핀 초기화
+                </button>
               </div>
 
               <div class="preview-image-frame">
@@ -4368,7 +4620,7 @@ body {
           </div>
 
           <!-- 2. 작업 유형 빠른 선택 태그 (체크 시 각 항목 바로 아래에 한 줄 세부 작업사항 표시) -->
-          <div class="form-group">
+          <div class="form-group" id="workTypeSection">
             <div class="label-row">
               <label class="form-label">
                 <span class="num-circle">2</span>
@@ -4552,7 +4804,7 @@ body {
           </div>
 
           <!-- 3. 작업 상황 설명 입력 (빠른 문구 제거 및 높이 압축) -->
-          <div class="form-group">
+          <div class="form-group" id="situationSection">
             <div class="label-row">
               <label for="situationTextarea" class="form-label">
                 <span class="num-circle">3</span>
@@ -4578,7 +4830,7 @@ body {
           </div>
 
           <!-- 4. [🚨 AI 현장 안전 진단 시작] 버튼 -->
-          <div class="submit-action-wrap">
+          <div class="submit-action-wrap" id="submitActionWrap">
             <button type="button" id="startDiagnosisBtn" class="btn-start-diagnosis">
               <span class="siren-icon" aria-hidden="true">🚨</span>
               <span id="startDiagnosisBtnText">AI 현장 안전 진단 시작</span>
@@ -4591,12 +4843,15 @@ body {
               <div class="industrial-spinner" aria-hidden="true"></div>
               <div class="loading-text-group">
                 <strong class="loading-main-msg">
-                  사진 속 보호구, 설비 상태 및 법령 기준을 대조하고 있습니다...
+                  AI 현장 안전 정밀 진단 중...
                 </strong>
                 <span id="loadingSubStep" class="loading-sub-msg">
-                  [1/3] 개인보호구(PPE) 및 현장 불안전 요소 시각 탐지 중...
+                  보호구, 설비 및 법령 기준 대조 중...
                 </span>
               </div>
+              <button type="button" id="stopDiagnosisBtn" class="btn-stop-diagnosis" title="진행 중인 AI 안전 진단을 즉시 중지합니다">
+                ⏹️ 진단 멈춤
+              </button>
             </div>
             <div class="loading-progress-track">
               <div id="loadingProgressBar" class="loading-progress-fill"></div>
@@ -4615,7 +4870,6 @@ body {
             <h2 id="outputPanelTitle" class="panel-title">AI 현장 안전 진단 리포트</h2>
           </div>
           <div class="report-header-tools hidden" id="reportHeaderTools">
-            <span id="analysisModeBadge" class="analysis-mode-badge">AI Vision 정밀진단</span>
             <button type="button" id="printReportBtn" class="btn-report-tool" title="진단 리포트 인쇄 또는 PDF 저장">
               🖨️ 인쇄/저장
             </button>
@@ -4656,10 +4910,9 @@ body {
             <article class="report-card visual-hazards-card">
               <div class="card-section-header">
                 <div class="card-title-group">
-                  <span class="card-icon">👁️‍🗨️</span>
                   <h3>시각적 불안전 요소 및 예상 재해 분석</h3>
                 </div>
-                <span id="reportTimestamp" class="report-timestamp">2026-11-09 진단</span>
+                <span id="reportTimestamp" class="report-timestamp">2026-11-19 진단</span>
               </div>
 
               <!-- 통합된 위험도 배지 + 예상 재해 형태 + 선택한 작업사항 정밀 보정 영역 -->
@@ -4715,33 +4968,6 @@ body {
                   <button type="button" id="checkAllActionsBtn" class="btn-mini-action">
                     전체 완료 체크
                   </button>
-                </div>
-              </div>
-
-              <p class="checklist-guide-text">
-                <strong>[작업 개시 전 최우선 필수 이행]</strong> 현장에서 안전조치를 완료한 항목을 하나씩 클릭하여 체크하세요. <strong>100% 달성 시 작업 시작 가능 배지</strong>가 활성화됩니다.
-              </p>
-
-              <!-- 안전조치 완료율 프로그레스 바 (0% ~ 100%) -->
-              <div class="progress-status-box">
-                <div class="progress-label-row">
-                  <span class="progress-title">안전조치 완료율</span>
-                  <div class="progress-numbers">
-                    <span id="checklistCountText" class="checklist-count">0 / 5 완료</span>
-                    <strong id="checklistPercentText" class="checklist-percent">0%</strong>
-                  </div>
-                </div>
-                <div class="checklist-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="checklistProgressBarWrap">
-                  <div id="checklistProgressFill" class="checklist-progress-fill" style="width: 0%"></div>
-                </div>
-
-                <!-- 100% 달성 시 활성화되는 배지 -->
-                <div id="workReadyBadge" class="work-ready-badge hidden" role="status" aria-live="polite">
-                  <span class="ready-icon">✅</span>
-                  <div class="ready-text">
-                    <strong>작업 시작 가능 상태입니다</strong>
-                    <span>필수 안전조치 항목(100%)이 모두 확인되었습니다. 작업 중에도 안전수칙을 유지하세요.</span>
-                  </div>
                 </div>
               </div>
 
@@ -4871,7 +5097,7 @@ body {
                   <span class="wave-bar"></span>
                   <span class="wave-bar"></span>
                   <span class="wave-bar"></span>
-                  <span class="speaking-label">음성 낭독 중입니다...</span>
+                  <span class="speaking-label" id="tbmSpeakingLabel">한석규 배우 톤 자연 음성 낭독 중...</span>
                 </div>
               </div>
 
@@ -4880,7 +5106,7 @@ body {
                   <span>📋 멘트 복사하기</span>
                 </button>
                 <button type="button" id="speakTbmBtn" class="btn-tbm-action tts-btn">
-                  <span id="speakTbmBtnLabel">🔊 음성으로 듣기 (TTS)</span>
+                  <span id="speakTbmBtnLabel">🔊 한석규 톤 음성 듣기</span>
                 </button>
               </div>
             </article>
@@ -4917,7 +5143,7 @@ body {
   <footer class="app-footer">
     <div class="container footer-inner">
       <div class="footer-info">
-        <strong>현장 안전지킴이 AI</strong> · 현대제철 협력사 안전가이드북 &amp; 4대 안전법령(산안법·중처법·화관법·KOSHA) 기반 현장 사진 진단 웹앱 <span class="footer-version-tag">26.11.16 V1.11</span>
+        <strong>현장 안전지킴이 AI</strong> · 현대제철 협력사 안전가이드북 &amp; 4대 안전법령(산안법·중처법·화관법·KOSHA) 기반 현장 사진 진단 웹앱 <span class="footer-version-tag">26.11.19 V1.14</span>
       </div>
       <div class="footer-links">
         <a
@@ -4947,7 +5173,7 @@ body {
           <label for="aiProviderSelect" class="modal-label">AI 엔진 선택</label>
           <select id="aiProviderSelect" class="modal-select">
             <option value="smart_demo">⚡ 내장 스마트 안전비전 엔진 (API 키 불필요 · 즉시 작동)</option>
-            <option value="gemini">✨ Google Gemini Vision API (gemini-2.5-flash / 2.0-flash)</option>
+            <option value="gemini">✨ Google Gemini Vision API (안정 모델 자동 검증)</option>
             <option value="openai">🤖 OpenAI Vision API (gpt-4o / gpt-4o-mini)</option>
           </select>
         </div>
@@ -5044,7 +5270,7 @@ body {
  * - 다중 사진 업로드 & 갤러리 전환
  * - 사진 터치/클릭 부위 지정 커스텀 핀(Pin) 시스템
  * - 사진 픽셀 시각 특성 분석 + 세부 작업사항 확인 체크박스 연동 맞춤형 동적 진단 엔진
- * - 버전: 26.11.18 V1.12
+ * - 버전: 26.11.19 V1.14
  */
 
 // ============================================================================
@@ -5059,6 +5285,7 @@ const SYSTEM_INSTRUCTION = `당신은 현대제철 협력사 안전가이드북�
 3. 결함 확정: 작업자-설비 위험 접촉면과 누락된 물리·관리적 방호장치(작업발판, 안전난간, 개구부 덮개, 고임목, LOTO, 방화포, 환기, 신호수/감시인 등)만 결함으로 도출하십시오.
 4. 사용자 지정 핀(\`x%, y%, w%, h%\`)이 전달되면 해당 박스 내부의 실제 결함을 구체화해 \`detectedPins\`와 \`detectedIssues\`에 반영하십시오.
 5. \`detectedPins\`의 각 좌표는 실제 결함 부위의 \`box_2d: [ymin, xmin, ymax, xmax]\` (0~1000 정수)와 퍼센트(\`x=Math.round((xmin+xmax)/20)\`, \`y=Math.round((ymin+ymax)/20)\`, \`w=Math.max(8,Math.round((xmax-xmin)/10))\`, \`h=Math.max(8,Math.round((ymax-ymin)/10))\`)로 정확히 계산하십시오.
+6. 텍스트 규격: \`detectedIssues\`와 \`detectedPins.label\`에는 이모티콘을 넣지 말고 한 줄로 간결하게 작성하십시오. \`tbmChecklist\` 각 항목은 35자 이내로 간결하게 작성하십시오.
 
 반드시 아래 순수 JSON 형식으로만 간결하게 응답하십시오:
 {
@@ -5073,19 +5300,19 @@ const SYSTEM_INSTRUCTION = `당신은 현대제철 협력사 안전가이드북�
       "y": 61,
       "w": 20,
       "h": 18,
-      "label": "관찰된 구체적 위험·결함",
+      "label": "이모티콘 없이 관찰된 구체적 위험·결함",
       "action": "즉시 조치 대책"
     }
   ],
-  "detectedIssues": ["핵심 불안전 요소 (최대 4개)"],
+  "detectedIssues": ["이모티콘 없이 한 줄로 요약한 핵심 불안전 요소 (최대 4개)"],
   "standards": {
     "hyundaiSteelGuide": ["현대제철 안전가이드북 기준 (최대 3개)"],
     "oshaAndSapa": ["산안법 안전보건규칙 조문 (최대 3개)"],
     "chemicalAndKosha": ["화관법·KOSHA Guide 지침 (최대 3개)"]
   },
   "actionChecklist": ["현장 즉시 조치 체크리스트 (최대 5개)"],
-  "tbmChecklist": ["1분 TBM 핵심 수칙 (최대 4개)"],
-  "tbmScript": "작업반장 낭독용 1분 TBM 핵심 멘트 (2~3문장)"
+  "tbmChecklist": ["1분 TBM 핵심 수칙 (35자 이내, 최대 4개)"],
+  "tbmScript": "한석규 배우처럼 따뜻하고 중후한 현장 리더 어조의 1분 TBM 구어체 멘트 (2~3문장, 자연스러운 호흡)"
 }`;
 
 // ============================================================================
@@ -5438,6 +5665,21 @@ function stripHistoricalNoise(text) {
 }
 
 /**
+ * 시각적 불안전 요소·태그 표시 시 앞뒤 및 본문 내 이모티콘을 제거하여 깔끔한 텍스트로 정제합니다.
+ */
+function stripEmojis(text) {
+  if (!text) return "";
+  return String(text)
+    .replace(
+      /(?:[\u2600-\u27BF\u{1F000}-\u{1FAFF}]|\p{Extended_Pictographic})(?:\uFE0F|\u200D(?:[\u2600-\u27BF\u{1F000}-\u{1FAFF}]|\p{Extended_Pictographic}))*/gu,
+      ""
+    )
+    .replace(/[\uFE0E\uFE0F\u200D]/g, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
+/**
  * 시나리오 또는 사례 데이터를 날짜·장소 없이
  * [1. 사진 속 시각적 단서] ➔ [2. 빠진 방호장치(결함)] ➔ [3. 즉시 조치 대책] 3단 추론 규칙으로 변환합니다.
  */
@@ -5496,7 +5738,7 @@ function buildThreeStepVisualFormula(item) {
 // 2. 산업현장_사고예방대책_DB.xlsx 전수 내장 상수 (예방대책DB 39건 + 유형별요약 15건 = 100% 학습)
 // ============================================================================
 const EXCEL_SAFETY_DB = {
-  "version": "2026.11.16-V1.11",
+  "version": "2026.11.19-V1.14",
   "sourceFile": "산업현장_사고예방대책_DB.xlsx",
   "totalScenarios": 39,
   "totalTypeSummaries": 15,
@@ -11286,13 +11528,29 @@ function safeSetStorage(key, value) {
   }
 }
 
-// Gemini 기본 모델 및 폴백 탐색용 구버전 판별 패턴
+// Gemini 기본 안정 모델 및 불안정/프리뷰/특수 모델 판별 패턴
 const DEFAULT_GEMINI_MODEL = "gemini-2.5-flash";
 const RETIRED_GEMINI_MODEL_PATTERN = /^(models\/)?gemini-(1\.0|1\.5|2\.0|3\.8)(-|$)/i;
+const UNSTABLE_OR_SPECIAL_GEMINI_MODEL_PATTERN =
+  /(preview|exp|experimental|-\d{3}$|-\d{2}-\d{2}$|embedding|imagen|veo|image|tts|audio|live|aqa|robotics|computer-use|thinking|customtools|deep-research|tuning|bisect|gemma)/i;
+
+/**
+ * Vision JSON 안전 진단에 안정적으로 사용 가능한 정식(GA) 멀티모달 Gemini 모델인지 판별합니다.
+ */
+function isStableMultimodalGeminiModel(name) {
+  const clean = String(name || "").trim().replace(/^models\//i, "");
+  if (!/^gemini-/i.test(clean)) return false;
+  if (RETIRED_GEMINI_MODEL_PATTERN.test(clean)) return false;
+  if (UNSTABLE_OR_SPECIAL_GEMINI_MODEL_PATTERN.test(clean)) return false;
+  return true;
+}
 
 function sanitizeGeminiModelName(name) {
   const cleaned = String(name || "").trim().replace(/^models\//i, "");
-  return cleaned || DEFAULT_GEMINI_MODEL;
+  if (!cleaned || !isStableMultimodalGeminiModel(cleaned)) {
+    return DEFAULT_GEMINI_MODEL;
+  }
+  return cleaned;
 }
 
 const appState = {
@@ -11307,8 +11565,10 @@ const appState = {
   selectedSirenCaseId: null, // data 폴더 중대재해 사이렌 선택 사례 ID
   activeSirenFilter: "ALL",
   currentReport: null,
+  isDiagnosing: false,
   isSpeaking: false,
   expandAllStandards: false,
+  verifiedWorkingModels: [], // 헬스체크 통과한 실제 작동 모델 목록
   aiConfig: {
     provider: "gemini",
     apiKey:
@@ -11333,15 +11593,19 @@ function bootApplication() {
   initEventListeners();
   filterWorkConfirmBySelectedTags();
   syncReportQuickChecksUI();
+  safeSetStorage("hssg_ai_model", appState.aiConfig.model);
   syncApiConfigUI();
   if (dom.systemPromptPreview) {
     dom.systemPromptPreview.textContent = SYSTEM_INSTRUCTION;
   }
-  document.title = "현장 안전지킴이 AI | 현대제철 안전가이드 & 4대 법령 스마트 진단 (26.11.18 V1.12)";
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.getVoices();
+  }
+  document.title = "현장 안전지킴이 AI | 현대제철 안전가이드 & 4대 법령 스마트 진단 (26.11.19 V1.14)";
   const headerBadgeEl = document.querySelector(".header-update-badge");
-  if (headerBadgeEl) headerBadgeEl.textContent = "26.11.18 V1.12";
+  if (headerBadgeEl) headerBadgeEl.textContent = "26.11.19 V1.14";
   const footerVerEl = document.querySelector(".footer-version-tag");
-  if (footerVerEl) footerVerEl.textContent = "버전: 26.11.18 V1.12";
+  if (footerVerEl) footerVerEl.textContent = "버전: 26.11.19 V1.14";
 }
 
 if (document.readyState === "loading") {
@@ -11352,11 +11616,15 @@ if (document.readyState === "loading") {
 
 function initDomRefs() {
   dom.workspaceGrid = document.getElementById("workspaceGrid");
+  dom.inputPanel = document.getElementById("inputPanel");
   dom.toggleInputPanelBtn = document.getElementById("toggleInputPanelBtn");
   dom.collapsedInputSummaryBar = document.getElementById("collapsedInputSummaryBar");
   dom.collapsedInputSummaryText = document.getElementById("collapsedInputSummaryText");
   dom.expandInputPanelBtn = document.getElementById("expandInputPanelBtn");
   dom.inputPanelBody = document.getElementById("inputPanelBody");
+  dom.workTypeSection = document.getElementById("workTypeSection");
+  dom.situationSection = document.getElementById("situationSection");
+  dom.submitActionWrap = document.getElementById("submitActionWrap");
 
   dom.cameraCaptureInput = document.getElementById("cameraCaptureInput");
   dom.fileUploadInput = document.getElementById("fileUploadInput");
@@ -11452,6 +11720,7 @@ function initDomRefs() {
 
   dom.tbmScriptText = document.getElementById("tbmScriptText");
   dom.tbmSpeakingIndicator = document.getElementById("tbmSpeakingIndicator");
+  dom.tbmSpeakingLabel = document.getElementById("tbmSpeakingLabel");
   dom.copyTbmBtn = document.getElementById("copyTbmBtn");
   dom.speakTbmBtn = document.getElementById("speakTbmBtn");
   dom.speakTbmBtnLabel = document.getElementById("speakTbmBtnLabel");
@@ -11564,6 +11833,7 @@ function initEventListeners() {
   // 카메라 촬영 (연속 추가 지원 - 비동기 처리 완료 후 안전한 초기화)
   if (dom.cameraCaptureInput) {
     dom.cameraCaptureInput.addEventListener("change", (e) => {
+      if (appState.isDiagnosing) return;
       const files = e.target.files;
       if (files && files.length > 0) {
         appState.sampleScenarioKey = null;
@@ -11577,6 +11847,7 @@ function initEventListeners() {
   // 갤러리 다중 파일 업로드 (multiple 지원 - 비동기 처리 완료 후 안전한 초기화)
   if (dom.fileUploadInput) {
     dom.fileUploadInput.addEventListener("change", (e) => {
+      if (appState.isDiagnosing) return;
       const files = e.target.files;
       if (files && files.length > 0) {
         appState.sampleScenarioKey = null;
@@ -11591,12 +11862,20 @@ function initEventListeners() {
   const cameraLabel = document.querySelector('label[for="cameraCaptureInput"]');
   if (cameraLabel) {
     cameraLabel.addEventListener("click", (e) => {
+      if (appState.isDiagnosing) {
+        e.preventDefault();
+        return;
+      }
       if (e.target.tagName !== "INPUT") {
         e.preventDefault();
         if (dom.cameraCaptureInput) dom.cameraCaptureInput.click();
       }
     });
     cameraLabel.addEventListener("keydown", (e) => {
+      if (appState.isDiagnosing) {
+        e.preventDefault();
+        return;
+      }
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         if (dom.cameraCaptureInput) dom.cameraCaptureInput.click();
@@ -11607,12 +11886,20 @@ function initEventListeners() {
   const galleryLabel = document.querySelector('label[for="fileUploadInput"]');
   if (galleryLabel) {
     galleryLabel.addEventListener("click", (e) => {
+      if (appState.isDiagnosing) {
+        e.preventDefault();
+        return;
+      }
       if (e.target.tagName !== "INPUT") {
         e.preventDefault();
         if (dom.fileUploadInput) dom.fileUploadInput.click();
       }
     });
     galleryLabel.addEventListener("keydown", (e) => {
+      if (appState.isDiagnosing) {
+        e.preventDefault();
+        return;
+      }
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         if (dom.fileUploadInput) dom.fileUploadInput.click();
@@ -11625,6 +11912,7 @@ function initEventListeners() {
   if (addMoreBtn) {
     addMoreBtn.addEventListener("click", (e) => {
       e.preventDefault();
+      if (appState.isDiagnosing) return;
       if (dom.fileUploadInput) dom.fileUploadInput.click();
     });
   }
@@ -11633,6 +11921,7 @@ function initEventListeners() {
   if (dom.dropZone) {
     dom.dropZone.addEventListener("dragover", (e) => {
       e.preventDefault();
+      if (appState.isDiagnosing) return;
       dom.dropZone.classList.add("drag-over");
     });
 
@@ -11643,6 +11932,7 @@ function initEventListeners() {
     dom.dropZone.addEventListener("drop", (e) => {
       e.preventDefault();
       dom.dropZone.classList.remove("drag-over");
+      if (appState.isDiagnosing) return;
       if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
         appState.sampleScenarioKey = null;
         handleImageFiles(e.dataTransfer.files);
@@ -11660,6 +11950,7 @@ function initEventListeners() {
 
   // 클립보드 붙여넣기 지원 (Ctrl+V 다중 추가)
   window.addEventListener("paste", (e) => {
+    if (appState.isDiagnosing) return;
     const items = e.clipboardData?.items;
     if (!items) return;
     const files = [];
@@ -11678,9 +11969,15 @@ function initEventListeners() {
 
   // 현재 사진 삭제 및 전체 사진 삭제
   if (dom.removeCurrentImageBtn) {
-    dom.removeCurrentImageBtn.addEventListener("click", removeActivePhoto);
+    dom.removeCurrentImageBtn.addEventListener("click", () => {
+      if (appState.isDiagnosing) return;
+      removeActivePhoto();
+    });
   }
-  dom.removeImageBtn.addEventListener("click", clearUploadedImage);
+  dom.removeImageBtn.addEventListener("click", () => {
+    if (appState.isDiagnosing) return;
+    clearUploadedImage();
+  });
 
   // 진단 시작 시 숨겨진 입력 패널 펼쳐보기 / 접기 토글 버튼
   if (dom.toggleInputPanelBtn) {
@@ -11697,6 +11994,7 @@ function initEventListeners() {
   // 현재 사진 핀 초기화 (초기화 후 재진단 시 이전 핀이 다시 생기지 않도록 처리)
   if (dom.clearCurrentPinsBtn) {
     dom.clearCurrentPinsBtn.addEventListener("click", () => {
+      if (appState.isDiagnosing) return;
       const photo = getActivePhoto();
       if (!photo) return;
       photo.pins = [];
@@ -11724,8 +12022,9 @@ function initEventListeners() {
     };
 
     dom.previewImageStage.addEventListener("pointerdown", (e) => {
-      // 이미 있는 핀 마커(이동/리사이즈)를 누른 경우는 핀 마커 자체 이벤트에서 처리
-      if (e.target.closest(".photo-pin-marker")) return;
+      if (appState.isDiagnosing) return;
+      // 이미 있는 핀 마커(이동/리사이즈/삭제)를 누른 경우는 핀 마커 자체 이벤트에서 처리
+      if (e.target.closest(".photo-pin-marker") || e.target.closest(".pin-marker-delete-btn")) return;
       if (e.button !== undefined && e.button !== 0) return;
       const photo = getActivePhoto();
       if (!photo) return;
@@ -11787,7 +12086,7 @@ function initEventListeners() {
       if (st.selBox && st.selBox.parentNode) {
         st.selBox.parentNode.removeChild(st.selBox);
       }
-      if (cancelled) return;
+      if (cancelled || appState.isDiagnosing) return;
 
       const rawW = Math.abs(st.curX - st.startX);
       const rawH = Math.abs(st.curY - st.startY);
@@ -11813,16 +12112,23 @@ function initEventListeners() {
   // 핀 크기 작게 / 크게 조절 버튼
   const pinSmallerBtn = document.getElementById("pinSizeSmallerBtn");
   if (pinSmallerBtn) {
-    pinSmallerBtn.addEventListener("click", () => adjustActivePinSize(-3));
+    pinSmallerBtn.addEventListener("click", () => {
+      if (appState.isDiagnosing) return;
+      adjustActivePinSize(-3);
+    });
   }
   const pinLargerBtn = document.getElementById("pinSizeLargerBtn");
   if (pinLargerBtn) {
-    pinLargerBtn.addEventListener("click", () => adjustActivePinSize(3));
+    pinLargerBtn.addEventListener("click", () => {
+      if (appState.isDiagnosing) return;
+      adjustActivePinSize(3);
+    });
   }
 
   // 핀 프리셋 칩 클릭 시 입력창에만 반영 (WORK_CHECK_CATALOG 고정 문구 강제 연결 차단)
   document.querySelectorAll(".btn-pin-preset").forEach((btn) => {
     btn.addEventListener("click", () => {
+      if (appState.isDiagnosing) return;
       const presetText = btn.getAttribute("data-preset");
       document.querySelectorAll(".btn-pin-preset").forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
@@ -11839,12 +12145,16 @@ function initEventListeners() {
 
   // 핀 저장 / 닫기 / 삭제 버튼
   if (dom.savePinBtn) {
-    dom.savePinBtn.addEventListener("click", () => saveCurrentEditingPin(true));
+    dom.savePinBtn.addEventListener("click", () => {
+      if (appState.isDiagnosing) return;
+      saveCurrentEditingPin(true);
+    });
   }
   if (dom.pinCustomInput) {
     dom.pinCustomInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
+        if (appState.isDiagnosing) return;
         saveCurrentEditingPin(true);
       }
     });
@@ -11857,7 +12167,10 @@ function initEventListeners() {
     });
   }
   if (dom.deleteActivePinBtn) {
-    dom.deleteActivePinBtn.addEventListener("click", deleteCurrentEditingPin);
+    dom.deleteActivePinBtn.addEventListener("click", () => {
+      if (appState.isDiagnosing) return;
+      deleteCurrentEditingPin();
+    });
   }
 
   // 현장 샘플 시나리오 버튼 (다중 추가 지원)
@@ -11906,6 +12219,7 @@ function initEventListeners() {
   // 8종 작업 유형 빠른 선택 태그 (다중 선택 & 체크한 작업유형에 해당하는 세부작업사항만 표시)
   document.querySelectorAll(".work-tag-chip").forEach((chip) => {
     chip.addEventListener("click", () => {
+      if (appState.isDiagnosing) return;
       const tag = chip.getAttribute("data-tag");
       if (appState.selectedTags.has(tag)) {
         appState.selectedTags.delete(tag);
@@ -11938,6 +12252,10 @@ function initEventListeners() {
   // 세부 작업사항 확인 체크박스 이벤트
   document.querySelectorAll(".confirm-check-input").forEach((checkbox) => {
     checkbox.addEventListener("change", () => {
+      if (appState.isDiagnosing) {
+        checkbox.checked = !checkbox.checked;
+        return;
+      }
       const checkId = checkbox.value;
       const labelEl = checkbox.closest(".confirm-check-label");
       if (checkbox.checked) {
@@ -11958,6 +12276,7 @@ function initEventListeners() {
 
   if (dom.clearConfirmChecksBtn) {
     dom.clearConfirmChecksBtn.addEventListener("click", () => {
+      if (appState.isDiagnosing) return;
       appState.confirmedChecks.clear();
       appState.refineVisibleChecks.clear();
       document.querySelectorAll(".confirm-check-input").forEach((cb) => {
@@ -12032,7 +12351,10 @@ function initEventListeners() {
   }
 
   // 입력 폼 초기화
-  dom.resetFormBtn.addEventListener("click", resetAllState);
+  dom.resetFormBtn.addEventListener("click", () => {
+    if (appState.isDiagnosing) return;
+    resetAllState();
+  });
   dom.newDiagnosisBtn.addEventListener("click", () => {
     resetAllState();
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -12929,8 +13251,12 @@ function renderActivePhotoView() {
 
   // 메인 이미지 및 메타 업데이트
   dom.imagePreviewEl.src = activePhoto.dataUrl;
-  dom.previewFileName.textContent = activePhoto.fileName;
-  dom.previewResolutionBadge.textContent = `${activePhoto.dimensions.width}×${activePhoto.dimensions.height}px · ${activePhoto.dimensions.sizeKB}KB`;
+  if (dom.previewFileName) {
+    dom.previewFileName.textContent = activePhoto.fileName;
+  }
+  if (dom.previewResolutionBadge) {
+    dom.previewResolutionBadge.textContent = `${activePhoto.dimensions.width}×${activePhoto.dimensions.height}px · ${activePhoto.dimensions.sizeKB}KB`;
+  }
 
   if (dom.visualDetectText && activePhoto.visualStats) {
     dom.visualDetectText.textContent = activePhoto.visualStats.visualSummary;
@@ -12983,11 +13309,13 @@ function renderMultiPhotoGallery() {
     delBtn.title = "이 사진 삭제";
     delBtn.addEventListener("click", (e) => {
       e.stopPropagation();
+      if (appState.isDiagnosing) return;
       removePhotoById(photo.id);
     });
     card.appendChild(delBtn);
 
     card.addEventListener("click", () => {
+      if (appState.isDiagnosing) return;
       appState.activePhotoId = photo.id;
       appState.editingPinId = null;
       dom.pinEditorPanel.classList.add("hidden");
@@ -13004,12 +13332,14 @@ function renderMultiPhotoGallery() {
   addBtn.innerHTML = `<span>➕</span><span>사진추가</span>`;
   addBtn.addEventListener("click", (e) => {
     e.preventDefault();
+    if (appState.isDiagnosing) return;
     if (dom.fileUploadInput) dom.fileUploadInput.click();
   });
   dom.multiPhotoStrip.appendChild(addBtn);
 }
 
 function removePhotoById(photoId) {
+  if (appState.isDiagnosing) return;
   appState.photos = appState.photos.filter((p) => p.id !== photoId);
   if (appState.photos.length === 0) {
     clearUploadedImage();
@@ -13025,6 +13355,7 @@ function removePhotoById(photoId) {
 }
 
 function removeActivePhoto() {
+  if (appState.isDiagnosing) return;
   const active = getActivePhoto();
   if (!active) return;
   removePhotoById(active.id);
@@ -13047,6 +13378,7 @@ function clearUploadedImage() {
 // 7. 사진 터치/드래그 사각 범위 지정 커스텀 핀(Pin) 관리 시스템
 // ============================================================================
 function addPinToActivePhoto(xPct, yPct, initialLabel = "", linkedCheckId = "", wPct = 12, hPct = 12, isUserManual = true) {
+  if (appState.isDiagnosing) return;
   const photo = getActivePhoto();
   if (!photo) return;
 
@@ -13074,6 +13406,7 @@ function addPinToActivePhoto(xPct, yPct, initialLabel = "", linkedCheckId = "", 
 }
 
 function openPinEditorFor(pin, autoFocus = true) {
+  if (appState.isDiagnosing) return;
   if (!dom.pinEditorPanel) return;
   appState.editingPinId = pin.id;
   dom.pinEditorPanel.classList.remove("hidden");
@@ -13095,6 +13428,7 @@ function openPinEditorFor(pin, autoFocus = true) {
 }
 
 function adjustActivePinSize(deltaPct) {
+  if (appState.isDiagnosing) return;
   const photo = getActivePhoto();
   if (!photo || !appState.editingPinId) return;
   const pin = photo.pins.find((p) => p.id === appState.editingPinId);
@@ -13111,6 +13445,7 @@ function adjustActivePinSize(deltaPct) {
 }
 
 function saveCurrentEditingPin(closePanel = true) {
+  if (appState.isDiagnosing) return;
   const photo = getActivePhoto();
   if (!photo || !appState.editingPinId) return;
 
@@ -13136,25 +13471,32 @@ function saveCurrentEditingPin(closePanel = true) {
   }
 }
 
-function deleteCurrentEditingPin() {
-  const photo = getActivePhoto();
-  if (!photo || !appState.editingPinId) return;
+function deletePinById(photo, pinId) {
+  if (appState.isDiagnosing || !photo || !pinId) return;
 
-  photo.pins = photo.pins.filter((p) => p.id !== appState.editingPinId);
+  photo.pins = photo.pins.filter((p) => p.id !== pinId);
   photo.pinsModifiedByUser = true;
-  // 핀 번호 재정렬
   photo.pins.forEach((p, idx) => {
     p.num = idx + 1;
   });
 
-  appState.editingPinId = null;
-  dom.pinEditorPanel.classList.add("hidden");
+  if (appState.editingPinId === pinId) {
+    appState.editingPinId = null;
+    if (dom.pinEditorPanel) dom.pinEditorPanel.classList.add("hidden");
+  }
+
   renderActivePhotoView();
   showToast("🗑️ 선택한 핀이 삭제되었습니다.");
 
   if (!dom.reportResultContainer.classList.contains("hidden")) {
     refreshDiagnosisReportLive("핀 삭제 반영");
   }
+}
+
+function deleteCurrentEditingPin() {
+  const photo = getActivePhoto();
+  if (!photo || !appState.editingPinId) return;
+  deletePinById(photo, appState.editingPinId);
 }
 
 function renderPhotoPinsOverlay() {
@@ -13185,17 +13527,38 @@ function renderPhotoPinsOverlay() {
     tag.className = "pin-marker-tag";
     tag.textContent = pin.resolved ? `[조치완료] ${pin.label}` : pin.label;
 
+    const delPinBtn = document.createElement("button");
+    delPinBtn.type = "button";
+    delPinBtn.className = "pin-marker-delete-btn";
+    delPinBtn.textContent = "✕";
+    delPinBtn.title = "이 핀 삭제";
+    delPinBtn.setAttribute("aria-label", `핀 #${pin.num} 삭제`);
+    delPinBtn.addEventListener("pointerdown", (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+    });
+    delPinBtn.addEventListener("pointerup", (e) => {
+      e.stopPropagation();
+    });
+    delPinBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      deletePinById(photo, pin.id);
+    });
+
     const resizeHandle = document.createElement("div");
     resizeHandle.className = "pin-resize-handle";
     resizeHandle.title = "드래그하여 핀 사각 범위 크기 조절";
 
     marker.appendChild(circle);
     marker.appendChild(tag);
+    marker.appendChild(delPinBtn);
     marker.appendChild(resizeHandle);
 
     // 1) 우하단 리사이즈 핸들 드래그 -> 사각 박스 크기(w%, h%) 실시간 조절
     let resizeState = null;
     resizeHandle.addEventListener("pointerdown", (e) => {
+      if (appState.isDiagnosing) return;
       e.stopPropagation();
       e.preventDefault();
       const rect = dom.imagePreviewEl.getBoundingClientRect();
@@ -13235,6 +13598,7 @@ function renderPhotoPinsOverlay() {
       try {
         resizeHandle.releasePointerCapture(e.pointerId);
       } catch (err) {}
+      if (appState.isDiagnosing) return;
       openPinEditorFor(pin, false);
       renderPhotoPinsOverlay();
       if (!dom.reportResultContainer.classList.contains("hidden")) {
@@ -13247,7 +13611,15 @@ function renderPhotoPinsOverlay() {
     // 2) 핀 사각 박스 자체 드래그 -> 위치(x%, y%) 이동 & 클릭 시 편집창 열기
     let moveState = null;
     marker.addEventListener("pointerdown", (e) => {
-      if (e.target === resizeHandle || e.target.closest(".pin-resize-handle")) return;
+      if (appState.isDiagnosing) return;
+      if (
+        e.target === resizeHandle ||
+        e.target.closest(".pin-resize-handle") ||
+        e.target === delPinBtn ||
+        e.target.closest(".pin-marker-delete-btn")
+      ) {
+        return;
+      }
       e.stopPropagation();
       e.preventDefault();
       const rect = dom.imagePreviewEl.getBoundingClientRect();
@@ -13293,6 +13665,7 @@ function renderPhotoPinsOverlay() {
       try {
         marker.releasePointerCapture(e.pointerId);
       } catch (err) {}
+      if (appState.isDiagnosing) return;
 
       openPinEditorFor(pin, !wasMoved);
       renderPhotoPinsOverlay();
@@ -13333,18 +13706,9 @@ function renderAllPinsSummaryList() {
     )}</span><span class="pin-del-x" title="삭제">✕</span>`;
 
     chip.addEventListener("click", (e) => {
+      if (appState.isDiagnosing) return;
       if (e.target.classList.contains("pin-del-x")) {
-        photo.pins = photo.pins.filter((p) => p.id !== pin.id);
-        photo.pinsModifiedByUser = true;
-        photo.pins.forEach((p, i) => (p.num = i + 1));
-        if (appState.editingPinId === pin.id) {
-          appState.editingPinId = null;
-          dom.pinEditorPanel.classList.add("hidden");
-        }
-        renderActivePhotoView();
-        if (!dom.reportResultContainer.classList.contains("hidden")) {
-          refreshDiagnosisReportLive("핀 삭제 반영");
-        }
+        deletePinById(photo, pin.id);
         return;
       }
       appState.activePhotoId = photo.id;
@@ -14399,10 +14763,27 @@ function resolveGeminiApiKey() {
 }
 
 const FALLBACK_GEMINI_MODEL_OPTIONS = [
-  { id: "gemini-2.5-flash", label: "gemini-2.5-flash (기본 권장)" },
-  { id: "gemini-2.5-pro", label: "gemini-2.5-pro (고정밀 추론)" },
-  { id: "gemini-2.5-flash-lite", label: "gemini-2.5-flash-lite (경량 고속)" },
+  { id: "gemini-2.5-flash", label: "gemini-2.5-flash (기본 권장 · 안정)" },
+  { id: "gemini-2.5-flash-lite", label: "gemini-2.5-flash-lite (경량 고속 · 안정)" },
+  { id: "gemini-2.5-pro", label: "gemini-2.5-pro (고정밀 추론 · 안정)" },
 ];
+
+const PREFERRED_GEMINI_ORDER = [
+  "gemini-2.5-flash",
+  "gemini-2.5-flash-lite",
+  "gemini-2.5-pro",
+];
+
+function getGeminiModelPriorityScore(modelId) {
+  const clean = String(modelId || "").trim().replace(/^models\//i, "");
+  const prefIdx = PREFERRED_GEMINI_ORDER.indexOf(clean);
+  if (prefIdx !== -1) {
+    return 10000 - prefIdx * 100;
+  }
+  const v = clean.match(/gemini-(\d+(?:\.\d+)?)/i);
+  const ver = v ? parseFloat(v[1]) : 0;
+  return ver * 100 + (/flash/i.test(clean) ? 20 : 0) + (/lite/i.test(clean) ? -5 : 0);
+}
 
 /**
  * 모델 드롭다운(#aiModelSelect)과 숨겨진 입력(#aiModelInput) 값을 동기화합니다.
@@ -14468,7 +14849,7 @@ function ensureModelSelectDropdown() {
     const refreshBtn = document.createElement("button");
     refreshBtn.type = "button";
     refreshBtn.id = "refreshModelsBtn";
-    refreshBtn.textContent = "🔄 내 API Key로 실제 사용 가능 모델 불러오기";
+    refreshBtn.textContent = "🔄 내 API Key로 작동 모델만 불러오기";
     refreshBtn.style.padding = "6px 11px";
     refreshBtn.style.borderRadius = "6px";
     refreshBtn.style.border = "1px solid #CBD5E1";
@@ -14484,7 +14865,7 @@ function ensureModelSelectDropdown() {
     statusSpan.id = "modelFetchStatusText";
     statusSpan.className = "modal-hint";
     statusSpan.style.marginTop = "0";
-    statusSpan.textContent = "API Key 입력 후 버튼을 누르면 실제 사용 가능한 모델 목록을 불러옵니다.";
+    statusSpan.textContent = "실제 호출 테스트를 통과해 지금 작동하는 안정 모델만 표시합니다.";
 
     controlsRow.appendChild(refreshBtn);
     controlsRow.appendChild(statusSpan);
@@ -14499,10 +14880,85 @@ function ensureModelSelectDropdown() {
 }
 
 /**
- * ListModels API로 현재 API Key에서 실제로 generateContent를 지원하는 모델 목록을 조회하여 드롭다운에 채웁니다.
+ * 후보 모델이 현재 실제로 503/429/404 없이 정상 응답(HTTP 200)하는지 초경량 헬스체크를 수행합니다.
+ */
+async function probeGeminiModelHealth(modelId, apiKey) {
+  const cleanId = String(modelId || "").trim().replace(/^models\//i, "");
+  if (!cleanId || !apiKey) return { ok: false, status: 0, reason: "missing_params" };
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 4500);
+
+  try {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(cleanId)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": apiKey,
+      },
+      body: JSON.stringify({
+        contents: [{ role: "user", parts: [{ text: "ok" }] }],
+        generationConfig: {
+          maxOutputTokens: 1,
+          temperature: 0,
+        },
+      }),
+      signal: controller.signal,
+    });
+    if (res.ok) {
+      return { ok: true, status: res.status, reason: "" };
+    }
+    const errText = await res.text().catch(() => "");
+    let errMsg = errText;
+    try {
+      const errJson = JSON.parse(errText);
+      errMsg = errJson?.error?.message || errJson?.error?.status || errText;
+    } catch {}
+    return { ok: false, status: res.status, reason: String(errMsg || "").slice(0, 160) };
+  } catch (err) {
+    return {
+      ok: false,
+      status: 0,
+      reason: err?.name === "AbortError" ? "timeout" : String(err?.message || err),
+    };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/**
+ * 진단 중 503(High Demand)·429·404 등으로 실패한 모델을 드롭다운과 검증 캐시에서 즉시 제거합니다.
+ */
+function pruneFailedModelFromSelect(failedModel) {
+  const cleanFailed = String(failedModel || "").trim().replace(/^models\//i, "");
+  if (!cleanFailed) return;
+
+  appState.verifiedWorkingModels = (appState.verifiedWorkingModels || []).filter(
+    (id) => id !== cleanFailed
+  );
+
+  if (dom.aiModelSelect && dom.aiModelSelect.options.length > 1) {
+    Array.from(dom.aiModelSelect.options).forEach((opt) => {
+      if (opt.value === cleanFailed) {
+        opt.remove();
+      }
+    });
+    if (dom.aiModelSelect.value === cleanFailed || !dom.aiModelSelect.value) {
+      const nextVal = dom.aiModelSelect.options[0]?.value || DEFAULT_GEMINI_MODEL;
+      setSelectedModelValue(nextVal);
+    }
+  }
+}
+
+let activeModelFetchRunId = 0;
+
+/**
+ * ListModels API + 라이브 헬스체크로 현재 API Key에서 실제로 정상 작동하는 안정 모델만 드롭다운에 표시합니다.
  */
 async function fetchAndPopulateRealGeminiModels(showFeedback = true) {
   ensureModelSelectDropdown();
+  const runId = ++activeModelFetchRunId;
   const apiKey = resolveGeminiApiKey();
   const statusEl = dom.modelFetchStatusText;
   const btnEl = dom.refreshModelsBtn;
@@ -14518,7 +14974,7 @@ async function fetchAndPopulateRealGeminiModels(showFeedback = true) {
   }
 
   if (btnEl) btnEl.disabled = true;
-  if (statusEl) statusEl.textContent = "⏳ Google API에서 실제 사용 가능 모델 조회 중...";
+  if (statusEl) statusEl.textContent = "⏳ 실제 작동 가능한 안정 모델만 점검 중...";
 
   try {
     const res = await fetch(
@@ -14535,82 +14991,115 @@ async function fetchAndPopulateRealGeminiModels(showFeedback = true) {
       throw new Error(msg);
     }
 
-    const realModels = (data?.models || [])
+    if (runId !== activeModelFetchRunId) return [];
+
+    let candidates = (data?.models || [])
       .filter((m) => (m.supportedGenerationMethods || []).includes("generateContent"))
       .map((m) => ({
         id: String(m.name || "").replace(/^models\//i, ""),
         displayName: String(m.displayName || "").trim(),
       }))
-      .filter(
-        (m) =>
-          /^gemini-/i.test(m.id) &&
-          !/(embedding|tts|audio|live|aqa|robotics|computer-use)/i.test(m.id)
-      );
+      .filter((m) => isStableMultimodalGeminiModel(m.id));
 
-    if (realModels.length === 0) {
-      throw new Error("사용 가능한 Gemini generateContent 모델이 반환되지 않았습니다.");
+    if (candidates.length === 0) {
+      candidates = FALLBACK_GEMINI_MODEL_OPTIONS.map((m) => ({
+        id: m.id,
+        displayName: m.label,
+      }));
     }
 
-    const versionOf = (name) => {
-      const v = name.match(/gemini-(\d+(?:\.\d+)?)/i);
-      return v ? parseFloat(v[1]) : 0;
-    };
-    const score = (m) =>
-      versionOf(m.id) * 100 +
-      (/flash/i.test(m.id) ? 20 : 0) +
-      (/lite/i.test(m.id) ? -5 : 0) +
-      (/(preview|exp)/i.test(m.id) ? -10 : 0) +
-      (/-\d{3}$/.test(m.id) ? -1 : 0);
+    candidates.sort((a, b) => getGeminiModelPriorityScore(b.id) - getGeminiModelPriorityScore(a.id));
+    const probeTargets = candidates.slice(0, 6);
 
-    realModels.sort((a, b) => score(b) - score(a));
+    const probeResults = await Promise.all(
+      probeTargets.map(async (m) => ({
+        model: m,
+        health: await probeGeminiModelHealth(m.id, apiKey),
+      }))
+    );
 
-    const prevModel =
+    if (runId !== activeModelFetchRunId) return [];
+
+    const workingModels = probeResults
+      .filter((item) => item.health.ok)
+      .map((item) => item.model);
+
+    const authErrorItem = probeResults.find(
+      (item) =>
+        item.health.status === 401 ||
+        item.health.status === 403 ||
+        (item.health.status === 400 && /api[_ ]?key|invalid/i.test(item.health.reason))
+    );
+
+    if (workingModels.length === 0 && authErrorItem) {
+      throw new Error(authErrorItem.health.reason || "유효하지 않은 API Key입니다.");
+    }
+
+    const finalModels =
+      workingModels.length > 0
+        ? workingModels
+        : FALLBACK_GEMINI_MODEL_OPTIONS.map((m) => ({ id: m.id, displayName: m.label }));
+
+    appState.verifiedWorkingModels = workingModels.map((m) => m.id);
+
+    const prevModel = sanitizeGeminiModelName(
       (dom.aiModelSelect && dom.aiModelSelect.value) ||
-      appState.aiConfig.model ||
-      DEFAULT_GEMINI_MODEL;
+        appState.aiConfig.model ||
+        DEFAULT_GEMINI_MODEL
+    );
 
     dom.aiModelSelect.innerHTML = "";
-    realModels.forEach((m) => {
+    finalModels.forEach((m) => {
       const opt = document.createElement("option");
       opt.value = m.id;
-      opt.textContent =
-        m.displayName && m.displayName.toLowerCase() !== m.id.toLowerCase()
+      const isPreferred = PREFERRED_GEMINI_ORDER.includes(m.id);
+      opt.textContent = isPreferred
+        ? `${m.id} (작동 확인됨)`
+        : m.displayName && m.displayName.toLowerCase() !== m.id.toLowerCase()
           ? `${m.id} (${m.displayName})`
           : m.id;
       dom.aiModelSelect.appendChild(opt);
     });
 
-    const chosen = realModels.some((m) => m.id === prevModel)
+    const chosen = finalModels.some((m) => m.id === prevModel)
       ? prevModel
-      : realModels[0].id;
+      : finalModels[0].id;
     setSelectedModelValue(chosen);
     appState.aiConfig.model = chosen;
     safeSetStorage("hssg_ai_model", chosen);
 
     if (statusEl) {
-      statusEl.textContent = `✅ 실제 사용 가능한 모델 ${realModels.length}개 로드 완료`;
+      statusEl.textContent =
+        workingModels.length > 0
+          ? `✅ 지금 바로 작동하는 모델 ${workingModels.length}개만 표시됨`
+          : "⚠️ 일시적 응답 지연으로 안정 모델 3종을 유지합니다.";
     }
     if (showFeedback) {
-      showToast(`✅ 실제 사용 가능한 Gemini 모델 ${realModels.length}개를 불러왔습니다.`);
+      showToast(
+        workingModels.length > 0
+          ? `✅ 작동 확인된 안정 모델 ${workingModels.length}개만 표시했습니다.`
+          : "⚠️ 실시간 점검 응답이 지연되어 안정 기본 모델을 표시합니다."
+      );
     }
-    return realModels;
+    return finalModels;
   } catch (e) {
+    if (runId !== activeModelFetchRunId) return [];
     const errMsg = e?.message || String(e);
     if (statusEl) {
-      statusEl.textContent = `⚠️ 모델 목록 조회 실패: ${errMsg}`;
+      statusEl.textContent = `⚠️ 모델 점검 실패: ${errMsg}`;
     }
     if (showFeedback) {
-      showToast(`⚠️ 모델 목록 조회 실패: ${errMsg}`);
+      showToast(`⚠️ 모델 점검 실패: ${errMsg}`);
     }
     return [];
   } finally {
-    if (btnEl) btnEl.disabled = false;
+    if (btnEl && runId === activeModelFetchRunId) btnEl.disabled = false;
   }
 }
 
 /**
  * 사용자가 설정 모달에서 선택한 모델명(dom.aiModelSelect / dom.aiModelInput), appState.aiConfig.model,
- * 또는 localStorage에 저장된 모델명을 그대로 반환하며, 비어 있을 때만 기본값 DEFAULT_GEMINI_MODEL을 반환합니다.
+ * 또는 localStorage에 저장된 모델명을 검증 후 반환하며, 불안정·프리뷰 모델은 안정 기본 모델로 치유합니다.
  */
 function resolveGeminiModel() {
   const selectModel = dom.aiModelSelect ? dom.aiModelSelect.value.trim() : "";
@@ -14626,14 +15115,14 @@ function resolveGeminiModel() {
 }
 
 /**
- * 성공적으로 호출된 모델명을 앱 상태, localStorage, 설정 모달 입력창에 저장합니다.
+ * 성공적으로 호출된 모델명을 앱 상태, localStorage, 설정 모달 UI에 저장합니다.
  */
 function persistWorkingGeminiModel(modelName) {
-  const clean = String(modelName || "").trim().replace(/^models\//i, "");
+  const clean = sanitizeGeminiModelName(modelName);
   if (!clean) return;
   appState.aiConfig.model = clean;
   safeSetStorage("hssg_ai_model", clean);
-  if (dom.aiModelInput) dom.aiModelInput.value = clean;
+  setSelectedModelValue(clean);
 }
 
 /**
@@ -14645,14 +15134,16 @@ function extractSuggestedGeminiModel(errMessage, currentModel) {
   const explicitUse = msg.match(/use\s+models\/([A-Za-z0-9._-]+)/i);
   if (explicitUse && explicitUse[1]) {
     const suggested = explicitUse[1].replace(/[.,]+$/, "");
-    if (suggested && suggested !== current) return suggested;
+    if (suggested && suggested !== current && isStableMultimodalGeminiModel(suggested)) {
+      return suggested;
+    }
   }
   const matches = [...msg.matchAll(/models\/([A-Za-z0-9._-]+)/g)].map((m) => m[1].replace(/[.,]+$/, ""));
-  return matches.find((m) => m && m !== current && !/^(models\/)?gemini-(1\.0|1\.5|2\.0)(-|$)/i.test(m)) || "";
+  return matches.find((m) => m && m !== current && isStableMultimodalGeminiModel(m)) || "";
 }
 
 /**
- * ListModels API로 현재 API Key에서 generateContent를 지원하는 최신 flash 모델을 자동 탐색합니다.
+ * ListModels API로 현재 API Key에서 generateContent를 지원하는 안정 모델을 자동 탐색합니다.
  */
 async function discoverAvailableGeminiModel(apiKey, excludeModels = [], signal = null) {
   if (signal?.aborted) return "";
@@ -14667,26 +15158,9 @@ async function discoverAvailableGeminiModel(apiKey, excludeModels = [], signal =
     const candidates = (data?.models || [])
       .filter((m) => (m.supportedGenerationMethods || []).includes("generateContent"))
       .map((m) => String(m.name || "").replace(/^models\//i, ""))
-      .filter(
-        (name) =>
-          /^gemini-/i.test(name) &&
-          !RETIRED_GEMINI_MODEL_PATTERN.test(name) &&
-          !/(embedding|image|tts|audio|live|thinking-exp|preview-tts)/i.test(name) &&
-          !exclude.has(name)
-      );
+      .filter((name) => isStableMultimodalGeminiModel(name) && !exclude.has(name));
 
-    const versionOf = (name) => {
-      const v = name.match(/gemini-(\d+(?:\.\d+)?)/i);
-      return v ? parseFloat(v[1]) : 0;
-    };
-    const score = (name) =>
-      versionOf(name) * 100 +
-      (/flash/i.test(name) ? 20 : 0) +
-      (/lite/i.test(name) ? -5 : 0) +
-      (/(preview|exp)/i.test(name) ? -10 : 0) +
-      (/-\d{3}$/.test(name) ? -1 : 0);
-
-    candidates.sort((a, b) => score(b) - score(a));
+    candidates.sort((a, b) => getGeminiModelPriorityScore(b) - getGeminiModelPriorityScore(a));
     return candidates[0] || "";
   } catch (e) {
     console.warn("Gemini 사용 가능 모델 자동 탐색 실패:", e);
@@ -14706,6 +15180,24 @@ function isGeminiModelUnavailableError(status, message) {
     msg.includes("is not supported") ||
     msg.includes("deprecated") ||
     msg.includes("update your code to use")
+  );
+}
+
+/**
+ * 503 과부하(high demand), 429 할당량, 5xx 서버 장애 또는 미지원 모델 여부인지 판별합니다.
+ */
+function isRetryableOrModelFailure(status, message) {
+  const msg = String(message || "").toLowerCase();
+  if (status === 401 || status === 403) return false;
+  if (status === 400 && /(api[_ ]?key|invalid argument)/i.test(msg)) return false;
+  return (
+    status === 503 ||
+    status === 429 ||
+    status === 500 ||
+    status === 502 ||
+    status === 504 ||
+    isGeminiModelUnavailableError(status, msg) ||
+    /(high demand|overloaded|temporarily unavailable|try again later|rate limit|quota|resource exhausted)/i.test(msg)
   );
 }
 
@@ -14745,7 +15237,7 @@ function applyAiDetectedPinsToActivePhoto(detectedPins) {
   detectedPins.forEach((dp, idx) => {
     if (!dp || typeof dp !== "object") return;
     const geom = normalizePinGeometry(dp, idx);
-    const pureAiLabel = String(dp.label || `포착된 위험 부위 #${idx + 1}`).trim();
+    const pureAiLabel = stripEmojis(String(dp.label || "")) || `포착된 위험 부위 #${idx + 1}`;
     const pureAiAction = String(dp.action || `${pureAiLabel} 즉시 안전조치`).trim();
 
     updatedPins.push({
@@ -14774,33 +15266,26 @@ let activeDiagnosisAbortController = null;
 let activeDiagnosisRunId = 0;
 
 /**
- * 로딩 박스(#loadingStatusBox) 내부에 사용자가 진단을 즉시 중단할 수 있는 멈춤 버튼을 동적으로 추가합니다.
+ * 로딩 박스(#loadingStatusBox) 내부 스피너 행에 진단 멈춤 버튼(#stopDiagnosisBtn)을 단일 행으로 바인딩합니다.
  */
 function ensureStopDiagnosisButton() {
   if (!dom.loadingStatusBox) return null;
+  const row = dom.loadingStatusBox.querySelector(".loading-spinner-row") || dom.loadingStatusBox;
+  row.style.flexWrap = "nowrap";
+
   let btn = document.getElementById("stopDiagnosisBtn");
   if (!btn) {
-    const row = dom.loadingStatusBox.querySelector(".loading-spinner-row") || dom.loadingStatusBox;
-    row.style.flexWrap = "wrap";
     btn = document.createElement("button");
     btn.type = "button";
     btn.id = "stopDiagnosisBtn";
+    btn.className = "btn-stop-diagnosis";
     btn.textContent = "⏹️ 진단 멈춤";
     btn.title = "진행 중인 AI 안전 진단을 즉시 중지합니다";
-    btn.style.marginLeft = "auto";
-    btn.style.flexShrink = "0";
-    btn.style.padding = "8px 14px";
-    btn.style.borderRadius = "8px";
-    btn.style.border = "1.5px solid #FCA5A5";
-    btn.style.background = "#DC2626";
-    btn.style.color = "#FFFFFF";
-    btn.style.fontSize = "0.84rem";
-    btn.style.fontWeight = "800";
-    btn.style.fontFamily = "inherit";
-    btn.style.cursor = "pointer";
-    btn.style.boxShadow = "0 2px 8px rgba(220, 38, 38, 0.35)";
-    btn.addEventListener("click", stopSafetyDiagnosis);
     row.appendChild(btn);
+  }
+  if (!btn.dataset.stopBound) {
+    btn.addEventListener("click", stopSafetyDiagnosis);
+    btn.dataset.stopBound = "1";
   }
   dom.stopDiagnosisBtn = btn;
   return btn;
@@ -14892,7 +15377,7 @@ function refreshDiagnosisReportLive(reasonLabel = "실시간 반영") {
   if (activePhoto && Array.isArray(activePhoto.pins)) {
     appState.currentReport.pointMarkers = activePhoto.pins.map((pin, idx) => {
       const geom = normalizePinGeometry(pin, idx);
-      const rawLbl = String(pin.label || "").trim();
+      const rawLbl = stripEmojis(String(pin.label || "")) || String(pin.label || "").trim();
       const rawAct = String(pin.action || `${rawLbl} 즉시 안전조치`).trim();
       return {
         num: idx + 1,
@@ -14922,16 +15407,32 @@ function refreshDiagnosisReportLive(reasonLabel = "실시간 반영") {
 }
 
 function setLoadingState(isLoading) {
-  dom.startDiagnosisBtn.disabled = isLoading;
-  if (isLoading) {
+  appState.isDiagnosing = Boolean(isLoading);
+  dom.startDiagnosisBtn.disabled = appState.isDiagnosing;
+  if (dom.inputPanel) {
+    dom.inputPanel.classList.toggle("is-diagnosing", appState.isDiagnosing);
+  }
+
+  if (appState.isDiagnosing) {
     ensureStopDiagnosisButton();
     if (dom.stopDiagnosisBtn) dom.stopDiagnosisBtn.disabled = false;
-    dom.startDiagnosisBtnText.textContent = "Google Gemini Vision API로 사진 및 위험 부위(box_2d) 정밀 분석 중...";
+    if (appState.editingPinId) {
+      appState.editingPinId = null;
+      if (dom.pinEditorPanel) dom.pinEditorPanel.classList.add("hidden");
+      renderPhotoPinsOverlay();
+    }
+    if (dom.workTypeSection) dom.workTypeSection.classList.add("hidden");
+    if (dom.situationSection) dom.situationSection.classList.add("hidden");
+    if (dom.submitActionWrap) dom.submitActionWrap.classList.add("hidden");
+    dom.startDiagnosisBtnText.textContent = "AI 현장 안전 정밀 진단 중...";
     dom.loadingStatusBox.classList.remove("hidden");
     dom.scannerOverlay.classList.remove("hidden");
     dom.stepIndicator1.classList.add("active");
     dom.stepIndicator2.classList.add("active");
   } else {
+    if (dom.workTypeSection) dom.workTypeSection.classList.remove("hidden");
+    if (dom.situationSection) dom.situationSection.classList.remove("hidden");
+    if (dom.submitActionWrap) dom.submitActionWrap.classList.remove("hidden");
     dom.startDiagnosisBtnText.textContent = "AI 현장 안전 진단 시작";
     dom.loadingStatusBox.classList.add("hidden");
     dom.scannerOverlay.classList.add("hidden");
@@ -14995,11 +15496,16 @@ async function callGeminiVisionAPI(tags, situation, signal = null) {
     throw new Error("진단할 현장 사진이 없습니다.");
   }
 
-  const activeModel = resolveGeminiModel() || DEFAULT_GEMINI_MODEL;
-  appState.aiConfig.model = activeModel;
-
-  dom.loadingProgressBar.style.width = "65%";
-  dom.loadingSubStep.textContent = `Google Gemini Vision API (${activeModel})로 현장 사진 및 프롬프트 전송 중...`;
+  const initialModel = resolveGeminiModel() || DEFAULT_GEMINI_MODEL;
+  const candidateModels = [
+    ...new Set(
+      [
+        initialModel,
+        ...(appState.verifiedWorkingModels || []),
+        ...FALLBACK_GEMINI_MODEL_OPTIONS.map((m) => m.id),
+      ].filter((m) => isStableMultimodalGeminiModel(m))
+    ),
+  ];
 
   const userPrompt = buildDetailedUserPrompt(tags, situation);
   const parts = [{ text: userPrompt }];
@@ -15044,62 +15550,119 @@ async function callGeminiVisionAPI(tags, situation, signal = null) {
     },
   });
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${activeModel}:generateContent?key=${encodeURIComponent(apiKey)}`;
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-goog-api-key": apiKey,
-    },
-    body: requestBody,
-    signal,
-  });
+  const triedModels = [];
+  let discoveredOnce = false;
+  let lastError = null;
 
-  if (signal?.aborted) {
-    throw new DOMException("Aborted", "AbortError");
-  }
+  for (let i = 0; i < candidateModels.length; i++) {
+    if (signal?.aborted) {
+      throw new DOMException("Aborted", "AbortError");
+    }
 
-  if (!response.ok) {
-    const errText = await response.text().catch(() => "");
-    let errDetail = `HTTP ${response.status} 오류`;
-    if (errText) {
-      try {
-        const errJson = JSON.parse(errText);
-        errDetail = errJson?.error?.message || errJson?.error?.status || errText;
-      } catch {
-        errDetail = errText;
+    const activeModel = candidateModels[i];
+    triedModels.push(activeModel);
+    appState.aiConfig.model = activeModel;
+
+    dom.loadingProgressBar.style.width = "65%";
+    dom.loadingSubStep.textContent =
+      i === 0
+        ? `안정 AI 모델(${activeModel})로 현장 사진 정밀 분석 중...`
+        : `일시 과부하로 대체 안정 모델(${activeModel}) 자동 전환 분석 중...`;
+
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(activeModel)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": apiKey,
+        },
+        body: requestBody,
+        signal,
+      });
+
+      if (signal?.aborted) {
+        throw new DOMException("Aborted", "AbortError");
+      }
+
+      if (!response.ok) {
+        const errText = await response.text().catch(() => "");
+        let errDetail = `HTTP ${response.status} 오류`;
+        if (errText) {
+          try {
+            const errJson = JSON.parse(errText);
+            errDetail = errJson?.error?.message || errJson?.error?.status || errText;
+          } catch {
+            errDetail = errText;
+          }
+        }
+
+        const errObj = new Error(`[${activeModel}] ${errDetail}`);
+        if (!isRetryableOrModelFailure(response.status, errDetail)) {
+          throw errObj;
+        }
+
+        lastError = errObj;
+        pruneFailedModelFromSelect(activeModel);
+
+        const suggested = extractSuggestedGeminiModel(errDetail, activeModel);
+        if (suggested && !triedModels.includes(suggested) && !candidateModels.includes(suggested)) {
+          candidateModels.splice(i + 1, 0, suggested);
+        }
+
+        if (i + 1 >= candidateModels.length && !discoveredOnce) {
+          discoveredOnce = true;
+          const discovered = await discoverAvailableGeminiModel(apiKey, triedModels, signal);
+          if (discovered && !triedModels.includes(discovered) && !candidateModels.includes(discovered)) {
+            candidateModels.push(discovered);
+          }
+        }
+        continue;
+      }
+
+      dom.loadingProgressBar.style.width = "92%";
+      dom.loadingSubStep.textContent = "AI 응답 분석 및 위험 부위 마커 렌더링 중...";
+
+      const result = await response.json();
+      if (signal?.aborted) {
+        throw new DOMException("Aborted", "AbortError");
+      }
+      const candidate = result?.candidates?.[0];
+      const contentParts = candidate?.content?.parts || [];
+
+      // candidates[0].content.parts[0].text 추출 (thinking 파트 존재 시 실제 텍스트 파트 우선 추출)
+      const primaryTextPart =
+        contentParts.find((p) => !p?.thought && typeof p?.text === "string" && p.text.trim()) ||
+        contentParts[0];
+      const rawText = (primaryTextPart?.text || "").trim();
+
+      if (!rawText) {
+        const blockReason =
+          result?.promptFeedback?.blockReason ||
+          candidate?.finishReason ||
+          "API 응답 텍스트가 비어 있습니다.";
+        throw new Error(`[${activeModel}] 응답 생성 실패 (${blockReason})`);
+      }
+
+      const parsed = parseAndValidateTwelveStageResponse(rawText);
+      persistWorkingGeminiModel(activeModel);
+      parsed.__usedModel = activeModel;
+      return parsed;
+    } catch (err) {
+      if (err?.name === "AbortError" || signal?.aborted) {
+        throw new DOMException("Aborted", "AbortError");
+      }
+      if (!lastError || lastError !== err) {
+        lastError = err;
+      }
+      // API Key 인증 오류 등은 즉시 중단
+      if (/api[_ ]?key|invalid argument|unauthorized|permission|forbidden/i.test(err?.message || "")) {
+        throw err;
       }
     }
-    throw new Error(`[${activeModel}] ${errDetail}`);
   }
 
-  dom.loadingProgressBar.style.width = "92%";
-  dom.loadingSubStep.textContent = "Gemini Vision API 응답 JSON 파싱 및 위험 부위 마커 렌더링 중...";
-
-  const result = await response.json();
-  if (signal?.aborted) {
-    throw new DOMException("Aborted", "AbortError");
-  }
-  const candidate = result?.candidates?.[0];
-  const contentParts = candidate?.content?.parts || [];
-
-  // candidates[0].content.parts[0].text 추출 (thinking 파트 존재 시 실제 텍스트 파트 우선 추출)
-  const primaryTextPart =
-    contentParts.find((p) => !p?.thought && typeof p?.text === "string" && p.text.trim()) ||
-    contentParts[0];
-  const rawText = (primaryTextPart?.text || "").trim();
-
-  if (!rawText) {
-    const blockReason =
-      result?.promptFeedback?.blockReason ||
-      candidate?.finishReason ||
-      "API 응답 텍스트가 비어 있습니다.";
-    throw new Error(`응답 생성 실패 (${blockReason})`);
-  }
-
-  const parsed = parseAndValidateTwelveStageResponse(rawText);
-  parsed.__usedModel = activeModel;
-  return parsed;
+  throw lastError || new Error("현재 사용 가능한 안정 모델에서 응답을 받지 못했습니다. 잠시 후 다시 시도해 주세요.");
 }
 
 function parseJsonClean(rawText) {
@@ -15219,13 +15782,14 @@ function normalizeReportData(raw) {
   const normalizedDetectedPins = Array.isArray(raw?.detectedPins)
     ? raw.detectedPins.map((dp, idx) => {
         const geom = normalizePinGeometry(dp, idx);
+        const rawLbl = String(dp?.label || raw?.detectedIssues?.[idx] || `위험 부위 #${idx + 1}`).trim();
         return {
           box_2d: geom.box_2d,
           x: geom.x,
           y: geom.y,
           w: geom.w,
           h: geom.h,
-          label: String(dp?.label || raw?.detectedIssues?.[idx] || `위험 부위 #${idx + 1}`).trim(),
+          label: stripEmojis(rawLbl) || rawLbl,
           action: String(dp?.action || raw?.actionChecklist?.[idx] || "즉시 안전조치 실시").trim(),
         };
       })
@@ -15243,9 +15807,10 @@ function normalizeReportData(raw) {
 
   const pointMarkers = sourcePins.map((pin, idx) => {
     const geom = normalizePinGeometry(pin, idx);
-    const exactLabel = String(
+    const rawExactLabel = String(
       normalizedDetectedPins[idx]?.label || pin.label || raw?.detectedIssues?.[idx] || `위험 부위 #${idx + 1}`
     ).trim();
+    const exactLabel = stripEmojis(rawExactLabel) || rawExactLabel;
     const exactAction = String(
       normalizedDetectedPins[idx]?.action || pin.action || raw?.actionChecklist?.[idx] || `${exactLabel} 즉시 조치`
     ).trim();
@@ -15256,10 +15821,10 @@ function normalizeReportData(raw) {
       pinId: pin.id || `pin_api_${idx}`,
       checkId: "",
       box_2d: geom.box_2d,
-      x: geom.x,
-      y: geom.y,
-      w: geom.w,
-      h: geom.h,
+      x: pin.x ?? geom.x,
+      y: pin.y ?? geom.y,
+      w: pin.w ?? geom.w,
+      h: pin.h ?? geom.h,
       label: exactLabel,
       issueText: exactLabel,
       actionText: exactAction,
@@ -15267,9 +15832,14 @@ function normalizeReportData(raw) {
     };
   });
 
-  // 3) detectedIssues: Gemini API가 반환한 배열 원문 100% 그대로 사용
+  // 3) detectedIssues: 앞뒤 이모티콘만 제거하고 Gemini API 원문 내용 100% 유지
   const cleanedIssues = Array.isArray(raw?.detectedIssues)
-    ? raw.detectedIssues.map((s) => String(s || "").trim()).filter(Boolean)
+    ? raw.detectedIssues
+        .map((s) => {
+          const str = String(s || "").trim();
+          return stripEmojis(str) || str;
+        })
+        .filter(Boolean)
     : pointMarkers.map((m) => m.label).filter(Boolean);
 
   // 4) actionChecklist: Gemini API가 반환한 배열 원문 100% 그대로 사용
@@ -15309,14 +15879,14 @@ function normalizeReportData(raw) {
     riskLevel,
     riskLabel:
       typeof raw?.riskLabel === "string" && raw.riskLabel.trim()
-        ? raw.riskLabel.trim()
+        ? stripEmojis(raw.riskLabel.trim()) || raw.riskLabel.trim()
         : defaultLabels[riskLevel],
     summary:
       typeof raw?.summary === "string" && raw.summary.trim()
-        ? raw.summary.trim()
+        ? stripEmojis(raw.summary.trim()) || raw.summary.trim()
         : "",
     hazardTypes: Array.isArray(raw?.hazardTypes)
-      ? raw.hazardTypes.map((s) => String(s || "").trim()).filter(Boolean)
+      ? raw.hazardTypes.map((s) => stripEmojis(String(s || "").trim())).filter(Boolean)
       : [],
     detectedPins: normalizedDetectedPins,
     detectedIssues: cleanedIssues,
@@ -15336,7 +15906,9 @@ function renderDiagnosisReport(report, selectedTags, modeLabel, autoScroll = tru
   dom.emptyReportState.classList.add("hidden");
   dom.reportResultContainer.classList.remove("hidden");
   dom.reportHeaderTools.classList.remove("hidden");
-  dom.analysisModeBadge.textContent = modeLabel;
+  if (dom.analysisModeBadge) {
+    dom.analysisModeBadge.textContent = modeLabel;
+  }
 
   dom.stepIndicator1.classList.add("active");
   dom.stepIndicator2.classList.add("active");
@@ -15370,7 +15942,9 @@ function renderDiagnosisReport(report, selectedTags, modeLabel, autoScroll = tru
 
   if (dom.riskSummaryText) {
     if (report.summary) {
-      dom.riskSummaryText.textContent = report.summary;
+      const cleanSummary = stripEmojis(report.summary) || report.summary;
+      dom.riskSummaryText.textContent = cleanSummary;
+      dom.riskSummaryText.title = cleanSummary;
       dom.riskSummaryText.classList.remove("hidden");
       dom.riskSummaryText.style.display = "block";
       dom.riskSummaryText.style.width = "100%";
@@ -15383,12 +15957,12 @@ function renderDiagnosisReport(report, selectedTags, modeLabel, autoScroll = tru
     }
   }
 
-  // 선택된 태그 배지 표시
+  // 선택된 태그 배지 표시 (이모티콘 제거)
   dom.selectedTagsSummaryRow.innerHTML = "";
   selectedTags.forEach((tag) => {
     const span = document.createElement("span");
     span.className = "mini-tag-pill";
-    span.textContent = tag;
+    span.textContent = stripEmojis(tag) || tag;
     dom.selectedTagsSummaryRow.appendChild(span);
   });
 
@@ -15400,7 +15974,8 @@ function renderDiagnosisReport(report, selectedTags, modeLabel, autoScroll = tru
   // 2. 시각적 불안전 요소 및 사진 위 box_2d 변환 마커(빨간색/초록색 박스) 렌더링
   dom.hazardTypesList.innerHTML = "";
   (report.hazardTypes || []).forEach((hz) => {
-    const cleanHz = hz.startsWith("#") ? hz : `#${hz}`;
+    const cleanHzText = stripEmojis(hz) || hz;
+    const cleanHz = cleanHzText.startsWith("#") ? cleanHzText : `#${cleanHzText}`;
     const span = document.createElement("span");
     span.className = "hazard-tag";
     span.textContent = cleanHz;
@@ -15432,6 +16007,7 @@ function renderDiagnosisReport(report, selectedTags, modeLabel, autoScroll = tru
       overlay.className = "analyzed-marker-layer";
 
       photoMarkers.forEach((m) => {
+        const cleanMarkerLabel = stripEmojis(m.label) || m.label;
         const markerEl = document.createElement("div");
         markerEl.className = `report-img-marker ${m.resolved ? "is-green" : "is-red"}`;
         markerEl.setAttribute("data-marker-num", String(m.num));
@@ -15439,11 +16015,11 @@ function renderDiagnosisReport(report, selectedTags, modeLabel, autoScroll = tru
         markerEl.style.top = `${m.y}%`;
         markerEl.style.width = `${m.w || 14}%`;
         markerEl.style.height = `${m.h || 14}%`;
-        markerEl.title = `지적 #${m.num}: ${m.label} (클릭 시 조치 상태 빨간색/초록색 전환)`;
+        markerEl.title = `지적 #${m.num}: ${cleanMarkerLabel} (클릭 시 조치 상태 빨간색/초록색 전환)`;
 
         markerEl.innerHTML = `
           <span class="report-marker-dot">${m.resolved ? "✓" + m.num : "#" + m.num}</span>
-          <span class="report-marker-caption">${escapeHtml(m.label)}</span>
+          <span class="report-marker-caption">${escapeHtml(cleanMarkerLabel)}</span>
         `;
 
         markerEl.addEventListener("click", () => {
@@ -15478,18 +16054,20 @@ function renderDiagnosisReport(report, selectedTags, modeLabel, autoScroll = tru
     });
   }
 
-  // 3. detectedIssues 100% 직결 렌더링
+  // 3. detectedIssues 이모티콘 제거 후 1줄 직결 렌더링
   dom.detectedIssuesList.innerHTML = "";
   const markersForIssues = Array.isArray(report.pointMarkers) ? report.pointMarkers : [];
   (report.detectedIssues || []).forEach((issue, idx) => {
+    const cleanIssue = stripEmojis(issue) || String(issue || "").trim();
     const m = markersForIssues[idx];
     const isResolved = Boolean(m?.resolved);
     const li = document.createElement("li");
     li.className = `detected-issue-item ${isResolved ? "resolved" : ""}`;
     li.setAttribute("data-issue-idx", String(idx));
+    li.title = cleanIssue;
     li.innerHTML = `<span class="issue-marker-badge" data-badge-idx="${idx}">${
       isResolved ? "✓#" + (idx + 1) : "#" + (idx + 1)
-    }</span><span>${formatIssueWithKeyHighlight(issue)}</span>`;
+    }</span><span>${formatIssueWithKeyHighlight(cleanIssue)}</span>`;
     dom.detectedIssuesList.appendChild(li);
   });
 
@@ -15531,6 +16109,7 @@ function renderTbmChecklist(items, tbmScript = "") {
     const label = document.createElement("label");
     label.className = "tbm-check-item";
     label.setAttribute("for", `tbmCheck_${idx}`);
+    label.title = tbmItem;
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
@@ -15541,23 +16120,16 @@ function renderTbmChecklist(items, tbmScript = "") {
     textSpan.className = "tbm-check-text";
     textSpan.textContent = tbmItem;
 
-    const badge = document.createElement("span");
-    badge.className = "tbm-check-badge";
-    badge.textContent = "전파 확인";
-
     checkbox.addEventListener("change", () => {
       if (checkbox.checked) {
         label.classList.add("checked");
-        badge.textContent = "전파 완료";
       } else {
         label.classList.remove("checked");
-        badge.textContent = "전파 확인";
       }
     });
 
     label.appendChild(checkbox);
     label.appendChild(textSpan);
-    label.appendChild(badge);
     dom.tbmScriptText.appendChild(label);
   });
 }
@@ -15670,6 +16242,7 @@ function renderActionChecklist(items) {
 }
 
 function updateChecklistProgress() {
+  if (!dom.actionChecklistContainer) return;
   const checkboxes = dom.actionChecklistContainer.querySelectorAll(".checklist-checkbox");
   const total = checkboxes.length;
   let checkedCount = 0;
@@ -15679,25 +16252,26 @@ function updateChecklistProgress() {
 
   const percent = total > 0 ? Math.round((checkedCount / total) * 100) : 0;
 
-  dom.checklistCountText.textContent = `${checkedCount} / ${total} 완료`;
-  dom.checklistPercentText.textContent = `${percent}%`;
-  dom.checklistProgressFill.style.width = `${percent}%`;
-  dom.checklistProgressBarWrap.setAttribute("aria-valuenow", String(percent));
+  if (dom.checklistCountText) dom.checklistCountText.textContent = `${checkedCount} / ${total} 완료`;
+  if (dom.checklistPercentText) dom.checklistPercentText.textContent = `${percent}%`;
+  if (dom.checklistProgressFill) dom.checklistProgressFill.style.width = `${percent}%`;
+  if (dom.checklistProgressBarWrap) dom.checklistProgressBarWrap.setAttribute("aria-valuenow", String(percent));
 
   if (percent === 100 && total > 0) {
-    dom.checklistPercentText.classList.add("complete");
-    dom.checklistProgressFill.classList.add("complete");
-    dom.workReadyBadge.classList.remove("hidden");
-    dom.checkAllActionsBtn.textContent = "체크 초기화";
+    if (dom.checklistPercentText) dom.checklistPercentText.classList.add("complete");
+    if (dom.checklistProgressFill) dom.checklistProgressFill.classList.add("complete");
+    if (dom.workReadyBadge) dom.workReadyBadge.classList.remove("hidden");
+    if (dom.checkAllActionsBtn) dom.checkAllActionsBtn.textContent = "체크 초기화";
   } else {
-    dom.checklistPercentText.classList.remove("complete");
-    dom.checklistProgressFill.classList.remove("complete");
-    dom.workReadyBadge.classList.add("hidden");
-    dom.checkAllActionsBtn.textContent = "전체 완료 체크";
+    if (dom.checklistPercentText) dom.checklistPercentText.classList.remove("complete");
+    if (dom.checklistProgressFill) dom.checklistProgressFill.classList.remove("complete");
+    if (dom.workReadyBadge) dom.workReadyBadge.classList.add("hidden");
+    if (dom.checkAllActionsBtn) dom.checkAllActionsBtn.textContent = "전체 완료 체크";
   }
 }
 
 function toggleAllChecklistItems() {
+  if (!dom.actionChecklistContainer) return;
   const checkboxes = dom.actionChecklistContainer.querySelectorAll(".checklist-checkbox");
   const allChecked = Array.from(checkboxes).every((cb) => cb.checked);
   checkboxes.forEach((cb) => {
@@ -15707,8 +16281,15 @@ function toggleAllChecklistItems() {
 }
 
 // ============================================================================
-// 15. 1분 TBM 체크리스트 복사하기 & Web Speech API TTS (음성으로 듣기)
+// 15. 1분 TBM 체크리스트 복사하기 & 자연스러운 한국 배우(한석규 톤) 음성 낭독(TTS)
 // ============================================================================
+let activeTbmAudio = null;
+let activeTbmAudioUrl = null;
+let activeTbmTtsAbortController = null;
+let activeTbmSpeechSessionId = 0;
+let activeBrowserPauseTimer = null;
+let activeSpeechUtterance = null;
+
 function getTbmItemsTextForCopy() {
   const script = String(appState.currentReport?.tbmScript || "").trim();
   const items = appState.currentReport?.tbmChecklist || [];
@@ -15726,9 +16307,9 @@ function getTbmItemsTextForSpeech() {
   if (script) return script;
   const items = appState.currentReport?.tbmChecklist || [];
   if (items.length > 0) {
-    return `작업 시작 전 1분 TBM 안전점검 항목을 전달합니다. ${items
-      .map((item, idx) => `${idx + 1}번, ${item}`)
-      .join(" ")}`;
+    return `자, 오늘 작업 시작하기 전에 우리 안전을 위해서 몇 가지만 같이 확인합시다. ${items
+      .map((item, idx) => `${idx + 1}번째, ${item}`)
+      .join(". ")}. 오늘도 서로 조심해서 안전하게 마칩시다.`;
   }
   return dom.tbmScriptText?.textContent?.trim() || "";
 }
@@ -15751,13 +16332,222 @@ async function copyTbmScript() {
   }
 }
 
-function toggleSpeakTbmScript() {
+function setTbmSpeakingUi(active, btnText = "🔊 한석규 톤 음성 듣기", indicatorText = "한석규 배우 톤 자연 음성 낭독 중...") {
+  appState.isSpeaking = Boolean(active);
+  if (dom.speakTbmBtn) {
+    dom.speakTbmBtn.classList.toggle("speaking", appState.isSpeaking);
+  }
+  if (dom.speakTbmBtnLabel) {
+    dom.speakTbmBtnLabel.textContent = btnText;
+  }
+  if (dom.tbmSpeakingIndicator) {
+    dom.tbmSpeakingIndicator.classList.toggle("hidden", !appState.isSpeaking);
+  }
+  if (dom.tbmSpeakingLabel && indicatorText) {
+    dom.tbmSpeakingLabel.textContent = indicatorText;
+  }
+}
+
+/**
+ * Gemini Neural TTS(24kHz PCM 등) 응답을 브라우저에서 재생 가능한 WAV Blob으로 변환합니다.
+ */
+function base64PcmToWavBlob(base64Str, mimeType = "") {
+  const binary = atob(base64Str);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+
+  const lowerMime = String(mimeType || "").toLowerCase();
+  if (/(wav|mpeg|mp3|ogg|webm)/.test(lowerMime)) {
+    return new Blob([bytes], { type: lowerMime.split(";")[0] });
+  }
+
+  const rateMatch = lowerMime.match(/rate=(\d+)/);
+  const sampleRate = rateMatch ? parseInt(rateMatch[1], 10) || 24000 : 24000;
+  const numChannels = 1;
+  const bitsPerSample = 16;
+  const byteRate = (sampleRate * numChannels * bitsPerSample) / 8;
+  const blockAlign = (numChannels * bitsPerSample) / 8;
+
+  const wavBuffer = new ArrayBuffer(44 + bytes.byteLength);
+  const view = new DataView(wavBuffer);
+  const writeStr = (offset, str) => {
+    for (let i = 0; i < str.length; i++) {
+      view.setUint8(offset + i, str.charCodeAt(i));
+    }
+  };
+
+  writeStr(0, "RIFF");
+  view.setUint32(4, 36 + bytes.byteLength, true);
+  writeStr(8, "WAVE");
+  writeStr(12, "fmt ");
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, numChannels, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, byteRate, true);
+  view.setUint16(32, blockAlign, true);
+  view.setUint16(34, bitsPerSample, true);
+  writeStr(36, "data");
+  view.setUint32(40, bytes.byteLength, true);
+
+  new Uint8Array(wavBuffer, 44).set(bytes);
+  return new Blob([wavBuffer], { type: "audio/wav" });
+}
+
+/**
+ * 1순위: Gemini Neural TTS를 통해 한석규 배우 스타일의 따뜻하고 중후한 자연 한국어 음성을 생성합니다.
+ */
+async function fetchHanSeokKyuGeminiTts(text, apiKey, signal) {
+  const ttsPrompt = `한국 영화배우 한석규처럼 따뜻하고 중후하며 신뢰감 있는 현장 소장의 자연스러운 한국어 목소리로 말해 주세요. 기계적인 낭독을 피하고, 동료 작업자의 안전을 진심으로 살피듯 차분하고 또렷한 어조와 자연스러운 호흡으로 읽어 주세요.\n\n[1분 TBM 전달 멘트]\n${text}`;
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${encodeURIComponent(apiKey)}`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-goog-api-key": apiKey,
+    },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: ttsPrompt }] }],
+      generationConfig: {
+        responseModalities: ["AUDIO"],
+        speechConfig: {
+          voiceConfig: {
+            prebuiltVoiceConfig: {
+              voiceName: "Charon",
+            },
+          },
+        },
+      },
+    }),
+    signal,
+  });
+
+  if (!res.ok) {
+    throw new Error(`TTS HTTP ${res.status}`);
+  }
+
+  const data = await res.json();
+  const parts = data?.candidates?.[0]?.content?.parts || [];
+  const audioPart = parts.find((p) => p?.inlineData?.data);
+  if (!audioPart) {
+    throw new Error("오디오 데이터가 비어 있습니다.");
+  }
+
+  return base64PcmToWavBlob(audioPart.inlineData.data, audioPart.inlineData.mimeType || "");
+}
+
+/**
+ * 2순위(폴백): 브라우저 음성 목록 중 기계음(Heami Desktop 등)을 배제하고 가장 자연스러운 Neural 한국어 음성을 선택합니다.
+ */
+function selectNaturalKoreanVoice(voices) {
+  const koVoices = (voices || []).filter(
+    (v) => /^ko/i.test(v.lang || "") || /(korean|한국)/i.test(v.name || "")
+  );
+  if (koVoices.length === 0) return null;
+
+  const scoreVoice = (v) => {
+    const name = String(v.name || "");
+    let score = 0;
+    if (/natural|neural|online/i.test(name)) score += 120;
+    if (/injoon|hyunsu|bongjin|gookmin|google\s*한국|sunhi|yuna|sora|minsu|jihun/i.test(name)) score += 80;
+    if (/injoon|hyunsu|bongjin|gookmin|minsu|jihun|male/i.test(name)) score += 50;
+    if (v.localService === false) score += 30;
+    if (/heami|desktop/i.test(name)) score -= 90;
+    return score;
+  };
+
+  koVoices.sort((a, b) => scoreVoice(b) - scoreVoice(a));
+  return koVoices[0];
+}
+
+function getKoreanVoicesReady() {
+  return new Promise((resolve) => {
+    const current = window.speechSynthesis.getVoices();
+    if (current && current.length > 0) {
+      resolve(current);
+      return;
+    }
+    let resolved = false;
+    const finish = () => {
+      if (resolved) return;
+      resolved = true;
+      window.speechSynthesis.removeEventListener?.("voiceschanged", finish);
+      resolve(window.speechSynthesis.getVoices() || []);
+    };
+    window.speechSynthesis.addEventListener?.("voiceschanged", finish);
+    setTimeout(finish, 350);
+  });
+}
+
+async function speakWithBrowserNaturalVoice(text, sessionId) {
   if (!("speechSynthesis" in window)) {
+    if (sessionId === activeTbmSpeechSessionId) {
+      stopTtsSpeech();
+    }
     showToast("⚠️ 현재 브라우저에서 음성 합성(TTS) 기능을 지원하지 않습니다.");
     return;
   }
 
-  if (appState.isSpeaking) {
+  const voices = await getKoreanVoicesReady();
+  if (sessionId !== activeTbmSpeechSessionId) return;
+
+  window.speechSynthesis.cancel();
+  const koVoice = selectNaturalKoreanVoice(voices);
+  const sentences = String(text || "")
+    .split(/(?<=[.!?])\s+|\n+/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const queue = sentences.length > 0 ? sentences : [text];
+
+  const voiceTag = koVoice?.name && /natural|neural|online/i.test(koVoice.name)
+    ? "한석규 톤 자연 음성 낭독 중..."
+    : "한석규 톤 차분한 음성 낭독 중...";
+  setTbmSpeakingUi(true, "⏹️ 음성 낭독 중지", voiceTag);
+
+  let idx = 0;
+  const speakNext = () => {
+    if (sessionId !== activeTbmSpeechSessionId) return;
+    if (idx >= queue.length) {
+      stopTtsSpeech();
+      return;
+    }
+    const utterance = new SpeechSynthesisUtterance(queue[idx]);
+    activeSpeechUtterance = utterance;
+    utterance.lang = "ko-KR";
+    utterance.rate = 0.94;
+    utterance.pitch = 0.92;
+    utterance.volume = 1.0;
+    if (koVoice) {
+      utterance.voice = koVoice;
+    }
+
+    utterance.onend = () => {
+      if (sessionId !== activeTbmSpeechSessionId) return;
+      idx++;
+      if (idx < queue.length) {
+        activeBrowserPauseTimer = setTimeout(speakNext, 190);
+      } else {
+        stopTtsSpeech();
+      }
+    };
+
+    utterance.onerror = () => {
+      if (sessionId === activeTbmSpeechSessionId) {
+        stopTtsSpeech();
+      }
+    };
+
+    window.speechSynthesis.speak(utterance);
+  };
+
+  speakNext();
+}
+
+async function toggleSpeakTbmScript() {
+  if (appState.isSpeaking || activeTbmTtsAbortController) {
     stopTtsSpeech();
     showToast("⏹️ TBM 음성 낭독을 중지했습니다.");
     return;
@@ -15766,50 +16556,86 @@ function toggleSpeakTbmScript() {
   const text = getTbmItemsTextForSpeech();
   if (!text) return;
 
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "ko-KR";
-  utterance.rate = 0.98;
-  utterance.pitch = 1.0;
+  const sessionId = ++activeTbmSpeechSessionId;
+  const apiKey = typeof resolveGeminiApiKey === "function" ? resolveGeminiApiKey() : "";
 
-  const voices = window.speechSynthesis.getVoices();
-  const koVoice = voices.find((v) => v.lang.includes("ko") || v.lang.includes("KR"));
-  if (koVoice) {
-    utterance.voice = koVoice;
+  if (apiKey) {
+    setTbmSpeakingUi(true, "⏹️ 음성 생성 중...", "한석규 배우 톤 자연 음성 생성 중...");
+    const controller = new AbortController();
+    activeTbmTtsAbortController = controller;
+
+    try {
+      const wavBlob = await fetchHanSeokKyuGeminiTts(text, apiKey, controller.signal);
+      if (controller.signal.aborted || sessionId !== activeTbmSpeechSessionId) return;
+      activeTbmTtsAbortController = null;
+
+      activeTbmAudioUrl = URL.createObjectURL(wavBlob);
+      const audio = new Audio(activeTbmAudioUrl);
+      activeTbmAudio = audio;
+
+      audio.onplay = () => {
+        if (sessionId !== activeTbmSpeechSessionId) return;
+        setTbmSpeakingUi(true, "⏹️ 음성 낭독 중지", "한석규 배우 톤 자연 음성 낭독 중...");
+      };
+      audio.onended = () => {
+        if (sessionId === activeTbmSpeechSessionId) {
+          stopTtsSpeech();
+        }
+      };
+      audio.onerror = () => {
+        if (sessionId !== activeTbmSpeechSessionId) return;
+        if (activeTbmAudioUrl) {
+          URL.revokeObjectURL(activeTbmAudioUrl);
+          activeTbmAudioUrl = null;
+        }
+        activeTbmAudio = null;
+        speakWithBrowserNaturalVoice(text, sessionId);
+      };
+
+      await audio.play();
+      return;
+    } catch (err) {
+      activeTbmTtsAbortController = null;
+      if (err?.name === "AbortError" || sessionId !== activeTbmSpeechSessionId) {
+        return;
+      }
+      // Gemini TTS 미지원/실패 시 브라우저 Neural 한국어 음성으로 매끄럽게 폴백
+    }
   }
 
-  utterance.onstart = () => {
-    appState.isSpeaking = true;
-    dom.speakTbmBtn.classList.add("speaking");
-    dom.speakTbmBtnLabel.textContent = "⏹️ 음성 낭독 중지";
-    dom.tbmSpeakingIndicator.classList.remove("hidden");
-  };
-
-  utterance.onend = () => {
-    stopTtsSpeech();
-  };
-
-  utterance.onerror = () => {
-    stopTtsSpeech();
-  };
-
-  window.speechSynthesis.speak(utterance);
+  await speakWithBrowserNaturalVoice(text, sessionId);
 }
 
 function stopTtsSpeech() {
+  activeTbmSpeechSessionId++;
+  if (activeBrowserPauseTimer) {
+    clearTimeout(activeBrowserPauseTimer);
+    activeBrowserPauseTimer = null;
+  }
+  if (activeTbmTtsAbortController) {
+    try {
+      activeTbmTtsAbortController.abort();
+    } catch (e) {}
+    activeTbmTtsAbortController = null;
+  }
+  if (activeTbmAudio) {
+    try {
+      activeTbmAudio.pause();
+      activeTbmAudio.src = "";
+    } catch (e) {}
+    activeTbmAudio = null;
+  }
+  if (activeTbmAudioUrl) {
+    try {
+      URL.revokeObjectURL(activeTbmAudioUrl);
+    } catch (e) {}
+    activeTbmAudioUrl = null;
+  }
+  activeSpeechUtterance = null;
   if ("speechSynthesis" in window) {
     window.speechSynthesis.cancel();
   }
-  appState.isSpeaking = false;
-  if (dom.speakTbmBtn) {
-    dom.speakTbmBtn.classList.remove("speaking");
-  }
-  if (dom.speakTbmBtnLabel) {
-    dom.speakTbmBtnLabel.textContent = "🔊 음성으로 듣기 (TTS)";
-  }
-  if (dom.tbmSpeakingIndicator) {
-    dom.tbmSpeakingIndicator.classList.add("hidden");
-  }
+  setTbmSpeakingUi(false, "🔊 한석규 톤 음성 듣기");
 }
 
 // ============================================================================
@@ -15887,6 +16713,7 @@ window.addEventListener(
 
 function resetAllState() {
   stopTtsSpeech();
+  setLoadingState(false);
   clearUploadedImage();
   appState.selectedTags.clear();
   appState.confirmedChecks.clear();
@@ -15973,7 +16800,7 @@ function escapeHtml(str) {
     .replace(/'/g, "&#039;");
 }
 
-// 26.11.18 V1.12
+// 26.11.19 V1.14
   </script>
 </body>
 </html>
