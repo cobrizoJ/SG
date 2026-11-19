@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <meta name="theme-color" content="#002C5F" />
-  <title>현장 안전지킴이 AI (26.11.19 V1.14) | 현대제철 안전가이드 &amp; 4대 안전법령 기반 현장 사진 진단</title>
+  <title>현장 안전지킴이 AI (26.11.19 V1.15) | 현대제철 안전가이드 &amp; 4대 안전법령 기반 현장 사진 진단</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
@@ -4417,7 +4417,7 @@ body {
             <span class="hyundai-pill">HYUNDAI STEEL SAFETY</span>
             <span class="law-pill">4대 안전법령 · KOSHA 기준</span>
           </div>
-          <h1 class="brand-title">현장 안전지킴이 <span class="accent-orange">AI</span><span class="header-update-badge">26.11.19 V1.14</span></h1>
+          <h1 class="brand-title">현장 안전지킴이 <span class="accent-orange">AI</span><span class="header-update-badge">26.11.19 V1.15</span></h1>
           <p class="brand-subtitle">현대제철 협력사 안전가이드북 &amp; 산안법·중처법·화관법·KOSHA 비전 진단 시스템</p>
         </div>
       </div>
@@ -5097,7 +5097,7 @@ body {
                   <span class="wave-bar"></span>
                   <span class="wave-bar"></span>
                   <span class="wave-bar"></span>
-                  <span class="speaking-label" id="tbmSpeakingLabel">한석규 배우 톤 자연 음성 낭독 중...</span>
+                  <span class="speaking-label" id="tbmSpeakingLabel">음성 낭독 중...</span>
                 </div>
               </div>
 
@@ -5106,7 +5106,7 @@ body {
                   <span>📋 멘트 복사하기</span>
                 </button>
                 <button type="button" id="speakTbmBtn" class="btn-tbm-action tts-btn">
-                  <span id="speakTbmBtnLabel">🔊 한석규 톤 음성 듣기</span>
+                  <span id="speakTbmBtnLabel">🔊 음성 듣기</span>
                 </button>
               </div>
             </article>
@@ -5143,7 +5143,7 @@ body {
   <footer class="app-footer">
     <div class="container footer-inner">
       <div class="footer-info">
-        <strong>현장 안전지킴이 AI</strong> · 현대제철 협력사 안전가이드북 &amp; 4대 안전법령(산안법·중처법·화관법·KOSHA) 기반 현장 사진 진단 웹앱 <span class="footer-version-tag">26.11.19 V1.14</span>
+        <strong>현장 안전지킴이 AI</strong> · 현대제철 협력사 안전가이드북 &amp; 4대 안전법령(산안법·중처법·화관법·KOSHA) 기반 현장 사진 진단 웹앱 <span class="footer-version-tag">26.11.19 V1.15</span>
       </div>
       <div class="footer-links">
         <a
@@ -5270,7 +5270,7 @@ body {
  * - 다중 사진 업로드 & 갤러리 전환
  * - 사진 터치/클릭 부위 지정 커스텀 핀(Pin) 시스템
  * - 사진 픽셀 시각 특성 분석 + 세부 작업사항 확인 체크박스 연동 맞춤형 동적 진단 엔진
- * - 버전: 26.11.19 V1.14
+ * - 버전: 26.11.19 V1.15
  */
 
 // ============================================================================
@@ -5738,7 +5738,7 @@ function buildThreeStepVisualFormula(item) {
 // 2. 산업현장_사고예방대책_DB.xlsx 전수 내장 상수 (예방대책DB 39건 + 유형별요약 15건 = 100% 학습)
 // ============================================================================
 const EXCEL_SAFETY_DB = {
-  "version": "2026.11.19-V1.14",
+  "version": "2026.11.19-V1.15",
   "sourceFile": "산업현장_사고예방대책_DB.xlsx",
   "totalScenarios": 39,
   "totalTypeSummaries": 15,
@@ -11601,11 +11601,11 @@ function bootApplication() {
   if ("speechSynthesis" in window) {
     window.speechSynthesis.getVoices();
   }
-  document.title = "현장 안전지킴이 AI | 현대제철 안전가이드 & 4대 법령 스마트 진단 (26.11.19 V1.14)";
+  document.title = "현장 안전지킴이 AI | 현대제철 안전가이드 & 4대 법령 스마트 진단 (26.11.19 V1.15)";
   const headerBadgeEl = document.querySelector(".header-update-badge");
-  if (headerBadgeEl) headerBadgeEl.textContent = "26.11.19 V1.14";
+  if (headerBadgeEl) headerBadgeEl.textContent = "26.11.19 V1.15";
   const footerVerEl = document.querySelector(".footer-version-tag");
-  if (footerVerEl) footerVerEl.textContent = "버전: 26.11.19 V1.14";
+  if (footerVerEl) footerVerEl.textContent = "버전: 26.11.19 V1.15";
 }
 
 if (document.readyState === "loading") {
@@ -16332,7 +16332,7 @@ async function copyTbmScript() {
   }
 }
 
-function setTbmSpeakingUi(active, btnText = "🔊 한석규 톤 음성 듣기", indicatorText = "한석규 배우 톤 자연 음성 낭독 중...") {
+function setTbmSpeakingUi(active, btnText = "🔊 음성 듣기", indicatorText = "음성 낭독 중...") {
   appState.isSpeaking = Boolean(active);
   if (dom.speakTbmBtn) {
     dom.speakTbmBtn.classList.toggle("speaking", appState.isSpeaking);
@@ -16503,8 +16503,8 @@ async function speakWithBrowserNaturalVoice(text, sessionId) {
   const queue = sentences.length > 0 ? sentences : [text];
 
   const voiceTag = koVoice?.name && /natural|neural|online/i.test(koVoice.name)
-    ? "한석규 톤 자연 음성 낭독 중..."
-    : "한석규 톤 차분한 음성 낭독 중...";
+    ? "자연 음성 낭독 중..."
+    : "음성 낭독 중...";
   setTbmSpeakingUi(true, "⏹️ 음성 낭독 중지", voiceTag);
 
   let idx = 0;
@@ -16560,7 +16560,7 @@ async function toggleSpeakTbmScript() {
   const apiKey = typeof resolveGeminiApiKey === "function" ? resolveGeminiApiKey() : "";
 
   if (apiKey) {
-    setTbmSpeakingUi(true, "⏹️ 음성 생성 중...", "한석규 배우 톤 자연 음성 생성 중...");
+    setTbmSpeakingUi(true, "⏹️ 음성 생성 중...", "음성 생성 중...");
     const controller = new AbortController();
     activeTbmTtsAbortController = controller;
 
@@ -16575,7 +16575,7 @@ async function toggleSpeakTbmScript() {
 
       audio.onplay = () => {
         if (sessionId !== activeTbmSpeechSessionId) return;
-        setTbmSpeakingUi(true, "⏹️ 음성 낭독 중지", "한석규 배우 톤 자연 음성 낭독 중...");
+        setTbmSpeakingUi(true, "⏹️ 음성 낭독 중지", "음성 낭독 중...");
       };
       audio.onended = () => {
         if (sessionId === activeTbmSpeechSessionId) {
@@ -16635,7 +16635,7 @@ function stopTtsSpeech() {
   if ("speechSynthesis" in window) {
     window.speechSynthesis.cancel();
   }
-  setTbmSpeakingUi(false, "🔊 한석규 톤 음성 듣기");
+  setTbmSpeakingUi(false, "🔊 음성 듣기");
 }
 
 // ============================================================================
@@ -16800,7 +16800,7 @@ function escapeHtml(str) {
     .replace(/'/g, "&#039;");
 }
 
-// 26.11.19 V1.14
+// 26.11.19 V1.15
   </script>
 </body>
 </html>
